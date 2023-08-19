@@ -1,0 +1,12 @@
+# .NET and Visual Studio specific files
+.vscode/
+.vs/
+*.obj
+*.pdb
+
+
+# Build output
+/bin/
+/obj/
+/*.dll
+/*.exe
