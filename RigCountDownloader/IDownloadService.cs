@@ -2,8 +2,10 @@
 
 namespace RigCountDownloader
 {
-	public interface IDownloader
+	public interface IDownloadService
 	{
 		Task<HtmlDocument> GetHtmlDocumentAsync();
+
+		Task DownloadFileAsync(HtmlDocument htmlDocument);
 	}
 }

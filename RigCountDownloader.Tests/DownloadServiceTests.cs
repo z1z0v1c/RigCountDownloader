@@ -6,17 +6,17 @@ using Xunit;
 
 namespace RigCountDownloader.Tests
 {
-	public class DownloaderTests
+	public class DownloadServiceTests
 	{
 		private readonly MockHttpMessageHandler _handlerSubstitute;
 		private readonly HttpClient _httpClient;
-		private readonly IDownloader _downloader;
+		private readonly IDownloadService _downloader;
 
-		public DownloaderTests()
+		public DownloadServiceTests()
 		{
 			this._handlerSubstitute = new();
 			this._httpClient = new(_handlerSubstitute);
-			this._downloader = new Downloader(_httpClient);
+			this._downloader = new DownloadService(_httpClient, new ExcelFileService());
 		}
 
 		[Fact]

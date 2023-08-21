@@ -5,12 +5,13 @@ using RigCountDownloader;
 // Configure dependency injection
 ServiceProvider serviceProvider = new ServiceCollection()
 	.AddHttpClient()
-	.AddTransient<IDownloader, Downloader>()
+	.AddTransient<IDownloadService, DownloadService>()
+	.AddScoped<IFileService, ExcelFileService>()
 	.BuildServiceProvider();
 
 // Resolve the Downloader instance
-IDownloader downloader = serviceProvider.GetRequiredService<IDownloader>();
+IDownloadService downloader = serviceProvider.GetRequiredService<IDownloadService>();
 
 HtmlDocument htmlDocument = await downloader.GetHtmlDocumentAsync();
 
-Console.WriteLine(htmlDocument.DocumentNode.InnerHtml.ToString());
+await downloader.DownloadFileAsync(htmlDocument);

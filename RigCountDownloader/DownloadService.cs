@@ -3,18 +3,47 @@ using HtmlAgilityPack;
 
 namespace RigCountDownloader
 {
-	public class Downloader : IDownloader
+	public class DownloadService : IDownloadService
 	{
-		private static readonly string Url = "https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl";
+		private static readonly string Url = "https://bakerhughesrigcount.gcs-web.com";
 
 		private readonly HttpClient _httpClient;
+		private readonly IFileService _fileService;
 
-		public Downloader(HttpClient httpClient)
+		public DownloadService(HttpClient httpClient, IFileService fileService)
 		{
 			_httpClient = httpClient;
+			_fileService = fileService;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 			_httpClient.BaseAddress = new Uri(Url);
+		}
+
+		public async Task DownloadFileAsync(HtmlDocument htmlDocument)
+		{
+			HtmlNode excelLinkNode = htmlDocument.DocumentNode.SelectSingleNode("//a[@title='Worldwide Rig Count Jul 2023.xlsx']");
+			var excelLink = excelLinkNode?.Attributes["href"].Value;
+
+			using var request = new HttpRequestMessage(HttpMethod.Get, _httpClient.BaseAddress + excelLink);
+			HttpResponseMessage response = new();
+
+			try
+			{
+				response = await _httpClient.SendAsync(request);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("An exception occurred: " + ex.Message);
+				Console.WriteLine("Stack Trace: " + ex.StackTrace);
+			}
+
+			if (response.IsSuccessStatusCode)
+			{
+				HttpContent content = response.Content;
+				await _fileService.WriteToFileAsync(content);
+
+				Console.WriteLine($"File downloaded successfully.");
+			}
 		}
 
 		public async Task<HtmlDocument> GetHtmlDocumentAsync()
@@ -36,7 +65,7 @@ namespace RigCountDownloader
 		{
 			try
 			{
-				HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress);
+				HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress + "/intl-rig-count?c=79687&p=irol-rigcountsintl");
 				if (response.IsSuccessStatusCode)
 				{
 					return await response.Content.ReadAsStringAsync();
@@ -55,7 +84,7 @@ namespace RigCountDownloader
 			}
 		}
 
-		private HtmlDocument LoadHtml(string htmlContent)
+		private static HtmlDocument LoadHtml(string htmlContent)
 		{
 			var htmlDocument = new HtmlDocument();
 			htmlDocument.LoadHtml(htmlContent);

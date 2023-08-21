@@ -10,3 +10,6 @@
 /*/obj/
 /*.dll
 /*.exe
+
+# Excel files
+*.xlsx
