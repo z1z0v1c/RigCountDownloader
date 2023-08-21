@@ -14,6 +14,7 @@ namespace RigCountDownloader
 			_httpClient = httpClient;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+			_httpClient.BaseAddress = new Uri(Url);
 		}
 
 		public async Task<HtmlDocument> GetHtmlDocumentAsync()
@@ -35,7 +36,7 @@ namespace RigCountDownloader
 		{
 			try
 			{
-				HttpResponseMessage response = await _httpClient.GetAsync(Url);
+				HttpResponseMessage response = await _httpClient.GetAsync(_httpClient.BaseAddress);
 				if (response.IsSuccessStatusCode)
 				{
 					return await response.Content.ReadAsStringAsync();
