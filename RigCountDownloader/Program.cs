@@ -3,13 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
 
 // Configure dependency injection
-var serviceProvider = new ServiceCollection()
+ServiceProvider serviceProvider = new ServiceCollection()
 	.AddHttpClient()
-	.AddTransient<Downloader>()
+	.AddTransient<IDownloader, Downloader>()
 	.BuildServiceProvider();
 
 // Resolve the Downloader instance
-var downloader = serviceProvider.GetRequiredService<Downloader>();
+IDownloader downloader = serviceProvider.GetRequiredService<IDownloader>();
 
 HtmlDocument htmlDocument = await downloader.GetHtmlDocumentAsync();
 

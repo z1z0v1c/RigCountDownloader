@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 
 namespace RigCountDownloader
 {
-	public class Downloader
+	public class Downloader : IDownloader
 	{
 		private static readonly string Url = "https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl";
 
