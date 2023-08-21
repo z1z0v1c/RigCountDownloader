@@ -37,19 +37,42 @@ namespace RigCountDownloader.Tests
 
 			_handlerSubstitute.When("https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl")
 				.Respond(request =>
-			{
-				return Task.FromResult(new HttpResponseMessage
 				{
-					StatusCode = HttpStatusCode.OK,
-					Content = new StringContent(expectedHtmlContent)
+					return Task.FromResult(new HttpResponseMessage
+					{
+						StatusCode = HttpStatusCode.OK,
+						Content = new StringContent(expectedHtmlContent)
+					});
 				});
-			});
 
 			// Act
 			HtmlDocument htmlDocument = await _downloader.GetHtmlDocumentAsync();
 
 			// Assert
 			Assert.Contains("Worldwide Rig Counts - Current &amp; Historical Data", htmlDocument.DocumentNode.InnerHtml);
+		}
+
+		[Fact]
+		public async Task GetHtmlDocumentAsync_InvalidUrl_ReturnsEmptyHtmlDocument()
+		{
+			// Arrange
+			var expectedHtmlContent = string.Empty;
+
+			_handlerSubstitute.When("https://www.invalidurl.com")
+				.Respond(request =>
+				{
+					return Task.FromResult(new HttpResponseMessage
+					{
+						StatusCode = HttpStatusCode.OK,
+						Content = new StringContent(expectedHtmlContent)
+					});
+				});
+
+			// Act
+			HtmlDocument htmlDocument = await _downloader.GetHtmlDocumentAsync();
+
+			// Assert
+			Assert.Equal(string.Empty, htmlDocument.DocumentNode.InnerHtml);
 		}
 	}
 }
