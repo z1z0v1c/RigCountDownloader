@@ -3,15 +3,15 @@ using HtmlAgilityPack;
 
 namespace RigCountDownloader
 {
-	internal class Downloader
+	public class Downloader
 	{
 		private static readonly string Url = "https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl";
 
 		private readonly HttpClient _httpClient;
 
-		public Downloader()
+		public Downloader(HttpClient httpClient)
 		{
-			_httpClient = new HttpClient();
+			_httpClient = httpClient;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}

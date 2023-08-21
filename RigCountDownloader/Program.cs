@@ -1,7 +1,15 @@
 ﻿using HtmlAgilityPack;
+using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
 
-Downloader downloader = new();
+// Configure dependency injection
+var serviceProvider = new ServiceCollection()
+	.AddHttpClient()
+	.AddTransient<Downloader>()
+	.BuildServiceProvider();
+
+// Resolve the Downloader instance
+var downloader = serviceProvider.GetRequiredService<Downloader>();
 
 HtmlDocument htmlDocument = await downloader.GetHtmlDocumentAsync();
 
