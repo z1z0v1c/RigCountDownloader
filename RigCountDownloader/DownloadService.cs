@@ -1,30 +1,31 @@
 ﻿using System.Diagnostics;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Configuration;
 
 namespace RigCountDownloader
 {
 	public class DownloadService : IDownloadService
 	{
-		private static readonly string Url = "https://bakerhughesrigcount.gcs-web.com";
-
 		private readonly HttpClient _httpClient;
 		private readonly IFileService _fileService;
+		private readonly IConfiguration _configuration;
 
-		public DownloadService(HttpClient httpClient, IFileService fileService)
+		public DownloadService(HttpClient httpClient, IFileService fileService, IConfiguration configuration)
 		{
 			_httpClient = httpClient;
 			_fileService = fileService;
+			_configuration = configuration;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
-			_httpClient.BaseAddress = new Uri(Url);
+			_httpClient.BaseAddress = new Uri(_configuration["BaseAddress"]);
 		}
 
 		public async Task DownloadFileAsync(HtmlDocument htmlDocument)
 		{
-			HtmlNode excelLinkNode = htmlDocument.DocumentNode.SelectSingleNode("//a[@title='Worldwide Rig Count Jul 2023.xlsx']");
-			var excelLink = excelLinkNode?.Attributes["href"].Value;
+			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{_configuration["FileName"]}']");
+			var link = linkNode?.Attributes["href"].Value;
 
-			using var request = new HttpRequestMessage(HttpMethod.Get, _httpClient.BaseAddress + excelLink);
+			using var request = new HttpRequestMessage(HttpMethod.Get, _httpClient.BaseAddress + link);
 			HttpResponseMessage response = new();
 
 			try

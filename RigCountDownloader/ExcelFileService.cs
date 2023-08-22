@@ -1,9 +1,17 @@
-﻿using OfficeOpenXml;
+﻿using Microsoft.Extensions.Configuration;
+using OfficeOpenXml;
 
 namespace RigCountDownloader
 {
 	public class ExcelFileService : IFileService
 	{
+		private readonly IConfiguration _configuration;
+
+		public ExcelFileService(IConfiguration configuration)
+		{
+			this._configuration = configuration;
+		}
+
 		public async Task WriteToFileAsync(HttpContent content)
 		{
 			using Stream stream = await content.ReadAsStreamAsync();
@@ -31,11 +39,8 @@ namespace RigCountDownloader
 
 			string currentDirectory = Directory.GetCurrentDirectory();
 
-			// Specify the relative path
-			string relativePath = "..\\..\\..\\..\\Worldwide Rig Count Jul 2023.csv";
-
 			// Combine the current directory and relative path for the CSV file
-			string csvFilePath = Path.Combine(currentDirectory, relativePath);
+			string csvFilePath = Path.Combine(currentDirectory, _configuration["RelativeOutputPath"]);
 
 			using (var writer = new StreamWriter(csvFilePath))
 			{
