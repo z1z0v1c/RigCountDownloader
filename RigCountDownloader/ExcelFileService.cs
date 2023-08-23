@@ -17,8 +17,6 @@ namespace RigCountDownloader
 			using Stream stream = await content.ReadAsStreamAsync();
 			using ExcelPackage package = new(stream);
 
-			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
 			var worksheet = package.Workbook.Worksheets[0];
 
 			// Find the row index of the first occurrence of 'Europe'
