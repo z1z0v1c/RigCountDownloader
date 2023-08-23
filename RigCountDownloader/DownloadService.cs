@@ -7,16 +7,16 @@ namespace RigCountDownloader
 	public class DownloadService : IDownloadService
 	{
 		private readonly HttpClient _httpClient;
-		private readonly IFileService _fileService;
 		private readonly IConfiguration _configuration;
+		private readonly IFileService _fileService;
 
 
 
-		public DownloadService(HttpClient httpClient, IFileService fileService, IConfiguration configuration)
+		public DownloadService(HttpClient httpClient, IConfiguration configuration, IFileService fileService)
 		{
 			_httpClient = httpClient;
-			_fileService = fileService;
 			_configuration = configuration;
+			_fileService = fileService;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}

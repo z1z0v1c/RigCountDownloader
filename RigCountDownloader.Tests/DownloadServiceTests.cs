@@ -1,5 +1,6 @@
 using System.Net;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using RichardSzalay.MockHttp;
 using Xunit;
@@ -8,22 +9,27 @@ namespace RigCountDownloader.Tests
 {
 	public class DownloadServiceTests
 	{
-		private readonly MockHttpMessageHandler _handlerSubstitute;
+		private readonly MockHttpMessageHandler _requestHandler;
 		private readonly HttpClient _httpClient;
+		private readonly IConfiguration _configuration;
 		private readonly IDownloadService _downloader;
 
 		public DownloadServiceTests()
 		{
-			this._handlerSubstitute = new();
-			this._httpClient = new(_handlerSubstitute);
-			this._downloader = new DownloadService(_httpClient, new ExcelFileService());
+			this._requestHandler = new();
+			this._httpClient = new(_requestHandler);
+			this._configuration = Substitute.For<IConfiguration>();
+			this._downloader = new DownloadService(_httpClient, _configuration, new ExcelFileService(_configuration));
 		}
 
 		[Fact]
 		public async Task GetHtmlDocumentAsync_ValidUrl_ReturnsCorrectHtmlDocument()
 		{
 			// Arrange
-			var expectedHtmlContent = @"<!DOCTYPE html>
+			string baseAddress = "https://bakerhughesrigcount.gcs-web.com";
+			string downloadPageQuery = "/intl-rig-count?c=79687&p=irol-rigcountsintl";
+
+			string expectedHtmlContent = @"<!DOCTYPE html>
 										<html>
 											<body>
 												<a href=""/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8"" 
@@ -35,7 +41,10 @@ namespace RigCountDownloader.Tests
 											</body>
 										</html>";
 
-			_handlerSubstitute.When("https://bakerhughesrigcount.gcs-web.com/intl-rig-count?c=79687&p=irol-rigcountsintl")
+			_configuration["BaseAddress"].Returns(baseAddress);
+			_configuration["DownloadPageQuery"].Returns(downloadPageQuery);
+
+			_requestHandler.When(baseAddress + downloadPageQuery)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage
@@ -56,9 +65,14 @@ namespace RigCountDownloader.Tests
 		public async Task GetHtmlDocumentAsync_InvalidUrl_ReturnsEmptyHtmlDocument()
 		{
 			// Arrange
-			var expectedHtmlContent = string.Empty;
+			string baseAddress = "https://www.invalidurl.com";
+			string downloadPageQuery = string.Empty;
+			string expectedHtmlContent = string.Empty;
 
-			_handlerSubstitute.When("https://www.invalidurl.com")
+			_configuration["BaseAddress"].Returns(baseAddress);
+			_configuration["DownloadPageQuery"].Returns(downloadPageQuery);
+
+			_requestHandler.When(baseAddress + downloadPageQuery)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage
