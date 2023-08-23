@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+using Microsoft.Extensions.Configuration;
 
 namespace RigCountDownloader
 {
-	internal class Application
+	public class Application
 	{
+		private readonly IConfiguration _configuration;
 		private readonly IDownloadService _downloadService;
 
-		public Application(IDownloadService downloadService)
+		public Application(IConfiguration configuration, IDownloadService downloadService)
 		{
+			this._configuration = configuration;
 			this._downloadService = downloadService;
 		}
 
 		public async Task RunAsync()
 		{
-			HtmlDocument htmlDocument = await _downloadService.GetHtmlDocumentAsync();
+			HtmlDocument htmlDocument = await _downloadService.GetHtmlDocumentAsync(_configuration["BaseAddress"] + _configuration["DownloadPageQuery"]);
 
-			await _downloadService.DownloadFileAsync(htmlDocument);
+			await _downloadService.DownloadFileAsync(htmlDocument, _configuration["BaseAddress"], _configuration["FileName"]);
 		}
 	}
 }

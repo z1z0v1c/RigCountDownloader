@@ -7,25 +7,22 @@ namespace RigCountDownloader
 	public class DownloadService : IDownloadService
 	{
 		private readonly HttpClient _httpClient;
-		private readonly IConfiguration _configuration;
 		private readonly IFileService _fileService;
 
 
-
-		public DownloadService(HttpClient httpClient, IConfiguration configuration, IFileService fileService)
+		public DownloadService(HttpClient httpClient, IFileService fileService)
 		{
 			_httpClient = httpClient;
-			_configuration = configuration;
 			_fileService = fileService;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}
 
-		public async Task<HtmlDocument> GetHtmlDocumentAsync()
+		public async Task<HtmlDocument> GetHtmlDocumentAsync(string uri)
 		{
 			try
 			{
-				string htmlContent = await GetHtmlContentAsync();
+				string htmlContent = await GetHtmlContentAsync(uri);
 				return LoadHtml(htmlContent);
 			}
 			catch (Exception ex)
@@ -36,11 +33,11 @@ namespace RigCountDownloader
 			}
 		}
 
-		public async Task DownloadFileAsync(HtmlDocument htmlDocument)
+		public async Task DownloadFileAsync(HtmlDocument htmlDocument, string baseAddress, string fileName)
 		{
-			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{_configuration["FileName"]}']");
+			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{fileName}']");
 			string? link = linkNode?.Attributes["href"].Value;
-			string downloadUri = _configuration["BaseAddress"] + link;
+			string downloadUri = baseAddress + link;
 
 			using HttpRequestMessage request = new(HttpMethod.Get, downloadUri);
 			HttpResponseMessage response = new();
@@ -64,11 +61,11 @@ namespace RigCountDownloader
 			}
 		}
 
-		private async Task<string> GetHtmlContentAsync()
+		private async Task<string> GetHtmlContentAsync(string uri)
 		{
 			try
 			{
-				HttpResponseMessage response = await _httpClient.GetAsync(_configuration["BaseAddress"] + _configuration["DownloadPageQuery"]);
+				HttpResponseMessage response = await _httpClient.GetAsync(uri);
 				if (response.IsSuccessStatusCode)
 				{
 					return await response.Content.ReadAsStringAsync();
