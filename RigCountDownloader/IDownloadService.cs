@@ -1,11 +1,9 @@
-﻿using HtmlAgilityPack;
-
-namespace RigCountDownloader
+﻿namespace RigCountDownloader
 {
 	public interface IDownloadService
 	{
-		Task<HtmlDocument> GetHtmlDocumentAsync(string uri);
+		Task DownloadFileAsync(string uri, string fileName);
 
-		Task DownloadFileAsync(HtmlDocument htmlDocument, string baseAddress, string fileName);
+		Task DownloadFileAsync(Uri uri, string fileName);
 	}
 }

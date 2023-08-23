@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using HtmlAgilityPack;
-using Microsoft.Extensions.Configuration;
 
 namespace RigCountDownloader
 {
@@ -18,26 +17,16 @@ namespace RigCountDownloader
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}
 
-		public async Task<HtmlDocument> GetHtmlDocumentAsync(string uri)
+		public async Task DownloadFileAsync(string uri, string fileName)
 		{
-			try
-			{
-				string htmlContent = await GetHtmlContentAsync(uri);
-				return LoadHtml(htmlContent);
-			}
-			catch (Exception ex)
-			{
-				Trace.TraceError("An exception occurred: " + ex.Message);
-				Trace.TraceError("Stack Trace: " + ex.StackTrace);
-				return new HtmlDocument();
-			}
+			await DownloadFileAsync(new Uri(uri), fileName);
 		}
 
-		public async Task DownloadFileAsync(HtmlDocument htmlDocument, string baseAddress, string fileName)
+		public async Task DownloadFileAsync(Uri uri, string fileName)
 		{
-			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{fileName}']");
-			string? link = linkNode?.Attributes["href"].Value;
-			string downloadUri = baseAddress + link;
+			HtmlDocument htmlDocument = await GetHtmlDocumentAsync(uri);
+			string? fileLink = GetFileLinkFromDocument(htmlDocument, fileName);
+			string downloadUri = $"{uri.Scheme}://{uri.Host}:{uri.Port}{fileLink}";
 
 			using HttpRequestMessage request = new(HttpMethod.Get, downloadUri);
 			HttpResponseMessage response = new();
@@ -61,7 +50,22 @@ namespace RigCountDownloader
 			}
 		}
 
-		private async Task<string> GetHtmlContentAsync(string uri)
+		private async Task<HtmlDocument> GetHtmlDocumentAsync(Uri uri)
+		{
+			try
+			{
+				string htmlContent = await GetHtmlContentAsync(uri);
+				return LoadHtml(htmlContent);
+			}
+			catch (Exception ex)
+			{
+				Trace.TraceError("An exception occurred: " + ex.Message);
+				Trace.TraceError("Stack Trace: " + ex.StackTrace);
+				return new HtmlDocument();
+			}
+		}
+
+		private async Task<string> GetHtmlContentAsync(Uri uri)
 		{
 			try
 			{
@@ -89,6 +93,12 @@ namespace RigCountDownloader
 			var htmlDocument = new HtmlDocument();
 			htmlDocument.LoadHtml(htmlContent);
 			return htmlDocument;
+		}
+
+		private static string? GetFileLinkFromDocument(HtmlDocument htmlDocument, string fileName)
+		{
+			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{fileName}']");
+			return linkNode?.Attributes["href"].Value;
 		}
 	}
 }

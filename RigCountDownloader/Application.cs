@@ -1,5 +1,4 @@
-﻿using HtmlAgilityPack;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace RigCountDownloader
 {
@@ -16,9 +15,10 @@ namespace RigCountDownloader
 
 		public async Task RunAsync()
 		{
-			HtmlDocument htmlDocument = await _downloadService.GetHtmlDocumentAsync(_configuration["BaseAddress"] + _configuration["DownloadPageQuery"]);
+			string pageUri = _configuration["BaseAddress"] + _configuration["DownloadPageQuery"];
+			string fileName = _configuration["FileName"];
 
-			await _downloadService.DownloadFileAsync(htmlDocument, _configuration["BaseAddress"], _configuration["FileName"]);
+			await _downloadService.DownloadFileAsync(pageUri, fileName);
 		}
 	}
 }
