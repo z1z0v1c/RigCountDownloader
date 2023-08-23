@@ -2,8 +2,8 @@
 {
 	public interface IDownloadService
 	{
-		Task DownloadFileAsync(string uri, string fileName);
+		Task<Stream> DownloadFileAsync(string uri, string fileName);
 
-		Task DownloadFileAsync(Uri uri, string fileName);
+		Task<Stream> DownloadFileAsync(Uri uri, string fileName);
 	}
 }

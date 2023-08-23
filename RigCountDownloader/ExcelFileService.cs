@@ -12,11 +12,9 @@ namespace RigCountDownloader
 			this._configuration = configuration;
 		}
 
-		public async Task WriteToFileAsync(HttpContent content)
+		public async Task WriteToFileAsync(Stream stream)
 		{
-			using Stream stream = await content.ReadAsStreamAsync();
-			using ExcelPackage package = new(stream);
-
+			ExcelPackage package = new(stream);
 			var worksheet = package.Workbook.Worksheets[0];
 
 			// Find the row index of the first occurrence of 'Europe'
@@ -28,7 +26,7 @@ namespace RigCountDownloader
 			}
 
 			// Find the row index of the second occurrence of 'Avg.'
-			int endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2,  startRowIndex);
+			int endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
 			if (endRowIndex == -1)
 			{
 				Console.WriteLine("Second occurrence of Avg. not found in the Excel file.");
@@ -53,6 +51,10 @@ namespace RigCountDownloader
 					await writer.WriteLineAsync(csvLine[..^1]);
 				}
 			}
+
+			Console.WriteLine($"File downloaded successfully.");
+
+			package.Dispose();
 		}
 
 		static int FindRowIndex(ExcelWorksheet worksheet, string searchValue, int startIndex = 1)

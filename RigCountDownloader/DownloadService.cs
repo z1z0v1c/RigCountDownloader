@@ -6,23 +6,20 @@ namespace RigCountDownloader
 	public class DownloadService : IDownloadService
 	{
 		private readonly HttpClient _httpClient;
-		private readonly IFileService _fileService;
 
-
-		public DownloadService(HttpClient httpClient, IFileService fileService)
+		public DownloadService(HttpClient httpClient)
 		{
 			_httpClient = httpClient;
-			_fileService = fileService;
 			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}
 
-		public async Task DownloadFileAsync(string uri, string fileName)
+		public async Task<Stream> DownloadFileAsync(string uri, string fileName)
 		{
-			await DownloadFileAsync(new Uri(uri), fileName);
+			return await DownloadFileAsync(new Uri(uri), fileName);
 		}
 
-		public async Task DownloadFileAsync(Uri uri, string fileName)
+		public async Task<Stream> DownloadFileAsync(Uri uri, string fileName)
 		{
 			HtmlDocument htmlDocument = await GetHtmlDocumentAsync(uri);
 			string? fileLink = GetFileLinkFromDocument(htmlDocument, fileName);
@@ -44,10 +41,12 @@ namespace RigCountDownloader
 			if (response.IsSuccessStatusCode)
 			{
 				HttpContent content = response.Content;
-				await _fileService.WriteToFileAsync(content);
+				Stream stream = await content.ReadAsStreamAsync();
 
-				Console.WriteLine($"File downloaded successfully.");
+				return stream;
 			}
+
+			return new MemoryStream();
 		}
 
 		private async Task<HtmlDocument> GetHtmlDocumentAsync(Uri uri)

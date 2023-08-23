@@ -6,11 +6,13 @@ namespace RigCountDownloader
 	{
 		private readonly IConfiguration _configuration;
 		private readonly IDownloadService _downloadService;
+		private readonly IFileService _fileService;
 
-		public Application(IConfiguration configuration, IDownloadService downloadService)
+		public Application(IConfiguration configuration, IDownloadService downloadService, IFileService fileService)
 		{
 			this._configuration = configuration;
 			this._downloadService = downloadService;
+			this._fileService = fileService;
 		}
 
 		public async Task RunAsync()
@@ -18,7 +20,9 @@ namespace RigCountDownloader
 			string pageUri = _configuration["BaseAddress"] + _configuration["DownloadPageQuery"];
 			string fileName = _configuration["FileName"];
 
-			await _downloadService.DownloadFileAsync(pageUri, fileName);
+			Stream file = await _downloadService.DownloadFileAsync(pageUri, fileName);
+
+			await _fileService.WriteToFileAsync(file);
 		}
 	}
 }

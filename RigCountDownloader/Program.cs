@@ -17,5 +17,6 @@ ServiceProvider serviceProvider = new ServiceCollection()
 // Resolve dependencies
 IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 IDownloadService downloadService = serviceProvider.GetRequiredService<IDownloadService>();
+IFileService fileService = serviceProvider.GetRequiredService<IFileService>();
 
-await new Application(configuration, downloadService).RunAsync();
+await new Application(configuration, downloadService, fileService).RunAsync();

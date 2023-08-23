@@ -2,6 +2,6 @@
 {
 	public interface IFileService
 	{
-		Task WriteToFileAsync(HttpContent content);
+		Task WriteToFileAsync(Stream stream);
 	}
 }
