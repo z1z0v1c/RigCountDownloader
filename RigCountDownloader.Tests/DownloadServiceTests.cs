@@ -1,6 +1,4 @@
 using System.Net;
-using HtmlAgilityPack;
-using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using RichardSzalay.MockHttp;
 using Xunit;
@@ -11,23 +9,23 @@ namespace RigCountDownloader.Tests
 	{
 		private readonly MockHttpMessageHandler _requestHandler;
 		private readonly HttpClient _httpClient;
-		private readonly IConfiguration _configuration;
 		private readonly IDownloadService _downloader;
 
 		public DownloadServiceTests()
 		{
 			this._requestHandler = new();
-			this._httpClient = new(_requestHandler);
-			this._configuration = Substitute.For<IConfiguration>();
-			this._downloader = new DownloadService(_httpClient, _configuration, new ExcelFileService(_configuration));
+			this._httpClient = _requestHandler.ToHttpClient();
+			this._downloader = new DownloadService(_httpClient);
 		}
 
 		[Fact]
-		public async Task GetHtmlDocumentAsync_ValidUrl_ReturnsCorrectHtmlDocument()
+		public async Task DownloadFileAsync_ValidUri_ReturnsCorrectStream()
 		{
 			// Arrange
-			string baseAddress = "https://bakerhughesrigcount.gcs-web.com";
-			string downloadPageQuery = "/intl-rig-count?c=79687&p=irol-rigcountsintl";
+			string url = "https://bakerhughesrigcount.gcs-web.com";
+			string query = "/intl-rig-count?c=79687&p=irol-rigcountsintl";
+			string fileName = "Worldwide Rig Count Jul 2023.xlsx";
+			string fileLink = "/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
 
 			string expectedHtmlContent = @"<!DOCTYPE html>
 										<html>
@@ -41,10 +39,7 @@ namespace RigCountDownloader.Tests
 											</body>
 										</html>";
 
-			_configuration["BaseAddress"].Returns(baseAddress);
-			_configuration["DownloadPageQuery"].Returns(downloadPageQuery);
-
-			_requestHandler.When(baseAddress + downloadPageQuery)
+			_requestHandler.When(url + query)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage
@@ -54,39 +49,56 @@ namespace RigCountDownloader.Tests
 					});
 				});
 
+			_requestHandler.When(url + fileLink)
+				.Respond(request =>
+				{
+					return Task.FromResult(new HttpResponseMessage
+					{
+						StatusCode = HttpStatusCode.OK,
+						Content = new StreamContent(new MemoryStream(new byte[] { 0x25, 0x50, 0x44, 0x46 }))
+					});
+				});
+
 			// Act
-			HtmlDocument htmlDocument = await _downloader.GetHtmlDocumentAsync();
+			Stream file = await _downloader.DownloadFileAsync(url + query, fileName);
 
 			// Assert
-			Assert.Contains("Worldwide Rig Counts - Current &amp; Historical Data", htmlDocument.DocumentNode.InnerHtml);
+			Assert.Equal(4, file.Length);
 		}
 
 		[Fact]
-		public async Task GetHtmlDocumentAsync_InvalidUrl_ReturnsEmptyHtmlDocument()
+		public async Task DownloadFileAsync_InvalidUri_ReturnsEmptyMemoryStream()
 		{
 			// Arrange
-			string baseAddress = "https://www.invalidurl.com";
-			string downloadPageQuery = string.Empty;
-			string expectedHtmlContent = string.Empty;
+			string uri = "https://www.invalidurl.com";
+			string fileName = "Nonexisting file.xlsx";
+			string fileLink = "/no-file";
 
-			_configuration["BaseAddress"].Returns(baseAddress);
-			_configuration["DownloadPageQuery"].Returns(downloadPageQuery);
-
-			_requestHandler.When(baseAddress + downloadPageQuery)
+			_requestHandler.When(uri)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage
 					{
 						StatusCode = HttpStatusCode.OK,
-						Content = new StringContent(expectedHtmlContent)
+						Content = new StringContent("<a href=\"/no-file\" title=\"Nonexisting file.xlsx\"</a>")
+					});
+				});
+
+			_requestHandler.When(uri + fileLink)
+				.Respond(request =>
+				{
+					return Task.FromResult(new HttpResponseMessage
+					{
+						StatusCode = HttpStatusCode.OK,
+						Content = new StreamContent(new MemoryStream())
 					});
 				});
 
 			// Act
-			HtmlDocument htmlDocument = await _downloader.GetHtmlDocumentAsync();
+			Stream file = await _downloader.DownloadFileAsync(uri, fileName);
 
 			// Assert
-			Assert.Equal(string.Empty, htmlDocument.DocumentNode.InnerHtml);
+			Assert.Equal(0, file.Length);
 		}
 	}
 }
