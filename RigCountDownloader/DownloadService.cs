@@ -21,12 +21,28 @@ namespace RigCountDownloader
 			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}
 
+		public async Task<HtmlDocument> GetHtmlDocumentAsync()
+		{
+			try
+			{
+				string htmlContent = await GetHtmlContentAsync();
+				return LoadHtml(htmlContent);
+			}
+			catch (Exception ex)
+			{
+				Trace.TraceError("An exception occurred: " + ex.Message);
+				Trace.TraceError("Stack Trace: " + ex.StackTrace);
+				return new HtmlDocument();
+			}
+		}
+
 		public async Task DownloadFileAsync(HtmlDocument htmlDocument)
 		{
 			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{_configuration["FileName"]}']");
-			var link = linkNode?.Attributes["href"].Value;
+			string? link = linkNode?.Attributes["href"].Value;
+			string downloadUri = _configuration["BaseAddress"] + link;
 
-			using var request = new HttpRequestMessage(HttpMethod.Get, _configuration["BaseAddress"] + link);
+			using HttpRequestMessage request = new(HttpMethod.Get, downloadUri);
 			HttpResponseMessage response = new();
 
 			try
@@ -45,21 +61,6 @@ namespace RigCountDownloader
 				await _fileService.WriteToFileAsync(content);
 
 				Console.WriteLine($"File downloaded successfully.");
-			}
-		}
-
-		public async Task<HtmlDocument> GetHtmlDocumentAsync()
-		{
-			try
-			{
-				string htmlContent = await GetHtmlContentAsync();
-				return LoadHtml(htmlContent);
-			}
-			catch (Exception ex)
-			{
-				Trace.TraceError("An exception occurred: " + ex.Message);
-				Trace.TraceError("Stack Trace: " + ex.StackTrace);
-				return new HtmlDocument();
 			}
 		}
 
