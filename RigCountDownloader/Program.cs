@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
+using RigCountDownloader.FileModificators;
+using RigCountDownloader.StreamProcessors;
 
 var configurationRoot = new ConfigurationBuilder()
 				.AddJsonFile(Directory.GetCurrentDirectory() + "..\\..\\..\\..\\appsettings.json")
@@ -10,12 +12,13 @@ var configurationRoot = new ConfigurationBuilder()
 ServiceProvider serviceProvider = new ServiceCollection()
 	.AddHttpClient()
 	.AddSingleton<IConfiguration>(configurationRoot)
-	.AddTransient<IDownloadService, DownloadService>()
-	.AddScoped<FileServiceFactory>()
+	.AddTransient<StreamDownloader>()
+	.AddScoped<StreamProcessorFactory>()
+	.AddScoped<FileModificatorFactory>()
 	.BuildServiceProvider();
 
 // Resolve dependencies
-IDownloadService downloadService = serviceProvider.GetRequiredService<IDownloadService>();
-FileServiceFactory fileServiceFactory = serviceProvider.GetRequiredService<FileServiceFactory>();
+StreamDownloader streamDownloader = serviceProvider.GetRequiredService<StreamDownloader>();
+StreamProcessorFactory streamProcessorFactory = serviceProvider.GetRequiredService<StreamProcessorFactory>();
 
-await new Application(downloadService, fileServiceFactory).RunAsync();
+await new Application(streamDownloader, streamProcessorFactory).RunAsync();

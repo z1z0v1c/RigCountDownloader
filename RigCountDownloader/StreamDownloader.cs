@@ -1,15 +1,13 @@
-﻿using System.Diagnostics;
-using HtmlAgilityPack;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace RigCountDownloader
 {
-	public class DownloadService : IDownloadService
+	public class StreamDownloader
 	{
 		private readonly IConfiguration _configuration;
 		private readonly HttpClient _httpClient;
 
-		public DownloadService(IConfiguration configuration, HttpClient httpClient)
+		public StreamDownloader(IConfiguration configuration, HttpClient httpClient)
 		{
 			this._configuration = configuration;
 			this._httpClient = httpClient;

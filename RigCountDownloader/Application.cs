@@ -1,22 +1,24 @@
-﻿namespace RigCountDownloader
-{
-	public class Application
-	{
-		private readonly IDownloadService _downloadService;
-		private readonly FileServiceFactory _fileServiceFactory;
+﻿using RigCountDownloader.StreamProcessors;
 
-		public Application(IDownloadService downloadService, FileServiceFactory fileServiceFactory)
+namespace RigCountDownloader
+{
+    public class Application
+	{
+		private readonly StreamDownloader _streamDownloader;
+		private readonly StreamProcessorFactory _streamProcessorFactory;
+
+		public Application(StreamDownloader streamDownloader, StreamProcessorFactory fileServiceFactory)
 		{
-			this._downloadService = downloadService;
-			this._fileServiceFactory = fileServiceFactory;
+			this._streamDownloader = streamDownloader;
+			this._streamProcessorFactory = fileServiceFactory;
 		}
 
 		public async Task RunAsync()
 		{
-			Stream file = await _downloadService.DownloadFileAsStreamAsync();
+			Stream fileStream = await _streamDownloader.DownloadFileAsStreamAsync();
 
-			IFileService fileService = _fileServiceFactory.CreateFileService();
-			await fileService.WriteToFileAsync(file);
+			IStreamProcessor streamProcessor = _streamProcessorFactory.CreateStreamProcessor();
+			await streamProcessor.ProcessStreamAsync(fileStream);
 		}
 	}
 }

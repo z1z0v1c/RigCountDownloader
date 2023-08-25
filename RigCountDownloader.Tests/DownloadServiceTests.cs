@@ -11,14 +11,14 @@ namespace RigCountDownloader.Tests
 		private readonly IConfiguration _configuration;
 		private readonly MockHttpMessageHandler _requestHandler;
 		private readonly HttpClient _httpClient;
-		private readonly IDownloadService _downloader;
+		private readonly StreamDownloader _streamDownloader;
 
 		public DownloadServiceTests()
 		{
 			this._configuration = Substitute.For<IConfiguration>();
 			this._requestHandler = new();
 			this._httpClient = _requestHandler.ToHttpClient();
-			this._downloader = new DownloadService(_configuration, _httpClient);
+			this._streamDownloader = new StreamDownloader(_configuration, _httpClient);
 		}
 
 		[Fact]
@@ -42,7 +42,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Stream file = await _downloader.DownloadFileAsStreamAsync();
+			Stream file = await _streamDownloader.DownloadFileAsStreamAsync();
 
 			// Assert
 			Assert.Equal(4, file.Length);
@@ -69,7 +69,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Stream file = await _downloader.DownloadFileAsStreamAsync();
+			Stream file = await _streamDownloader.DownloadFileAsStreamAsync();
 
 			// Assert
 			Assert.Equal(MemoryStream.Null, file);
