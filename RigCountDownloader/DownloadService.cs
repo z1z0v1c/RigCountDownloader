@@ -1,26 +1,27 @@
 ﻿using System.Diagnostics;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Configuration;
 
 namespace RigCountDownloader
 {
 	public class DownloadService : IDownloadService
 	{
+		private readonly IConfiguration _configuration;
 		private readonly HttpClient _httpClient;
 
-		public DownloadService(HttpClient httpClient)
+		public DownloadService(IConfiguration configuration, HttpClient httpClient)
 		{
-			_httpClient = httpClient;
-			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
-			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+			this._configuration = configuration;
+			this._httpClient = httpClient;
+			this._httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
+			this._httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}
 
-		public async Task<Stream> DownloadFileAsync(string uri, string fileName)
+		public async Task<Stream> DownloadFileAsStreamAsync()
 		{
-			return await DownloadFileAsync(new Uri(uri), fileName);
-		}
+			Uri uri = new(_configuration["BaseAddress"] + _configuration["DownloadPageQuery"]);
+			string fileName = _configuration["FileName"];
 
-		public async Task<Stream> DownloadFileAsync(Uri uri, string fileName)
-		{
 			HtmlDocument htmlDocument = await GetHtmlDocumentAsync(uri);
 			string? fileLink = GetFileLinkFromDocument(htmlDocument, fileName);
 			string downloadUri = $"{uri.Scheme}://{uri.Host}:{uri.Port}{fileLink}";

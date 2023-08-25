@@ -1,28 +1,22 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace RigCountDownloader
+﻿namespace RigCountDownloader
 {
 	public class Application
 	{
-		private readonly IConfiguration _configuration;
 		private readonly IDownloadService _downloadService;
-		private readonly IFileService _fileService;
+		private readonly FileServiceFactory _fileServiceFactory;
 
-		public Application(IConfiguration configuration, IDownloadService downloadService, IFileService fileService)
+		public Application(IDownloadService downloadService, FileServiceFactory fileServiceFactory)
 		{
-			this._configuration = configuration;
 			this._downloadService = downloadService;
-			this._fileService = fileService;
+			this._fileServiceFactory = fileServiceFactory;
 		}
 
 		public async Task RunAsync()
 		{
-			string pageUri = _configuration["BaseAddress"] + _configuration["DownloadPageQuery"];
-			string fileName = _configuration["FileName"];
+			Stream file = await _downloadService.DownloadFileAsStreamAsync();
 
-			Stream file = await _downloadService.DownloadFileAsync(pageUri, fileName);
-
-			await _fileService.WriteToFileAsync(file);
+			IFileService fileService = _fileServiceFactory.CreateFileService();
+			await fileService.WriteToFileAsync(file);
 		}
 	}
 }

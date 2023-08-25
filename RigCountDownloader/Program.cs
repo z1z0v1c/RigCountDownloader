@@ -11,12 +11,11 @@ ServiceProvider serviceProvider = new ServiceCollection()
 	.AddHttpClient()
 	.AddSingleton<IConfiguration>(configurationRoot)
 	.AddTransient<IDownloadService, DownloadService>()
-	.AddScoped<IFileService, ExcelFileService>()
+	.AddScoped<FileServiceFactory>()
 	.BuildServiceProvider();
 
 // Resolve dependencies
-IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 IDownloadService downloadService = serviceProvider.GetRequiredService<IDownloadService>();
-IFileService fileService = serviceProvider.GetRequiredService<IFileService>();
+FileServiceFactory fileServiceFactory = serviceProvider.GetRequiredService<FileServiceFactory>();
 
-await new Application(configuration, downloadService, fileService).RunAsync();
+await new Application(downloadService, fileServiceFactory).RunAsync();
