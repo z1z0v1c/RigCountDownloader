@@ -40,6 +40,7 @@ namespace RigCountDownloader
 				return stream;
 			}
 
+			// Throw an exception?
 			return MemoryStream.Null;
 		}
 	}

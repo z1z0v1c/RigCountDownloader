@@ -22,7 +22,7 @@ namespace RigCountDownloader.FileConverters
 			string outputFilePath = $"{Directory.GetCurrentDirectory()}/{_configuration["OutputFileName"]}";
 			using StreamWriter writer = new(outputFilePath);
 
-			// Apply for each worksheet
+			// Apply for each worksheet?
 			ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
 
 			for (int row = 1; row <= worksheet.Dimension.Rows; row++)

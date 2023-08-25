@@ -8,6 +8,7 @@ namespace RigCountDownloader.FileModificators
 		{
 			ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
 
+			// Could be improved?
 			int startRowIndex = FindRowIndex(worksheet, "Europe");
 			int endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
 
