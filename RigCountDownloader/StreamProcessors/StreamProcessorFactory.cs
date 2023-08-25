@@ -4,10 +4,10 @@ using RigCountDownloader.FileModificators;
 
 namespace RigCountDownloader.StreamProcessors
 {
-    public class StreamProcessorFactory
-    {
-        private readonly IConfiguration _configuration;
-        private readonly FileModificatorFactory _modificatorFactory;
+	public class StreamProcessorFactory
+	{
+		private readonly IConfiguration _configuration;
+		private readonly FileModificatorFactory _modificatorFactory;
 		private readonly FileConverterFactory _fileConverterFactory;
 
 		public StreamProcessorFactory(IConfiguration configuration, FileModificatorFactory modificatorFactory, FileConverterFactory fileConverterFactory)
@@ -18,14 +18,14 @@ namespace RigCountDownloader.StreamProcessors
 		}
 
 		public IStreamProcessor CreateStreamProcessor()
-        {
-            // Based on the response MediaType instead of configuration
-            if (_configuration["InputFileName"].EndsWith(".xlsx"))
-            {
-                return new ExcelStreamProcessor(_modificatorFactory.CreateFileModificator(), _fileConverterFactory);
-            }
+		{
+			// Based on the response MediaType instead of configuration
+			if (_configuration["InputFileName"].EndsWith(".xlsx"))
+			{
+				return new ExcelStreamProcessor(_modificatorFactory.CreateFileModificator(), _fileConverterFactory);
+			}
 
-            throw new Exception("Wrong input file type");
-        }
-    }
+			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");
+		}
+	}
 }

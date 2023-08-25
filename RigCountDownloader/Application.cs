@@ -2,7 +2,7 @@
 
 namespace RigCountDownloader
 {
-    public class Application
+	public class Application
 	{
 		private readonly StreamDownloader _streamDownloader;
 		private readonly StreamProcessorFactory _streamProcessorFactory;

@@ -13,13 +13,15 @@ namespace RigCountDownloader.FileConverters
 
 		public IFileConverter CreateFileConverter()
 		{
-			// Based on response MediaType instead of configuration
-			if (_configuration["InputFileName"].EndsWith(".xlsx"))
+			// Based on the response MediaType instead of configuration for the InputFileName
+			if (_configuration["InputFileName"].EndsWith(".xlsx") &&
+				_configuration["OutputFileName"].StartsWith("Worldwide Rig Count") &&
+				_configuration["OutputFileName"].EndsWith(".csv"))
 			{
-				return new ExcelToCsvConverter(_configuration);
+				return new WWRCExcelToCsvConverter(_configuration);
 			}
 
-			throw new ArgumentException("Wrong input file type");
+			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");
 		}
 	}
 }
