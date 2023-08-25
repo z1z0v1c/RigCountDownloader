@@ -16,11 +16,9 @@ namespace RigCountDownloader.FileConverters
 		{
 			ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
 
-			string currentDirectory = Directory.GetCurrentDirectory();
+			string outputFilePath = $"{Directory.GetCurrentDirectory()}/{_configuration["OutputFileName"]}";
 
-			string csvFilePath = Path.Combine(currentDirectory, _configuration["RelativeOutputPath"]);
-
-			using StreamWriter writer = new(csvFilePath);
+			using StreamWriter writer = new(outputFilePath);
 			for (int row = 1; row <= worksheet.Dimension.Rows; row++)
 			{
 				var cellValues = new List<string>();

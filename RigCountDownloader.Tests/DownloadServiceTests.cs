@@ -25,13 +25,11 @@ namespace RigCountDownloader.Tests
 		public async Task DownloadFileAsync_ValidUri_ReturnsCorrectStream()
 		{
 			// Arrange
-			string url = "https://bakerhughesrigcount.gcs-web.com";
-			string fileLink = "/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
+			string inputFileUri = "https://bakerhughesrigcount.gcs-web.com/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
 
-			_configuration["BaseAddress"].Returns(url);
-			_configuration["FileLink"].Returns(fileLink);
+			_configuration["InputFileUri"].Returns(inputFileUri);
 
-			_requestHandler.When(url + fileLink)
+			_requestHandler.When(inputFileUri)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage
@@ -52,13 +50,11 @@ namespace RigCountDownloader.Tests
 		public async Task DownloadFileAsync_InvalidUri_ReturnsNullMemoryStream()
 		{
 			// Arrange
-			string url = "https://www.invalidurl.com";
-			string fileLink = "/nonexisting-file";
+			string inputFileUri = "https://www.invalidurl.com/nonexisting-file";
 
-			_configuration["BaseAddress"].Returns(url);
-			_configuration["FileLink"].Returns(fileLink);
+			_configuration["InputFileUri"].Returns(inputFileUri);
 
-			_requestHandler.When(url + fileLink)
+			_requestHandler.When(inputFileUri)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage

@@ -20,9 +20,9 @@ namespace RigCountDownloader.StreamProcessors
 		public IStreamProcessor CreateStreamProcessor()
         {
             // Based on the response MediaType instead of configuration
-            if (_configuration["FileName"].EndsWith(".xlsx"))
+            if (_configuration["InputFileName"].EndsWith(".xlsx"))
             {
-                return new ExcelStreamProcessor(_configuration, _modificatorFactory.CreateFileModificator(), _fileConverterFactory);
+                return new ExcelStreamProcessor(_modificatorFactory.CreateFileModificator(), _fileConverterFactory);
             }
 
             throw new Exception("Wrong input file type");

@@ -14,12 +14,12 @@ namespace RigCountDownloader.FileConverters
 		public IFileConverter CreateFileConverter()
 		{
 			// Based on response MediaType instead of configuration
-			if (_configuration["FileName"].EndsWith(".xlsx"))
+			if (_configuration["InputFileName"].EndsWith(".xlsx"))
 			{
 				return new ExcelToCsvConverter(_configuration);
 			}
 
-			throw new Exception("Wrong input file type");
+			throw new ArgumentException("Wrong input file type");
 		}
 	}
 }

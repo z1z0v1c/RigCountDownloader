@@ -14,9 +14,9 @@ namespace RigCountDownloader.FileModificators
         public IFileModificator CreateFileModificator()
         {
 			// Based on the response MediaType instead of configuration
-			if (_configuration["FileName"].EndsWith(".xlsx"))
+			if (_configuration["InputFileName"].EndsWith(".xlsx"))
             {
-                return new ExcelModificator(_configuration);
+                return new ExcelModificator();
             }
 
             throw new Exception("Wrong input file type");

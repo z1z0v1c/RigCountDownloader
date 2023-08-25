@@ -4,14 +4,7 @@ using OfficeOpenXml;
 namespace RigCountDownloader.FileModificators
 {
     internal class ExcelModificator : IFileModificator
-    {
-        private readonly IConfiguration _configuration;
-
-        public ExcelModificator(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
+    { 
         public void ModifyFile(ExcelPackage package)
         {
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
