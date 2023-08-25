@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
 using RigCountDownloader.FileConverters;
-using RigCountDownloader.FileModificators;
 using RigCountDownloader.StreamProcessors;
 
 var configurationRoot = new ConfigurationBuilder()
@@ -15,7 +14,6 @@ ServiceProvider serviceProvider = new ServiceCollection()
 	.AddSingleton<IConfiguration>(configurationRoot)
 	.AddTransient<StreamDownloader>()
 	.AddTransient<StreamProcessorFactory>()
-	.AddTransient<FileModificatorFactory>()
 	.AddTransient<FileConverterFactory>()
 	.BuildServiceProvider();
 
