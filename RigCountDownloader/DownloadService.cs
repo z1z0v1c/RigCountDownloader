@@ -19,14 +19,9 @@ namespace RigCountDownloader
 
 		public async Task<Stream> DownloadFileAsStreamAsync()
 		{
-			Uri uri = new(_configuration["BaseAddress"] + _configuration["DownloadPageQuery"]);
-			string fileName = _configuration["FileName"];
+			Uri uri = new(_configuration["BaseAddress"] + _configuration["FileLink"]);
 
-			HtmlDocument htmlDocument = await GetHtmlDocumentAsync(uri);
-			string? fileLink = GetFileLinkFromDocument(htmlDocument, fileName);
-			string downloadUri = $"{uri.Scheme}://{uri.Host}:{uri.Port}{fileLink}";
-
-			using HttpRequestMessage request = new(HttpMethod.Get, downloadUri);
+			using HttpRequestMessage request = new(HttpMethod.Get, uri);
 			HttpResponseMessage response = new();
 
 			try
@@ -47,58 +42,7 @@ namespace RigCountDownloader
 				return stream;
 			}
 
-			return new MemoryStream();
-		}
-
-		private async Task<HtmlDocument> GetHtmlDocumentAsync(Uri uri)
-		{
-			try
-			{
-				string htmlContent = await GetHtmlContentAsync(uri);
-				return LoadHtml(htmlContent);
-			}
-			catch (Exception ex)
-			{
-				Trace.TraceError("An exception occurred: " + ex.Message);
-				Trace.TraceError("Stack Trace: " + ex.StackTrace);
-				return new HtmlDocument();
-			}
-		}
-
-		private async Task<string> GetHtmlContentAsync(Uri uri)
-		{
-			try
-			{
-				HttpResponseMessage response = await _httpClient.GetAsync(uri);
-				if (response.IsSuccessStatusCode)
-				{
-					return await response.Content.ReadAsStringAsync();
-				}
-				else
-				{
-					Console.WriteLine($"Failed to get content. Status code: {response.StatusCode}");
-					return string.Empty;
-				}
-			}
-			catch (Exception ex)
-			{
-				Trace.TraceError("An exception occurred: " + ex.Message);
-				Trace.TraceError("Stack Trace: " + ex.StackTrace);
-				return string.Empty;
-			}
-		}
-
-		private static HtmlDocument LoadHtml(string htmlContent)
-		{
-			var htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(htmlContent);
-			return htmlDocument;
-		}
-
-		private static string? GetFileLinkFromDocument(HtmlDocument htmlDocument, string fileName)
-		{
-			HtmlNode linkNode = htmlDocument.DocumentNode.SelectSingleNode($"//a[@title='{fileName}']");
-			return linkNode?.Attributes["href"].Value;
+			return MemoryStream.Null;
 		}
 	}
 }

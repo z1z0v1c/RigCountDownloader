@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using RichardSzalay.MockHttp;
 using Xunit;
@@ -7,15 +8,17 @@ namespace RigCountDownloader.Tests
 {
 	public class DownloadServiceTests
 	{
+		private readonly IConfiguration _configuration;
 		private readonly MockHttpMessageHandler _requestHandler;
 		private readonly HttpClient _httpClient;
 		private readonly IDownloadService _downloader;
 
 		public DownloadServiceTests()
 		{
+			this._configuration = Substitute.For<IConfiguration>();
 			this._requestHandler = new();
 			this._httpClient = _requestHandler.ToHttpClient();
-			this._downloader = new DownloadService(_httpClient);
+			this._downloader = new DownloadService(_configuration, _httpClient);
 		}
 
 		[Fact]
@@ -23,31 +26,10 @@ namespace RigCountDownloader.Tests
 		{
 			// Arrange
 			string url = "https://bakerhughesrigcount.gcs-web.com";
-			string query = "/intl-rig-count?c=79687&p=irol-rigcountsintl";
-			string fileName = "Worldwide Rig Count Jul 2023.xlsx";
 			string fileLink = "/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
 
-			string expectedHtmlContent = @"<!DOCTYPE html>
-										<html>
-											<body>
-												<a href=""/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8"" 
-												type=""application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"" 
-												title=""Worldwide Rig Count Jul 2023.xlsx"" 
-												target=""_blank"">
-													Worldwide Rig Counts - Current &amp; Historical Data
-												</a>
-											</body>
-										</html>";
-
-			_requestHandler.When(url + query)
-				.Respond(request =>
-				{
-					return Task.FromResult(new HttpResponseMessage
-					{
-						StatusCode = HttpStatusCode.OK,
-						Content = new StringContent(expectedHtmlContent)
-					});
-				});
+			_configuration["BaseAddress"].Returns(url);
+			_configuration["FileLink"].Returns(fileLink);
 
 			_requestHandler.When(url + fileLink)
 				.Respond(request =>
@@ -60,45 +42,37 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Stream file = await _downloader.DownloadFileAsync(url + query, fileName);
+			Stream file = await _downloader.DownloadFileAsStreamAsync();
 
 			// Assert
 			Assert.Equal(4, file.Length);
 		}
 
 		[Fact]
-		public async Task DownloadFileAsync_InvalidUri_ReturnsEmptyMemoryStream()
+		public async Task DownloadFileAsync_InvalidUri_ReturnsNullMemoryStream()
 		{
 			// Arrange
-			string uri = "https://www.invalidurl.com";
-			string fileName = "Nonexisting file.xlsx";
-			string fileLink = "/no-file";
+			string url = "https://www.invalidurl.com";
+			string fileLink = "/nonexisting-file";
 
-			_requestHandler.When(uri)
+			_configuration["BaseAddress"].Returns(url);
+			_configuration["FileLink"].Returns(fileLink);
+
+			_requestHandler.When(url + fileLink)
 				.Respond(request =>
 				{
 					return Task.FromResult(new HttpResponseMessage
 					{
-						StatusCode = HttpStatusCode.OK,
-						Content = new StringContent("<a href=\"/no-file\" title=\"Nonexisting file.xlsx\"</a>")
-					});
-				});
-
-			_requestHandler.When(uri + fileLink)
-				.Respond(request =>
-				{
-					return Task.FromResult(new HttpResponseMessage
-					{
-						StatusCode = HttpStatusCode.OK,
-						Content = new StreamContent(new MemoryStream())
+						StatusCode = HttpStatusCode.BadRequest,
+						Content = new StreamContent(MemoryStream.Null)
 					});
 				});
 
 			// Act
-			Stream file = await _downloader.DownloadFileAsync(uri, fileName);
+			Stream file = await _downloader.DownloadFileAsStreamAsync();
 
 			// Assert
-			Assert.Equal(0, file.Length);
+			Assert.Equal(MemoryStream.Null, file);
 		}
 	}
 }
