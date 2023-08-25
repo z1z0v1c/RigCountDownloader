@@ -3,7 +3,7 @@ using OfficeOpenXml;
 
 namespace RigCountDownloader.FileModificators
 {
-    internal class ExcelModificator : IExcelModificator
+    internal class ExcelModificator : IFileModificator
     {
         private readonly IConfiguration _configuration;
 
@@ -12,25 +12,12 @@ namespace RigCountDownloader.FileModificators
             _configuration = configuration;
         }
 
-        public void Modify(ExcelPackage package)
+        public void ModifyFile(ExcelPackage package)
         {
             ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
 
-            // Find the row index of the first occurrence of 'Europe'
             int startRowIndex = FindRowIndex(worksheet, "Europe");
-            if (startRowIndex == -1)
-            {
-                Console.WriteLine("Europe not found in the Excel file.");
-                return;
-            }
-
-            // Find the row index of the second occurrence of 'Avg.'
             int endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
-            if (endRowIndex == -1)
-            {
-                Console.WriteLine("Second occurrence of Avg. not found in the Excel file.");
-                return;
-            }
 
             for (int rowIndex = worksheet.Dimension.End.Row; rowIndex >= 1; rowIndex--)
             {
@@ -63,7 +50,8 @@ namespace RigCountDownloader.FileModificators
                     }
                 }
             }
-            return -1;
+
+            throw new ArgumentException($"{n}. occurrence of {searchValue} not found in the Excel file.");
         }
     }
 }

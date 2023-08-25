@@ -2,8 +2,8 @@
 
 namespace RigCountDownloader.FileModificators
 {
-    public interface IExcelModificator
+    public interface IFileModificator
     {
-        void Modify(ExcelPackage package);
+        void ModifyFile(ExcelPackage package);
     }
 }

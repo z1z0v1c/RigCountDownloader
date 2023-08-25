@@ -11,9 +11,9 @@ namespace RigCountDownloader.FileModificators
             _configuration = configuration;
         }
 
-        public IExcelModificator CreateModificator()
+        public IFileModificator CreateFileModificator()
         {
-			// Based on response MediaType instead of configuration
+			// Based on the response MediaType instead of configuration
 			if (_configuration["FileName"].EndsWith(".xlsx"))
             {
                 return new ExcelModificator(_configuration);
