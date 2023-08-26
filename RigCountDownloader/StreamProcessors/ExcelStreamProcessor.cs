@@ -22,9 +22,6 @@ namespace RigCountDownloader.StreamProcessors
 
 			await _fileConverter.ConvertAndSaveAsync();
 
-			// Add logger
-			Console.WriteLine($"File downloaded successfully.");
-
 			// Implement IDisposable
 			stream.Dispose();
 		}

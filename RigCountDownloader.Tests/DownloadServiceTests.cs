@@ -2,12 +2,14 @@ using System.Net;
 using Microsoft.Extensions.Configuration;
 using NSubstitute;
 using RichardSzalay.MockHttp;
+using Serilog;
 using Xunit;
 
 namespace RigCountDownloader.Tests
 {
 	public class DownloadServiceTests
 	{
+		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
 		private readonly MockHttpMessageHandler _requestHandler;
 		private readonly HttpClient _httpClient;
@@ -15,10 +17,11 @@ namespace RigCountDownloader.Tests
 
 		public DownloadServiceTests()
 		{
+			this._logger = Substitute.For<ILogger>();
 			this._configuration = Substitute.For<IConfiguration>();
 			this._requestHandler = new();
 			this._httpClient = _requestHandler.ToHttpClient();
-			this._streamDownloader = new StreamDownloader(_configuration, _httpClient);
+			this._streamDownloader = new StreamDownloader(_logger,_configuration, _httpClient);
 		}
 
 		[Fact]

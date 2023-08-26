@@ -1,14 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
+using Serilog;
 
 namespace RigCountDownloader.FileConverters
 {
 	public class WWRCExcelToCsvConverter : ExcelFileConverter
 	{
+		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
 
-		public WWRCExcelToCsvConverter(IConfiguration configuration)
+		public WWRCExcelToCsvConverter(ILogger logger, IConfiguration configuration)
 		{
+			this._logger = logger;
 			this._configuration = configuration;
 		}
 
@@ -19,6 +22,8 @@ namespace RigCountDownloader.FileConverters
 
 		public async Task ConvertAndSaveAsync(ExcelPackage package)
 		{
+			_logger.Information("Converting the Excel file to a CSV file...");
+
 			string outputFilePath = $"{Directory.GetCurrentDirectory()}/{_configuration["OutputFileName"]}";
 			using StreamWriter writer = new(outputFilePath);
 
@@ -39,6 +44,8 @@ namespace RigCountDownloader.FileConverters
 				}
 				await writer.WriteLineAsync(string.Join(",", cellValues));
 			}
+
+			_logger.Information($"The CSV file saved to {outputFilePath}.");
 		}
 
 		private static int FindRowIndex(ExcelWorksheet worksheet, string searchValue, int startIndex = 1)
