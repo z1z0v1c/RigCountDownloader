@@ -3,7 +3,7 @@ using Serilog;
 
 namespace RigCountDownloader.FileConverters
 {
-	public class FileConverterFactory
+	public class FileConverterFactory : IFileConverterFactory
 	{
 		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;

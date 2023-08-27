@@ -5,10 +5,10 @@ namespace RigCountDownloader.StreamProcessors
 {
 	public class ExcelStreamProcessor : IStreamProcessor
 	{
-		private readonly FileConverterFactory _fileConverterFactory;
+		private readonly IFileConverterFactory _fileConverterFactory;
 		private readonly ExcelFileConverter _fileConverter;
 
-		public ExcelStreamProcessor(FileConverterFactory fileConverterFactory)
+		public ExcelStreamProcessor(IFileConverterFactory fileConverterFactory)
 		{
 			_fileConverterFactory = fileConverterFactory;
 			_fileConverter = (ExcelFileConverter)_fileConverterFactory.CreateFileConverter();

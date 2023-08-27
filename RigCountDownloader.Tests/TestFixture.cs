@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RichardSzalay.MockHttp;
+using RigCountDownloader.FileConverters;
+using RigCountDownloader.StreamProcessors;
 using Serilog;
 
 namespace RigCountDownloader.Tests

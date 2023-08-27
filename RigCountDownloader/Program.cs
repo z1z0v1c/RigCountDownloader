@@ -21,7 +21,7 @@ ServiceProvider serviceProvider = new ServiceCollection()
 	.AddSingleton<IConfiguration>(configurationRoot)
 	.AddTransient<StreamDownloader>()
 	.AddTransient<StreamProcessorFactory>()
-	.AddTransient<FileConverterFactory>()
+	.AddTransient<IFileConverterFactory, FileConverterFactory>()
 	.BuildServiceProvider();
 
 // Resolve dependencies
