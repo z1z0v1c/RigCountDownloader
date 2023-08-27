@@ -23,11 +23,10 @@ namespace RigCountDownloader
 			Uri uri = new(_configuration["InputFileUri"] ?? string.Empty);
 
 			using HttpRequestMessage request = new(HttpMethod.Get, uri);
-			HttpResponseMessage response = new();
 
 			_logger.Information($"Downloading file from {uri}...");
 
-			response = await _httpClient.SendAsync(request);
+			HttpResponseMessage response = await _httpClient.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
