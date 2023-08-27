@@ -7,7 +7,7 @@ using Xunit;
 
 namespace RigCountDownloader.Tests
 {
-	public class DownloadServiceTests
+	public class StreamDownloaderTests
 	{
 		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
@@ -15,7 +15,7 @@ namespace RigCountDownloader.Tests
 		private readonly HttpClient _httpClient;
 		private readonly StreamDownloader _streamDownloader;
 
-		public DownloadServiceTests()
+		public StreamDownloaderTests()
 		{
 			this._logger = Substitute.For<ILogger>();
 			this._configuration = Substitute.For<IConfiguration>();
@@ -69,6 +69,20 @@ namespace RigCountDownloader.Tests
 
 			// Assert
 			Assert.ThrowsAsync<ArgumentException>(act);
+		}
+
+		[Fact]
+		public void DownloadFileAsStreamAsync_NoUriProvided_ThrowsUriFormatException()
+		{
+			// Arrange
+			string? inputFileUri = null;
+			_configuration["InputFileUri"].Returns(inputFileUri);
+
+			// Act
+			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
+
+			// Assert
+			Assert.ThrowsAsync<UriFormatException>(act);
 		}
 	}
 }

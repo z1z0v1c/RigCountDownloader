@@ -20,7 +20,7 @@ namespace RigCountDownloader
 
 		public async Task<Stream> DownloadFileAsStreamAsync()
 		{
-			Uri uri = new(_configuration["InputFileUri"]);
+			Uri uri = new(_configuration["InputFileUri"] ?? string.Empty);
 
 			using HttpRequestMessage request = new(HttpMethod.Get, uri);
 			HttpResponseMessage response = new();

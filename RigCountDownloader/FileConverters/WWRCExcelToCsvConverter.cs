@@ -24,7 +24,7 @@ namespace RigCountDownloader.FileConverters
 		{
 			_logger.Information("Converting the Excel file to a CSV file...");
 
-			string outputFilePath = $"{Directory.GetCurrentDirectory()}/{_configuration["OutputFileName"]}";
+			string outputFilePath = $"{Directory.GetCurrentDirectory()}\\{_configuration["OutputFileName"]}";
 			using StreamWriter writer = new(outputFilePath);
 
 			// Apply for each worksheet?
