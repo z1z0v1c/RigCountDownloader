@@ -26,15 +26,8 @@ namespace RigCountDownloader
 			HttpResponseMessage response = new();
 
 			_logger.Information($"Downloading file from {uri}...");
-			try
-			{
-				response = await _httpClient.SendAsync(request);
-			}
-			catch (Exception ex)
-			{
-				_logger.Error("An exception occurred: " + ex.Message);
-				_logger.Error("Stack Trace: " + ex.StackTrace);
-			}
+
+			response = await _httpClient.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
@@ -46,8 +39,7 @@ namespace RigCountDownloader
 				return stream;
 			}
 
-			// Throw an exception?
-			return MemoryStream.Null;
+			throw new ArgumentException($"File from {uri} {response.ReasonPhrase?.ToLower()}. Check appsettings.json file.");
 		}
 	}
 }

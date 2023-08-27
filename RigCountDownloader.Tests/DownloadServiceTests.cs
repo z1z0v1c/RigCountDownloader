@@ -25,11 +25,10 @@ namespace RigCountDownloader.Tests
 		}
 
 		[Fact]
-		public async Task DownloadFileAsync_ValidUri_ReturnsCorrectStream()
+		public async Task DownloadFileAsStreamAsync_ValidUri_ReturnsCorrectStream()
 		{
 			// Arrange
 			string inputFileUri = "https://bakerhughesrigcount.gcs-web.com/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
-
 			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			_requestHandler.When(inputFileUri)
@@ -50,11 +49,10 @@ namespace RigCountDownloader.Tests
 		}
 
 		[Fact]
-		public async Task DownloadFileAsync_InvalidUri_ReturnsNullMemoryStream()
+		public void DownloadFileAsStreamAsync_InvalidUri_ThrowsArgumentException()
 		{
 			// Arrange
 			string inputFileUri = "https://www.invalidurl.com/nonexisting-file";
-
 			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			_requestHandler.When(inputFileUri)
@@ -62,16 +60,15 @@ namespace RigCountDownloader.Tests
 				{
 					return Task.FromResult(new HttpResponseMessage
 					{
-						StatusCode = HttpStatusCode.BadRequest,
-						Content = new StreamContent(MemoryStream.Null)
+						StatusCode = HttpStatusCode.NotFound,
 					});
 				});
 
 			// Act
-			Stream file = await _streamDownloader.DownloadFileAsStreamAsync();
+			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
 
 			// Assert
-			Assert.Equal(MemoryStream.Null, file);
+			Assert.ThrowsAsync<ArgumentException>(act);
 		}
 	}
 }
