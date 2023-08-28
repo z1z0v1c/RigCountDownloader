@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RichardSzalay.MockHttp;
 using RigCountDownloader.FileConverters;
-using RigCountDownloader.StreamProcessors;
 using Serilog;
 
 namespace RigCountDownloader.Tests
@@ -21,7 +20,8 @@ namespace RigCountDownloader.Tests
 			var services = new ServiceCollection()
 				.AddSingleton(provider => Substitute.For<ILogger>())
 				.AddSingleton(provider => Substitute.For<IConfiguration>())
-				.AddSingleton<MockHttpMessageHandler>();
+				.AddSingleton<MockHttpMessageHandler>()
+				.AddTransient<IFileConverterFactory, FileConverterFactory>();
 
 			ServiceProvider = services.BuildServiceProvider();
 		}
