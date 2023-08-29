@@ -10,6 +10,8 @@ namespace RigCountDownloader.StreamProcessors
 
 		public ExcelStreamProcessor(IFileConverterFactory fileConverterFactory)
 		{
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
 			_fileConverterFactory = fileConverterFactory;
 			_fileConverter = (ExcelFileConverter)_fileConverterFactory.CreateFileConverter();
 		}
