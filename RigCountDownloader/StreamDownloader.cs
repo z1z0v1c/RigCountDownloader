@@ -1,14 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace RigCountDownloader
 {
 	public class StreamDownloader
 	{
+		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
 		private readonly HttpClient _httpClient;
 
-		public StreamDownloader(IConfiguration configuration, HttpClient httpClient)
+		public StreamDownloader(ILogger logger, IConfiguration configuration, HttpClient httpClient)
 		{
+			this._logger = logger;
 			this._configuration = configuration;
 			this._httpClient = httpClient;
 			this._httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
@@ -17,31 +20,25 @@ namespace RigCountDownloader
 
 		public async Task<Stream> DownloadFileAsStreamAsync()
 		{
-			Uri uri = new(_configuration["InputFileUri"]);
+			Uri uri = new(_configuration["InputFileUri"] ?? string.Empty);
 
 			using HttpRequestMessage request = new(HttpMethod.Get, uri);
-			HttpResponseMessage response = new();
 
-			try
-			{
-				response = await _httpClient.SendAsync(request);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine("An exception occurred: " + ex.Message);
-				Console.WriteLine("Stack Trace: " + ex.StackTrace);
-			}
+			_logger.Information($"Downloading file from {uri}...");
+
+			HttpResponseMessage response = await _httpClient.SendAsync(request);
 
 			if (response.IsSuccessStatusCode)
 			{
 				HttpContent content = response.Content;
 				Stream stream = await content.ReadAsStreamAsync();
 
+				_logger.Information($"Download completed successfuly.");
+
 				return stream;
 			}
 
-			// Throw an exception?
-			return MemoryStream.Null;
+			throw new ArgumentException($"File from {uri} {response.ReasonPhrase?.ToLower()}. Check appsettings.json file.");
 		}
 	}
 }

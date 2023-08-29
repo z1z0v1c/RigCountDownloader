@@ -1,13 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace RigCountDownloader.FileConverters
 {
-	public class FileConverterFactory
+	public class FileConverterFactory : IFileConverterFactory
 	{
+		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
 
-		public FileConverterFactory(IConfiguration configuration)
+		public FileConverterFactory(ILogger logger, IConfiguration configuration)
 		{
+			_logger = logger;
 			_configuration = configuration;
 		}
 
@@ -18,7 +21,7 @@ namespace RigCountDownloader.FileConverters
 				_configuration["OutputFileName"].StartsWith("Worldwide Rig Count") &&
 				_configuration["OutputFileName"].EndsWith(".csv"))
 			{
-				return new WWRCExcelToCsvConverter(_configuration);
+				return new WWRCExcelToCsvConverter(_logger, _configuration);
 			}
 
 			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");

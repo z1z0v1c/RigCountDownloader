@@ -5,11 +5,13 @@ namespace RigCountDownloader.StreamProcessors
 {
 	public class ExcelStreamProcessor : IStreamProcessor
 	{
-		private readonly FileConverterFactory _fileConverterFactory;
+		private readonly IFileConverterFactory _fileConverterFactory;
 		private readonly ExcelFileConverter _fileConverter;
 
-		public ExcelStreamProcessor(FileConverterFactory fileConverterFactory)
+		public ExcelStreamProcessor(IFileConverterFactory fileConverterFactory)
 		{
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
 			_fileConverterFactory = fileConverterFactory;
 			_fileConverter = (ExcelFileConverter)_fileConverterFactory.CreateFileConverter();
 		}
@@ -21,12 +23,6 @@ namespace RigCountDownloader.StreamProcessors
 			_fileConverter.ExcelPackage = package;
 
 			await _fileConverter.ConvertAndSaveAsync();
-
-			// Add logger
-			Console.WriteLine($"File downloaded successfully.");
-
-			// Implement IDisposable
-			stream.Dispose();
 		}
 	}
 }

@@ -6,9 +6,9 @@ namespace RigCountDownloader.StreamProcessors
 	public class StreamProcessorFactory
 	{
 		private readonly IConfiguration _configuration;
-		private readonly FileConverterFactory _fileConverterFactory;
+		private readonly IFileConverterFactory _fileConverterFactory;
 
-		public StreamProcessorFactory(IConfiguration configuration, FileConverterFactory fileConverterFactory)
+		public StreamProcessorFactory(IConfiguration configuration, IFileConverterFactory fileConverterFactory)
 		{
 			_configuration = configuration;
 			_fileConverterFactory = fileConverterFactory;

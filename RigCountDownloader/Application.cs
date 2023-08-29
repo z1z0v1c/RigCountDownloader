@@ -1,24 +1,35 @@
 ﻿using RigCountDownloader.StreamProcessors;
+using Serilog;
 
 namespace RigCountDownloader
 {
 	public class Application
 	{
+		private readonly ILogger _logger;
 		private readonly StreamDownloader _streamDownloader;
 		private readonly StreamProcessorFactory _streamProcessorFactory;
 
-		public Application(StreamDownloader streamDownloader, StreamProcessorFactory fileServiceFactory)
+		public Application(ILogger logger, StreamDownloader streamDownloader, StreamProcessorFactory fileServiceFactory)
 		{
+			this._logger = logger;
 			this._streamDownloader = streamDownloader;
 			this._streamProcessorFactory = fileServiceFactory;
 		}
 
 		public async Task RunAsync()
 		{
-			Stream fileStream = await _streamDownloader.DownloadFileAsStreamAsync();
+			try
+			{
+				using Stream fileStream = await _streamDownloader.DownloadFileAsStreamAsync();
 
-			IStreamProcessor streamProcessor = _streamProcessorFactory.CreateStreamProcessor();
-			await streamProcessor.ProcessStreamAsync(fileStream);
+				IStreamProcessor streamProcessor = _streamProcessorFactory.CreateStreamProcessor();
+				await streamProcessor.ProcessStreamAsync(fileStream);
+			}
+			catch (Exception ex)
+			{
+				_logger.Error("An exception occurred: " + ex.Message);
+				_logger.Error("Stack Trace: " + ex.StackTrace);
+			}
 		}
 	}
 }
