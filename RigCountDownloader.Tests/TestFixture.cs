@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
+using OfficeOpenXml;
 using RichardSzalay.MockHttp;
 using RigCountDownloader.FileConverters;
 using Serilog;
@@ -13,6 +14,8 @@ namespace RigCountDownloader.Tests
 
 		public TestFixture()
 		{
+			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
 			var loggerSubstitute = Substitute.For<ILogger>();
 			var confSubstitute = Substitute.For<IConfiguration>();
 
@@ -21,7 +24,8 @@ namespace RigCountDownloader.Tests
 				.AddSingleton(provider => Substitute.For<ILogger>())
 				.AddSingleton(provider => Substitute.For<IConfiguration>())
 				.AddSingleton<MockHttpMessageHandler>()
-				.AddTransient<IFileConverterFactory, FileConverterFactory>();
+				.AddTransient<IFileConverterFactory, FileConverterFactory>()
+				.AddTransient<WWRCExcelToCsvConverter>();
 
 			ServiceProvider = services.BuildServiceProvider();
 		}

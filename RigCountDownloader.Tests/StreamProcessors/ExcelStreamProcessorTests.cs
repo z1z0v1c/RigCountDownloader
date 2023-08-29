@@ -21,8 +21,8 @@ namespace RigCountDownloader.Tests
 		{
 			// Arrange
 			fileConverterFactory.CreateFileConverter().Returns(fileConverter);
-			var excelStreamProcessor = new ExcelStreamProcessor(fileConverterFactory);
-			using var memoryStream = new MemoryStream();
+			ExcelStreamProcessor excelStreamProcessor = new(fileConverterFactory);
+			using MemoryStream memoryStream = new();
 
 			// Act
 			await excelStreamProcessor.ProcessStreamAsync(memoryStream);

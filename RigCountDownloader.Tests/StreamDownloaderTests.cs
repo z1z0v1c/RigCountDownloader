@@ -20,7 +20,7 @@ namespace RigCountDownloader.Tests
 			this._logger = ServiceProvider.GetRequiredService<ILogger>();
 			this._configuration = ServiceProvider.GetRequiredService<IConfiguration>();
 			this._requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
-			this._streamDownloader = new StreamDownloader(_logger,_configuration, _requestHandler.ToHttpClient());
+			this._streamDownloader = new StreamDownloader(_logger, _configuration, _requestHandler.ToHttpClient());
 		}
 
 		[Fact]
@@ -29,6 +29,10 @@ namespace RigCountDownloader.Tests
 			// Arrange
 			string inputFileUri = "https://bakerhughesrigcount.gcs-web.com/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
 			_configuration["InputFileUri"].Returns(inputFileUri);
+			var memoryStreamBytes = new byte[]
+			{ 
+				0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x06, 0x00, 0x08, 0x00, 0x00, 0x00, 0x21, 0x00, 0x9C, 0x8E 
+			};
 
 			_requestHandler.When(inputFileUri)
 				.Respond(request =>
@@ -36,7 +40,7 @@ namespace RigCountDownloader.Tests
 					return Task.FromResult(new HttpResponseMessage
 					{
 						StatusCode = HttpStatusCode.OK,
-						Content = new StreamContent(new MemoryStream(new byte[] { 0x25, 0x50, 0x44, 0x46 }))
+						Content = new StreamContent(new MemoryStream(memoryStreamBytes))
 					});
 				});
 
@@ -44,7 +48,7 @@ namespace RigCountDownloader.Tests
 			Stream file = await _streamDownloader.DownloadFileAsStreamAsync();
 
 			// Assert
-			Assert.Equal(4, file.Length);
+			Assert.Equal(memoryStreamBytes.Length, file.Length);
 		}
 
 		[Fact]
