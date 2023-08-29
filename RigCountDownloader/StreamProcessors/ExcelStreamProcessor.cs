@@ -21,9 +21,6 @@ namespace RigCountDownloader.StreamProcessors
 			_fileConverter.ExcelPackage = package;
 
 			await _fileConverter.ConvertAndSaveAsync();
-
-			// Implement IDisposable
-			stream.Dispose();
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace RigCountDownloader
 		{
 			try
 			{
-				Stream fileStream = await _streamDownloader.DownloadFileAsStreamAsync();
+				using Stream fileStream = await _streamDownloader.DownloadFileAsStreamAsync();
 
 				IStreamProcessor streamProcessor = _streamProcessorFactory.CreateStreamProcessor();
 				await streamProcessor.ProcessStreamAsync(fileStream);
