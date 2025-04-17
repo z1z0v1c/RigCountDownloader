@@ -45,25 +45,45 @@ namespace RigCountDownloader
 
 		public async Task<Stream> DownloadFileAsStreamAsync()
 		{
-			Uri uri = new(_configuration["InputFileUri"] ?? string.Empty);
-
-			using HttpRequestMessage request = new(HttpMethod.Get, uri);
-
-			_logger.Information($"Downloading file from {uri}...");
-
-			HttpResponseMessage response = await _httpClient.SendAsync(request);
-
-			if (response.IsSuccessStatusCode)
+			string uriString = _configuration["InputFileUri"] ?? string.Empty;
+			if (string.IsNullOrEmpty(uriString))
 			{
-				HttpContent content = response.Content;
-				Stream stream = await content.ReadAsStreamAsync();
-
-				_logger.Information($"Download completed successfuly.");
-
-				return stream;
+				throw new ArgumentException("InputFileUri configuration value is missing or empty.");
 			}
 
-			throw new ArgumentException($"File from {uri} {response.ReasonPhrase?.ToLower()}. Check appsettings.json file.");
+			Uri uri = new(uriString);
+			_logger.Information($"Downloading file from {uri}...");
+
+			try
+			{
+				// Use ResponseHeadersRead to start processing as soon as headers are available
+				HttpResponseMessage response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+				// Throw an exception if the call is not successful
+				response.EnsureSuccessStatusCode();
+
+				// Create a memory stream that can be returned while allowing the response to be disposed
+				var memoryStream = new MemoryStream();
+				await using (var contentStream = await response.Content.ReadAsStreamAsync())
+				{
+					await contentStream.CopyToAsync(memoryStream);
+				}
+
+				// Reset position to beginning so the caller can read from the start
+				memoryStream.Position = 0;
+				_logger.Information($"Download completed successfully. Received {memoryStream.Length} bytes.");
+
+				return memoryStream;
+			}
+			catch (HttpRequestException ex)
+			{
+				_logger.Error(ex, $"HTTP request error when downloading from {uri}");
+				if (ex.InnerException != null)
+				{
+					_logger.Error($"Inner exception: {ex.InnerException.Message}");
+				}
+
+				throw;
+			}
 		}
 	}
 }
