@@ -3,20 +3,13 @@ using Serilog;
 
 namespace RigCountDownloader
 {
-	public class Application
-	{
-		private readonly ILogger _logger;
-		private readonly StreamDownloader _streamDownloader;
-		private readonly StreamProcessorFactory _streamProcessorFactory;
+	public class Application(ILogger logger, StreamDownloader streamDownloader, StreamProcessorFactory fileServiceFactory)
+    {
+		private readonly ILogger _logger = logger;
+		private readonly StreamDownloader _streamDownloader = streamDownloader;
+		private readonly StreamProcessorFactory _streamProcessorFactory = fileServiceFactory;
 
-		public Application(ILogger logger, StreamDownloader streamDownloader, StreamProcessorFactory fileServiceFactory)
-		{
-			_logger = logger;
-			_streamDownloader = streamDownloader;
-			_streamProcessorFactory = fileServiceFactory;
-		}
-
-		public async Task RunAsync()
+        public async Task RunAsync()
 		{
 			try
 			{

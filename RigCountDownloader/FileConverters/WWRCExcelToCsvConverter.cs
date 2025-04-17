@@ -4,18 +4,12 @@ using Serilog;
 
 namespace RigCountDownloader.FileConverters
 {
-	public class WWRCExcelToCsvConverter : ExcelFileConverter
+	public class WWRCExcelToCsvConverter(ILogger logger, IConfiguration configuration) : ExcelFileConverter
 	{
-		private readonly ILogger _logger;
-		private readonly IConfiguration _configuration;
+		private readonly ILogger _logger = logger;
+		private readonly IConfiguration _configuration = configuration;
 
-		public WWRCExcelToCsvConverter(ILogger logger, IConfiguration configuration)
-		{
-			_logger = logger;
-			_configuration = configuration;
-		}
-
-		public override async Task ConvertAndSaveAsync()
+        public override async Task ConvertAndSaveAsync()
 		{
 			await ConvertAndSaveAsync(ExcelPackage);
 		}

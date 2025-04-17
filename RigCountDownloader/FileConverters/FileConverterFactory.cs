@@ -3,18 +3,12 @@ using Serilog;
 
 namespace RigCountDownloader.FileConverters
 {
-	public class FileConverterFactory : IFileConverterFactory
+	public class FileConverterFactory(ILogger logger, IConfiguration configuration) : IFileConverterFactory
 	{
-		private readonly ILogger _logger;
-		private readonly IConfiguration _configuration;
+		private readonly ILogger _logger = logger;
+		private readonly IConfiguration _configuration = configuration;
 
-		public FileConverterFactory(ILogger logger, IConfiguration configuration)
-		{
-			_logger = logger;
-			_configuration = configuration;
-		}
-
-		public IFileConverter CreateFileConverter()
+        public IFileConverter CreateFileConverter()
 		{
 			// Based on the response MediaType instead of configuration for the InputFileName
 			if (_configuration["InputFileName"].EndsWith(".xlsx") &&
