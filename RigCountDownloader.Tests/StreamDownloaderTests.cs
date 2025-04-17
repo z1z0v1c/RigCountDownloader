@@ -27,7 +27,7 @@ namespace RigCountDownloader.Tests
 		public async Task DownloadFileAsStreamAsync_ValidUri_ReturnsCorrectStream()
 		{
 			// Arrange
-			string inputFileUri = "https://bakerhughesrigcount.gcs-web.com/static-files/7240366e-61cc-4acb-89bf-86dc1a0dffe8";
+			string inputFileUri = "https://validurl.com/existing-file";
 			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			var memoryStreamBytes = new byte[]
@@ -53,10 +53,10 @@ namespace RigCountDownloader.Tests
 		}
 
 		[Fact]
-		public void DownloadFileAsStreamAsync_InvalidUri_ThrowsArgumentException()
+		public async Task DownloadFileAsStreamAsync_InvalidUri_ThrowsArgumentException()
 		{
 			// Arrange
-			string inputFileUri = "https://www.invalidurl.com/nonexisting-file";
+			string inputFileUri = "https://invalidurl.com/nonexisting-file";
 			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			_requestHandler.When(inputFileUri)
@@ -71,12 +71,12 @@ namespace RigCountDownloader.Tests
 			// Act
 			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
 
-			// Assert
-			Assert.ThrowsAsync<ArgumentException>(act);
+            // Assert
+            await Assert.ThrowsAsync<ArgumentException>(act);
 		}
 
 		[Fact]
-		public void DownloadFileAsStreamAsync_NoUriProvided_ThrowsUriFormatException()
+		public async Task DownloadFileAsStreamAsync_NoUriProvided_ThrowsUriFormatException()
 		{
 			// Arrange
 			string? inputFileUri = null;
@@ -85,8 +85,8 @@ namespace RigCountDownloader.Tests
 			// Act
 			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
 
-			// Assert
-			Assert.ThrowsAsync<UriFormatException>(act);
+            // Assert
+            await Assert.ThrowsAsync<UriFormatException>(act);
 		}
 	}
 }
