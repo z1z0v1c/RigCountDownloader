@@ -84,6 +84,16 @@ namespace RigCountDownloader
 
 				throw;
 			}
+			catch (TaskCanceledException ex)
+			{
+				_logger.Error(ex, $"Request timed out when downloading from {uri}");
+				throw;
+			}
+			catch (Exception ex)
+			{
+				_logger.Error(ex, $"Unexpected error when downloading from {uri}");
+				throw;
+			}
 		}
 	}
 }
