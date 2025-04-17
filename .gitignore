@@ -10,8 +10,7 @@
 /*.dll
 /*.exe
 
-# Excel files
+# Common files
 *.xlsx
-
-# CSV files
 *.csv
+*.txt
