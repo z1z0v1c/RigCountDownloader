@@ -7,11 +7,11 @@ using Serilog;
 
 using var log = new LoggerConfiguration()
 	.WriteTo.Console()
-	.WriteTo.File("./logs.txt")
+	.WriteTo.File("./log.txt")
 	.CreateLogger();
 
 var configurationRoot = new ConfigurationBuilder()
-	.AddJsonFile(Directory.GetCurrentDirectory() + "../../../../appsettings.json")
+	.AddJsonFile(Directory.GetCurrentDirectory() + "./appsettings.json")
 	.Build();
 
 // Configure dependency injection
