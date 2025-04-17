@@ -53,7 +53,7 @@ namespace RigCountDownloader.Tests
 		}
 
 		[Fact]
-		public async Task DownloadFileAsStreamAsync_InvalidUri_ThrowsArgumentException()
+		public async Task DownloadFileAsStreamAsync_InvalidUri_ThrowsHttpRequestException()
 		{
 			// Arrange
 			string inputFileUri = "https://invalidurl.com/nonexisting-file";
@@ -72,7 +72,7 @@ namespace RigCountDownloader.Tests
 			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentException>(act);
+            await Assert.ThrowsAsync<HttpRequestException>(act);
 		}
 
 		[Fact]
@@ -86,7 +86,7 @@ namespace RigCountDownloader.Tests
 			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
 
             // Assert
-            await Assert.ThrowsAsync<UriFormatException>(act);
+            await Assert.ThrowsAsync<ArgumentException>(act);
 		}
 	}
 }
