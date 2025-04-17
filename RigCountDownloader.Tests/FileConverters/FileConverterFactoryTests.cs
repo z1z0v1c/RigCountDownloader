@@ -13,8 +13,8 @@ namespace RigCountDownloader.Tests
 
 		public FileConverterFactoryTests()
 		{
-			this._configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			this._fileConverterFactory = ServiceProvider.GetRequiredService<IFileConverterFactory>();
+			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
+			_fileConverterFactory = ServiceProvider.GetRequiredService<IFileConverterFactory>();
 		}
 
 		[Fact]

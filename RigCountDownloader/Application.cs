@@ -11,9 +11,9 @@ namespace RigCountDownloader
 
 		public Application(ILogger logger, StreamDownloader streamDownloader, StreamProcessorFactory fileServiceFactory)
 		{
-			this._logger = logger;
-			this._streamDownloader = streamDownloader;
-			this._streamProcessorFactory = fileServiceFactory;
+			_logger = logger;
+			_streamDownloader = streamDownloader;
+			_streamProcessorFactory = fileServiceFactory;
 		}
 
 		public async Task RunAsync()

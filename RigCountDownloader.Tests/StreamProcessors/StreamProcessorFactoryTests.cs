@@ -17,10 +17,10 @@ namespace RigCountDownloader.Tests
 
 		public StreamProcessorFactoryTests()
 		{
-			this._logger = ServiceProvider.GetRequiredService<ILogger>();
-			this._configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			this._fileConverterFactory = Substitute.For<IFileConverterFactory>();
-			this._streamProcessorFactory = new(_configuration, _fileConverterFactory);
+			_logger = ServiceProvider.GetRequiredService<ILogger>();
+			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
+			_fileConverterFactory = Substitute.For<IFileConverterFactory>();
+			_streamProcessorFactory = new(_configuration, _fileConverterFactory);
 		}
 
 		[Fact]

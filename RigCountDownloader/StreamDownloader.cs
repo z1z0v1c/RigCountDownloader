@@ -11,11 +11,11 @@ namespace RigCountDownloader
 
 		public StreamDownloader(ILogger logger, IConfiguration configuration, HttpClient httpClient)
 		{
-			this._logger = logger;
-			this._configuration = configuration;
-			this._httpClient = httpClient;
-			this._httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
-			this._httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
+			_logger = logger;
+			_configuration = configuration;
+			_httpClient = httpClient;
+			_httpClient.DefaultRequestHeaders.Add("User-Agent", "RigCountDownloader/1.0");
+			_httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
 		}
 
 		public async Task<Stream> DownloadFileAsStreamAsync()

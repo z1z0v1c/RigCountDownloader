@@ -11,8 +11,8 @@ namespace RigCountDownloader.FileConverters
 
 		public WWRCExcelToCsvConverter(ILogger logger, IConfiguration configuration)
 		{
-			this._logger = logger;
-			this._configuration = configuration;
+			_logger = logger;
+			_configuration = configuration;
 		}
 
 		public override async Task ConvertAndSaveAsync()

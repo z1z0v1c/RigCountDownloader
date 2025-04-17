@@ -17,10 +17,10 @@ namespace RigCountDownloader.Tests
 
 		public StreamDownloaderTests()
 		{
-			this._logger = ServiceProvider.GetRequiredService<ILogger>();
-			this._configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			this._requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
-			this._streamDownloader = new StreamDownloader(_logger, _configuration, _requestHandler.ToHttpClient());
+			_logger = ServiceProvider.GetRequiredService<ILogger>();
+			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
+			_requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
+			_streamDownloader = new StreamDownloader(_logger, _configuration, _requestHandler.ToHttpClient());
 		}
 
 		[Fact]

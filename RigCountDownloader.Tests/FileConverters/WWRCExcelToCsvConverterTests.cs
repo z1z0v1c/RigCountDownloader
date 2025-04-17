@@ -16,9 +16,9 @@ namespace RigCountDownloader.Tests.FileConverters
 
 		public WWRCExcelToCsvConverterTests()
 		{
-			this._logger = ServiceProvider.GetRequiredService<ILogger>();
-			this._configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			this._fileConverter = ServiceProvider.GetRequiredService<WWRCExcelToCsvConverter>();
+			_logger = ServiceProvider.GetRequiredService<ILogger>();
+			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
+			_fileConverter = ServiceProvider.GetRequiredService<WWRCExcelToCsvConverter>();
 		}
 
 		[Fact]
