@@ -2,6 +2,6 @@
 {
 	public interface IFileConverterFactory
 	{
-		IFileConverter CreateFileConverter();
+		IFileConverter CreateFileConverter(Response response);
 	}
 }

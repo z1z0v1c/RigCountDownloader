@@ -13,9 +13,12 @@ namespace RigCountDownloader
 		{
 			try
 			{
-				using Stream fileStream = await _streamDownloader.DownloadFileAsStreamAsync();
+				var response = await _streamDownloader.DownloadFileAsStreamAsync();
 
-				IStreamProcessor streamProcessor = _streamProcessorFactory.CreateStreamProcessor();
+				using Stream fileStream = response.MemoryStream; 
+
+				IStreamProcessor streamProcessor = _streamProcessorFactory.CreateStreamProcessor(response);
+				
 				await streamProcessor.ProcessStreamAsync(fileStream);
 			}
 			catch (Exception ex)

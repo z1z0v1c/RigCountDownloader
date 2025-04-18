@@ -43,7 +43,7 @@ namespace RigCountDownloader
 			_httpClient.Timeout = TimeSpan.FromMinutes(5);
 		}
 
-		public async Task<Stream> DownloadFileAsStreamAsync()
+		public async Task<Response> DownloadFileAsStreamAsync()
 		{
 			string uriString = _configuration["InputFileUri"] ?? string.Empty;
 			if (string.IsNullOrEmpty(uriString))
@@ -61,6 +61,20 @@ namespace RigCountDownloader
 				// Throw an exception if the call is not successful
 				response.EnsureSuccessStatusCode();
 
+				// Get media type
+				string? mediaType = response.Content.Headers.ContentType?.MediaType;
+
+				// Get file name
+				string? fileName = null;
+				if (response.Content.Headers.ContentDisposition?.FileNameStar != null)
+				{
+					fileName = response.Content.Headers.ContentDisposition.FileNameStar;
+				}
+				else if (response.Content.Headers.ContentDisposition?.FileName != null)
+				{
+					fileName = response.Content.Headers.ContentDisposition.FileName;
+				}
+
 				// Create a memory stream that can be returned while allowing the response to be disposed
 				var memoryStream = new MemoryStream();
 				await using (var contentStream = await response.Content.ReadAsStreamAsync())
@@ -72,7 +86,7 @@ namespace RigCountDownloader
 				memoryStream.Position = 0;
 				_logger.Information($"Download completed successfully. Received {memoryStream.Length} bytes.");
 
-				return memoryStream;
+				return new Response(mediaType, fileName, memoryStream);
 			}
 			catch (HttpRequestException ex)
 			{

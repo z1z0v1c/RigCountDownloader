@@ -8,12 +8,12 @@ namespace RigCountDownloader.StreamProcessors
 		private readonly IConfiguration _configuration = configuration;
 		private readonly IFileConverterFactory _fileConverterFactory = fileConverterFactory;
 
-        public IStreamProcessor CreateStreamProcessor()
+        public IStreamProcessor CreateStreamProcessor(Response response)
 		{
 			// Based on the response MediaType instead of configuration
-			if (_configuration["InputFileName"].EndsWith(".xlsx"))
+			if (response.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 			{
-				return new ExcelStreamProcessor(_fileConverterFactory);
+				return new ExcelStreamProcessor(_fileConverterFactory, response);
 			}
 
 			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");
