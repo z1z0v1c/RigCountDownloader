@@ -20,15 +20,20 @@ namespace RigCountDownloader.Tests
 		public async Task ProcessStreamAsync_CorrectMemoryStream_CallsFileConverter()
 		{
 			// Arrange
-			fileConverterFactory.CreateFileConverter().Returns(fileConverter);
-			ExcelStreamProcessor excelStreamProcessor = new(fileConverterFactory);
+			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
+
+			Response response = new(mediaType, fileName, memoryStream);
+
+			fileConverterFactory.CreateFileConverter(response).Returns(fileConverter);
+			ExcelStreamProcessor excelStreamProcessor = new(fileConverterFactory, response);
 
 			// Act
 			await excelStreamProcessor.ProcessStreamAsync(memoryStream);
 
 			// Assert
-			fileConverterFactory.Received(1).CreateFileConverter();
+			fileConverterFactory.Received(1).CreateFileConverter(response);
 			await fileConverter.Received(1).ConvertAndSaveAsync();
 		}
 	}

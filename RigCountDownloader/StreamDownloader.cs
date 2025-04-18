@@ -1,18 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
-using Serilog;
+﻿using Serilog;
 
 namespace RigCountDownloader
 {
 	public class StreamDownloader
 	{
 		private readonly ILogger _logger;
-		private readonly IConfiguration _configuration;
 		private readonly HttpClient _httpClient;
 
-		public StreamDownloader(ILogger logger, IConfiguration configuration, HttpClient httpClient)
+		public StreamDownloader(ILogger logger, HttpClient httpClient)
 		{
 			_logger = logger;
-			_configuration = configuration;
 			_httpClient = httpClient;
 
 			ConfigureHttpClient();
@@ -43,17 +40,8 @@ namespace RigCountDownloader
 			_httpClient.Timeout = TimeSpan.FromMinutes(5);
 		}
 
-		public async Task<Response> DownloadFileAsStreamAsync()
+		public async Task<Response> DownloadFileAsStreamAsync(Uri uri)
 		{
-			string uriString = _configuration["InputFileUri"] ?? string.Empty;
-			if (string.IsNullOrEmpty(uriString))
-			{
-				throw new ArgumentException("InputFileUri configuration value is missing or empty.");
-			}
-
-			Uri uri = new(uriString);
-			_logger.Information($"Downloading file from {uri}...");
-
 			try
 			{
 				// Use ResponseHeadersRead to start processing as soon as headers are available

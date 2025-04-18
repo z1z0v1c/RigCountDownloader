@@ -27,11 +27,16 @@ namespace RigCountDownloader.Tests
 		public void CreateStreamProcessor_VallidExtension_ReturnsCorrectStreamProcessor()
 		{
 			// Arrange
-			_configuration["InputFileName"].Returns("Worldwide Rig Count Jul 2023.xlsx");
-			_fileConverterFactory.CreateFileConverter().Returns(new WWRCExcelToCsvConverter(_logger, _configuration));
+			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+			string fileName = "Worldwide Rig Count.xlsx";
+			using MemoryStream memoryStream = new();
+
+			Response response = new(mediaType, fileName, memoryStream);
+
+			_fileConverterFactory.CreateFileConverter(response).Returns(new WWRCExcelToCsvConverter(_logger, _configuration));
 
 			// Act
-			IStreamProcessor excelStreamProcessor = _streamProcessorFactory.CreateStreamProcessor();
+			IStreamProcessor excelStreamProcessor = _streamProcessorFactory.CreateStreamProcessor(response);
 
 			// Assert
 			Assert.IsType<ExcelStreamProcessor>(excelStreamProcessor);
@@ -41,10 +46,14 @@ namespace RigCountDownloader.Tests
 		public void CreateStreamProcessor_InvallidExtension_ThrowsArgumentException()
 		{
 			// Arrange
-			_configuration["InputFileName"].Returns("Worldwide Rig Count Jul 2023.pdf");
+			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
+			string fileName = "Worldwide Rig Count.xlsx";
+			using MemoryStream memoryStream = new();
+
+			Response response = new(mediaType, fileName, memoryStream);
 
 			// Act
-			void act() => _streamProcessorFactory.CreateStreamProcessor();
+			void act() => _streamProcessorFactory.CreateStreamProcessor(response);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);

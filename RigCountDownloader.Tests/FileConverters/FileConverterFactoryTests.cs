@@ -21,11 +21,16 @@ namespace RigCountDownloader.Tests
 		public void CreateFileConverter_VallidExtensions_ReturnsCorrectFileConverter()
 		{
 			// Arrange
-			_configuration["InputFileName"].Returns("Worldwide Rig Count Jul 2023.xlsx");
+			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+			string fileName = "Worldwide Rig Count.xlsx";
+			using MemoryStream memoryStream = new();
+
+			Response response = new(mediaType, fileName, memoryStream);
+
 			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.csv");
 
 			// Act
-			IFileConverter fileConverter = _fileConverterFactory.CreateFileConverter();
+			IFileConverter fileConverter = _fileConverterFactory.CreateFileConverter(response);
 
 			// Assert
 			Assert.IsType<WWRCExcelToCsvConverter>(fileConverter);
@@ -35,11 +40,16 @@ namespace RigCountDownloader.Tests
 		public void CreateStreamProcessor_InvallidInputExtension_ThrowsArgumentException()
 		{
 			// Arrange
-			_configuration["InputFileName"].Returns("Worldwide Rig Count Jul 2023.pdf");
+			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
+			string fileName = "Worldwide Rig Count.xlsx";
+			using MemoryStream memoryStream = new();
+
+			Response response = new(mediaType, fileName, memoryStream);
+
 			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.csv");
 
 			// Act
-			void act() => _fileConverterFactory.CreateFileConverter();
+			void act() => _fileConverterFactory.CreateFileConverter(response);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);
@@ -49,11 +59,16 @@ namespace RigCountDownloader.Tests
 		public void CreateStreamProcessor_InvallidOutputExtension_ThrowsArgumentException()
 		{
 			// Arrange
-			_configuration["InputFileName"].Returns("Worldwide Rig Count Jul 2023.xlsx");
+			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
+			string fileName = "Worldwide Rig Count.xlsx";
+			using MemoryStream memoryStream = new();
+
+			Response response = new(mediaType, fileName, memoryStream);
+
 			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.docx");
 
 			// Act
-			void act() => _fileConverterFactory.CreateFileConverter();
+			void act() => _fileConverterFactory.CreateFileConverter(response);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);

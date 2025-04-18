@@ -18,9 +18,8 @@ namespace RigCountDownloader.Tests
 		public StreamDownloaderTests()
 		{
 			_logger = ServiceProvider.GetRequiredService<ILogger>();
-			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
 			_requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
-			_streamDownloader = new StreamDownloader(_logger, _configuration, _requestHandler.ToHttpClient());
+			_streamDownloader = new StreamDownloader(_logger, _requestHandler.ToHttpClient());
 		}
 
 		[Fact]
@@ -28,7 +27,6 @@ namespace RigCountDownloader.Tests
 		{
 			// Arrange
 			string inputFileUri = "https://validurl.com/existing-file";
-			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			var memoryStreamBytes = new byte[]
 			{
@@ -46,10 +44,10 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Stream file = await _streamDownloader.DownloadFileAsStreamAsync();
+			Response file = await _streamDownloader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
 
 			// Assert
-			Assert.Equal(memoryStreamBytes.Length, file.Length);
+			Assert.Equal(memoryStreamBytes.Length, file.MemoryStream.Length);
 		}
 
 		[Fact]
@@ -57,7 +55,6 @@ namespace RigCountDownloader.Tests
 		{
 			// Arrange
 			string inputFileUri = "https://invalidurl.com/nonexisting-file";
-			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			_requestHandler.When(inputFileUri)
 				.Respond(request =>
@@ -69,7 +66,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
+			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
 
             // Assert
             await Assert.ThrowsAsync<HttpRequestException>(act);
@@ -80,13 +77,12 @@ namespace RigCountDownloader.Tests
 		{
 			// Arrange
 			string? inputFileUri = null;
-			_configuration["InputFileUri"].Returns(inputFileUri);
 
 			// Act
-			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync();
+			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync(new Uri(inputFileUri!));
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentException>(act);
+            await Assert.ThrowsAsync<ArgumentNullException>(act);
 		}
 	}
 }

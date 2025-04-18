@@ -26,7 +26,8 @@ ServiceProvider serviceProvider = new ServiceCollection()
 
 // Resolve dependencies
 ILogger logger = serviceProvider.GetRequiredService<ILogger>();
+IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 StreamDownloader streamDownloader = serviceProvider.GetRequiredService<StreamDownloader>();
 StreamProcessorFactory streamProcessorFactory = serviceProvider.GetRequiredService<StreamProcessorFactory>();
 
-await new Application(logger, streamDownloader, streamProcessorFactory).RunAsync();
+await new Application(logger, configuration, streamDownloader, streamProcessorFactory).RunAsync();
