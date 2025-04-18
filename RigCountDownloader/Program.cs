@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
+using RigCountDownloader.Application;
 using RigCountDownloader.FileConverters;
 using RigCountDownloader.StreamProcessors;
 using Serilog;
