@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using RigCountDownloader.Domain.Models;
 using RigCountDownloader.StreamProcessors;
 using Serilog;
 
@@ -18,19 +19,19 @@ namespace RigCountDownloader.Application
 
         public async Task RunAsync()
         {
-            string uriString = _configuration["InputFileUri"] ?? string.Empty;
-            if (string.IsNullOrEmpty(uriString))
-            {
-                throw new ArgumentException("InputFileUri configuration value is missing or empty.");
-            }
-
-            Uri uri = new(uriString);
-
             try
             {
-                _logger.Information($"Downloading file from {uri}...");
+                Settings settings = new(
+                    SourceType: _configuration["SourceType"]!,
+                    SourceFileLocation: _configuration["SourceFileLocation"]!,
+                    SourceFileFormat: _configuration["SourceFileFormat"]!,
+                    OutputFileLocation: _configuration["OutputFileLocation"]!,
+                    OutputFileFormat: _configuration["OutputFileFormat"]!
+                );
+                    
+                _logger.Information($"Retrieving source file from {settings.SourceFileLocation}...");
 
-                var response = await _streamDownloader.DownloadFileAsStreamAsync(uri);
+                var response = await _streamDownloader.DownloadFileAsStreamAsync(new(settings.SourceFileLocation));
 
                 _logger.Information($"Download completed successfully. Received {response.MemoryStream.Length} bytes.");
 

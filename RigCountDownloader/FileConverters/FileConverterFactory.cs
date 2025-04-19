@@ -13,7 +13,7 @@ namespace RigCountDownloader.FileConverters
 			// Based on the response MediaType instead of configuration for the InputFileName
 			if (response.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
 				response.FileName!.Contains("Worldwide Rig Count") &&
-				_configuration["OutputFileName"]!.EndsWith(".csv"))
+				_configuration["OutputFileType"] == "csv")
 			{
 				return new WWRCExcelToCsvConverter(_logger, _configuration);
 			}

@@ -27,7 +27,7 @@ namespace RigCountDownloader.Tests.FileConverters
 			// Arrange
 			string fileName = "WWRC Jul 2023.csv";
 			string outputFilePath = $"{Directory.GetCurrentDirectory()}\\{fileName}";
-			_configuration["OutputFileName"].Returns(fileName);
+			_configuration["OutputFileLocation"].Returns(fileName);
 
 			using MemoryStream memoryStream = new();
 			using ExcelPackage package = new(memoryStream);
@@ -49,7 +49,7 @@ namespace RigCountDownloader.Tests.FileConverters
 		{
 			// Arrange
 			string fileName = "WWRC Jul 2023.csv";
-			_configuration["OutputFileName"].Returns(fileName);
+			_configuration["OutputFileLocation"].Returns(fileName);
 
 			using MemoryStream memoryStream = new();
 			using ExcelPackage package = new(memoryStream);
@@ -71,7 +71,7 @@ namespace RigCountDownloader.Tests.FileConverters
 		{
 			// Arrange
 			string fileName = "WWRC Jul 2023.csv";
-			_configuration["OutputFileName"].Returns(fileName);
+			_configuration["OutputFileLocation"].Returns(fileName);
 
 			using MemoryStream memoryStream = new();
 			using ExcelPackage package = new(memoryStream);
@@ -89,7 +89,7 @@ namespace RigCountDownloader.Tests.FileConverters
 		{
 			// Arrange
 			string fileName = "WWRC Jul 2023.csv";
-			_configuration["OutputFileName"].Returns(fileName);
+			_configuration["OutputFileLocation"].Returns(fileName);
 
 			using MemoryStream memoryStream = new();
 			using ExcelPackage package = new(memoryStream);

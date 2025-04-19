@@ -27,7 +27,7 @@ namespace RigCountDownloader.Tests
 
 			Response response = new(mediaType, fileName, memoryStream);
 
-			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.csv");
+			_configuration["OutputFileType"].Returns("csv");
 
 			// Act
 			IFileConverter fileConverter = _fileConverterFactory.CreateFileConverter(response);
@@ -46,7 +46,7 @@ namespace RigCountDownloader.Tests
 
 			Response response = new(mediaType, fileName, memoryStream);
 
-			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.csv");
+			_configuration["OutputFileLocation"].Returns("Worldwide Rig Count Jul 2023.csv");
 
 			// Act
 			void act() => _fileConverterFactory.CreateFileConverter(response);
