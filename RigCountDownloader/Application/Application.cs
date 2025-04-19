@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using RigCountDownloader.Domain.Interfaces.DataConverters;
 using RigCountDownloader.Domain.Models;
 using RigCountDownloader.Services.Factories;
-using RigCountDownloader.StreamProcessors;
 using Serilog;
 
 namespace RigCountDownloader.Application
@@ -9,14 +9,12 @@ namespace RigCountDownloader.Application
     public class Application(
         ILogger logger,
         IConfiguration configuration,
-        HttpDataLoader httpDataLoader,
-        DataConverterFactory fileServiceFactory
+        Pipeline pipeline
     )
     {
         private readonly ILogger _logger = logger;
         private readonly IConfiguration _configuration = configuration;
-        private readonly HttpDataLoader _httpDataLoader = httpDataLoader;
-        private readonly DataConverterFactory _dataConverterFactory = fileServiceFactory;
+        private readonly Pipeline _pipeline = pipeline;
 
         public async Task RunAsync()
         {
@@ -30,17 +28,8 @@ namespace RigCountDownloader.Application
                     OutputFileFormat: _configuration["OutputFileFormat"]!
                 );
                     
-                _logger.Information($"Retrieving source file from {settings.SourceFileLocation}...");
 
-                var response = await _httpDataLoader.LoadDataAsync(new(settings.SourceFileLocation));
-
-                _logger.Information($"Download completed successfully. Received {response.MemoryStream.Length} bytes.");
-
-                await using Stream fileStream = response.MemoryStream;
-
-                IDataConverter dataConverter = _dataConverterFactory.CreateDataConverter(response);
-
-                await dataConverter.ConvertDataAsync(fileStream);
+                await pipeline.ExecuteAsync(settings);
             }
             catch (Exception ex)
             {

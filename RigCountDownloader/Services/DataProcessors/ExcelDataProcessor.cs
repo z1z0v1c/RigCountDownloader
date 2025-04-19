@@ -1,12 +1,23 @@
-﻿using OfficeOpenXml;
+﻿using Microsoft.Extensions.Configuration;
+using OfficeOpenXml;
+using RigCountDownloader.Domain.Interfaces.DataProcessors;
+using Serilog;
 
-namespace RigCountDownloader.FileConverters
+namespace RigCountDownloader.Services.DataProcessors
 {
-	public abstract class ExcelDataProcessor : IDataProcessor
-	{
-		// Nullable?
-		public ExcelPackage ExcelPackage { get; set; } = new ExcelPackage();
+    public abstract class ExcelDataProcessor : IDataProcessor
+    {
+        protected ExcelDataProcessor(ILogger logger, IConfiguration configuration, ExcelPackage excelPackage)
+        {
+            Logger = logger;
+            Configuration = configuration;
+            ExcelPackage = excelPackage;
+        }
 
-		public abstract Task ProcessAndSaveAsync();
-	}
+        public ILogger Logger { get; set; }  
+        public IConfiguration Configuration { get; set; }
+        public ExcelPackage ExcelPackage { get; set; }
+
+        public abstract Task ProcessAndSaveAsync();
+    }
 }

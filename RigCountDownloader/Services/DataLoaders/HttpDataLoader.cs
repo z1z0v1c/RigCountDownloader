@@ -1,6 +1,8 @@
-﻿using Serilog;
+﻿using RigCountDownloader.Domain.Interfaces.DataLoaders;
+using RigCountDownloader.Domain.Models;
+using Serilog;
 
-namespace RigCountDownloader
+namespace RigCountDownloader.Services.DataLoaders
 {
 	public class HttpDataLoader : IDataLoader
 	{

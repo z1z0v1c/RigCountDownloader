@@ -1,15 +1,16 @@
-﻿using RigCountDownloader.FileConverters;
-using RigCountDownloader.StreamProcessors;
+﻿using RigCountDownloader.Domain.Interfaces.DataConverters;
+using RigCountDownloader.Domain.Interfaces.Factories;
+using RigCountDownloader.Services.DataConverters;
 
 namespace RigCountDownloader.Services.Factories
 {
-	public class DataConverterFactory(IDataProcessorFactory dataProcessorFactory) : IDataConverterFactory
+	public class DataConverterFactory() : IDataConverterFactory
 	{
-		public IDataConverter CreateDataConverter(Data data)
+		public IDataConverter CreateDataConverter(string mediaType)
 		{
-			if (data.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+			if (mediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 			{
-				return new XlsxDataConverter(dataProcessorFactory, data);
+				return new XlsxDataConverter();
 			}
 
 			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");

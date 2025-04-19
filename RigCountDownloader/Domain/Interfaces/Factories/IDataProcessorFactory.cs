@@ -1,7 +1,9 @@
-﻿namespace RigCountDownloader.FileConverters
+﻿using RigCountDownloader.Domain.Interfaces.DataProcessors;
+
+namespace RigCountDownloader.Domain.Interfaces.Factories
 {
 	public interface IDataProcessorFactory
 	{
-		IDataProcessor CreateFileConverter(Data data);
+		IDataProcessor CreateDataProcessor(IConvertedData data);
 	}
 }

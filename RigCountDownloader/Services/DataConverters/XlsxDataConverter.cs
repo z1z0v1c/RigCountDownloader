@@ -1,28 +1,20 @@
 ﻿using OfficeOpenXml;
-using RigCountDownloader.FileConverters;
+using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.DataConverters;
+using RigCountDownloader.Domain.Models;
 
-namespace RigCountDownloader.StreamProcessors
+namespace RigCountDownloader.Services.DataConverters
 {
 	public class XlsxDataConverter : IDataConverter
 	{
-		private readonly IDataProcessorFactory _dataProcessorFactory;
-		private readonly ExcelDataProcessor _dataProcessor;
-
-		public XlsxDataConverter(IDataProcessorFactory dataProcessorFactory, Data data)
+		public XlsxDataConverter()
 		{
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-			_dataProcessorFactory = dataProcessorFactory;
-			_dataProcessor = (ExcelDataProcessor)_dataProcessorFactory.CreateFileConverter(data);
 		}
 
-		public async Task ConvertDataAsync(Stream stream)
+		public async Task<IConvertedData> ConvertDataAsync(Data data)
 		{
-			using ExcelPackage package = new(stream);
-
-			_dataProcessor.ExcelPackage = package;
-
-			await _dataProcessor.ProcessAndSaveAsync();
+			return new XlsxData("xlsx", data.FileName!, new ExcelPackage(data.MemoryStream));
 		}
 	}
 }
