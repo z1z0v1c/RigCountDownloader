@@ -2,5 +2,5 @@
 
 public interface IDataLoader
 {
-    Task<Response> LoadDataAsync(Uri uri);
+    Task<Data> LoadDataAsync(Uri uri);
 }

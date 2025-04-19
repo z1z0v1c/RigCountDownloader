@@ -2,6 +2,6 @@
 {
 	public interface IDataProcessorFactory
 	{
-		IDataProcessor CreateFileConverter(Response response);
+		IDataProcessor CreateFileConverter(Data data);
 	}
 }

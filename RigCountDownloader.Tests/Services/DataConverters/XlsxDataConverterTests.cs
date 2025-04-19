@@ -24,16 +24,16 @@ namespace RigCountDownloader.Tests
 			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
 
-			Response response = new(mediaType, fileName, memoryStream);
+			Data data = new(mediaType, fileName, memoryStream);
 
-			_dataProcessorFactory.CreateFileConverter(response).Returns(_dataProcessor);
-			XlsxDataConverter xlsxDataConverter = new(_dataProcessorFactory, response);
+			_dataProcessorFactory.CreateFileConverter(data).Returns(_dataProcessor);
+			XlsxDataConverter xlsxDataConverter = new(_dataProcessorFactory, data);
 
 			// Act
 			await xlsxDataConverter.ConvertDataAsync(memoryStream);
 
 			// Assert
-			_dataProcessorFactory.Received(1).CreateFileConverter(response);
+			_dataProcessorFactory.Received(1).CreateFileConverter(data);
 			await _dataProcessor.Received(1).ProcessAndSaveAsync();
 		}
 	}

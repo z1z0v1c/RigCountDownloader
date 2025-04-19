@@ -42,7 +42,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Response file = await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
+			Data file = await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
 
 			// Assert
 			Assert.Equal(memoryStreamBytes.Length, file.MemoryStream.Length);

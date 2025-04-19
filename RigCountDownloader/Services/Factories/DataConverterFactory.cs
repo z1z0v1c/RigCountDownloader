@@ -5,11 +5,11 @@ namespace RigCountDownloader.Services.Factories
 {
 	public class DataConverterFactory(IDataProcessorFactory dataProcessorFactory) : IDataConverterFactory
 	{
-		public IDataConverter CreateDataConverter(Response response)
+		public IDataConverter CreateDataConverter(Data data)
 		{
-			if (response.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+			if (data.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 			{
-				return new XlsxDataConverter(dataProcessorFactory, response);
+				return new XlsxDataConverter(dataProcessorFactory, data);
 			}
 
 			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");

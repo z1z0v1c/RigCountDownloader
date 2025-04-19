@@ -5,11 +5,11 @@ namespace RigCountDownloader.FileConverters
 {
 	public class DataProcessorFactory(ILogger logger, IConfiguration configuration) : IDataProcessorFactory
 	{
-		public IDataProcessor CreateFileConverter(Response response)
+		public IDataProcessor CreateFileConverter(Data data)
 		{
 			// Based on the response MediaType instead of configuration for the InputFileName
-			if (response.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
-				response.FileName!.Contains("Worldwide Rig Count") &&
+			if (data.MediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+				data.SourceFileName!.Contains("Worldwide Rig Count") &&
 				configuration["OutputFileType"] == "csv")
 			{
 				return new RigCountDataProcessor(logger, configuration);

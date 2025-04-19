@@ -32,12 +32,12 @@ namespace RigCountDownloader.Tests
 			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
 
-			Response response = new(mediaType, fileName, memoryStream);
+			Data data = new(mediaType, fileName, memoryStream);
 
-			_dataProcessorFactory.CreateFileConverter(response).Returns(new RigCountDataProcessor(_logger, _configuration));
+			_dataProcessorFactory.CreateFileConverter(data).Returns(new RigCountDataProcessor(_logger, _configuration));
 
 			// Act
-			IDataConverter excelDataConverter = _dataConverterFactory.CreateDataConverter(response);
+			IDataConverter excelDataConverter = _dataConverterFactory.CreateDataConverter(data);
 
 			// Assert
 			Assert.IsType<XlsxDataConverter>(excelDataConverter);
@@ -51,10 +51,10 @@ namespace RigCountDownloader.Tests
 			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
 
-			Response response = new(mediaType, fileName, memoryStream);
+			Data data = new(mediaType, fileName, memoryStream);
 
 			// Act
-			void act() => _dataConverterFactory.CreateDataConverter(response);
+			void act() => _dataConverterFactory.CreateDataConverter(data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);

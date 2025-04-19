@@ -8,12 +8,12 @@ namespace RigCountDownloader.StreamProcessors
 		private readonly IDataProcessorFactory _dataProcessorFactory;
 		private readonly ExcelDataProcessor _dataProcessor;
 
-		public XlsxDataConverter(IDataProcessorFactory dataProcessorFactory, Response response)
+		public XlsxDataConverter(IDataProcessorFactory dataProcessorFactory, Data data)
 		{
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 			_dataProcessorFactory = dataProcessorFactory;
-			_dataProcessor = (ExcelDataProcessor)_dataProcessorFactory.CreateFileConverter(response);
+			_dataProcessor = (ExcelDataProcessor)_dataProcessorFactory.CreateFileConverter(data);
 		}
 
 		public async Task ConvertDataAsync(Stream stream)

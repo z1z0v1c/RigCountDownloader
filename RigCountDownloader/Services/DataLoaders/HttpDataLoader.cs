@@ -40,7 +40,7 @@ namespace RigCountDownloader
 			_httpClient.Timeout = TimeSpan.FromMinutes(5);
 		}
 
-		public async Task<Response> LoadDataAsync(Uri uri)
+		public async Task<Data> LoadDataAsync(Uri uri)
 		{
 			try
 			{
@@ -65,7 +65,7 @@ namespace RigCountDownloader
 				// Reset position to beginning so the caller can read from the start
 				memoryStream.Position = 0;
 
-				return new Response(mediaType, fileName, memoryStream);
+				return new Data(mediaType, fileName, memoryStream);
 			}
 			catch (HttpRequestException ex)
 			{

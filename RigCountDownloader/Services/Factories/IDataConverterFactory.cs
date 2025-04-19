@@ -4,5 +4,5 @@ namespace RigCountDownloader.Services.Factories;
 
 public interface IDataConverterFactory
 {
-    IDataConverter CreateDataConverter(Response response);
+    IDataConverter CreateDataConverter(Data data);
 }

@@ -25,12 +25,12 @@ namespace RigCountDownloader.Tests
 			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
 
-			Response response = new(mediaType, fileName, memoryStream);
+			Data data = new(mediaType, fileName, memoryStream);
 
 			_configuration["OutputFileType"].Returns("csv");
 
 			// Act
-			IDataProcessor dataProcessor = _dataProcessorFactory.CreateFileConverter(response);
+			IDataProcessor dataProcessor = _dataProcessorFactory.CreateFileConverter(data);
 
 			// Assert
 			Assert.IsType<RigCountDataProcessor>(dataProcessor);
@@ -44,12 +44,12 @@ namespace RigCountDownloader.Tests
 			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
 
-			Response response = new(mediaType, fileName, memoryStream);
+			Data data = new(mediaType, fileName, memoryStream);
 
 			_configuration["OutputFileLocation"].Returns("Worldwide Rig Count Jul 2023.csv");
 
 			// Act
-			void act() => _dataProcessorFactory.CreateFileConverter(response);
+			void act() => _dataProcessorFactory.CreateFileConverter(data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);
@@ -63,12 +63,12 @@ namespace RigCountDownloader.Tests
 			string fileName = "Worldwide Rig Count.xlsx";
 			using MemoryStream memoryStream = new();
 
-			Response response = new(mediaType, fileName, memoryStream);
+			Data data = new(mediaType, fileName, memoryStream);
 
 			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.docx");
 
 			// Act
-			void act() => _dataProcessorFactory.CreateFileConverter(response);
+			void act() => _dataProcessorFactory.CreateFileConverter(data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);

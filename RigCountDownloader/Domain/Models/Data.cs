@@ -1,8 +1,8 @@
 namespace RigCountDownloader
 {
-    public record Response(
+    public record Data(
         string? MediaType,
-        string? FileName,
+        string? SourceFileName,
         MemoryStream MemoryStream
     );
 }
