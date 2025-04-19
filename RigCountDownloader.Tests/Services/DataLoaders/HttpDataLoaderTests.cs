@@ -1,30 +1,30 @@
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
 using RichardSzalay.MockHttp;
+using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Services.DataLoaders;
 using Serilog;
 using Xunit;
 
-namespace RigCountDownloader.Tests
+namespace RigCountDownloader.Tests.Services.DataLoaders
 {
 	public class HttpDataLoaderTests : TestFixture
 	{
-		private readonly ILogger _logger;
 		private readonly MockHttpMessageHandler _requestHandler;
 		private readonly HttpDataLoader _httpDataLoader;
 
 		public HttpDataLoaderTests()
 		{
-			_logger = ServiceProvider.GetRequiredService<ILogger>();
+			var logger = ServiceProvider.GetRequiredService<ILogger>();
 			_requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
-			_httpDataLoader = new HttpDataLoader(_logger, _requestHandler.ToHttpClient());
+			_httpDataLoader = new HttpDataLoader(logger, _requestHandler.ToHttpClient());
 		}
 
 		[Fact]
-		public async Task DownloadFileAsStreamAsync_ValidUri_ReturnsCorrectStream()
+		public async Task LoadDataAsync_ValidUri_ReturnsCorrectData()
 		{
 			// Arrange
-			string inputFileUri = "https://validurl.com/existing-file";
+			const string inputFileUri = "https://validurl.com/existing-file";
 
 			var memoryStreamBytes = new byte[]
 			{
@@ -42,17 +42,17 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Data file = await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
+			Data data = await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
 
 			// Assert
-			Assert.Equal(memoryStreamBytes.Length, file.MemoryStream.Length);
+			Assert.Equal(memoryStreamBytes.Length, data.MemoryStream.Length);
 		}
 
 		[Fact]
 		public async Task DownloadFileAsStreamAsync_InvalidUri_ThrowsHttpRequestException()
 		{
 			// Arrange
-			string inputFileUri = "https://invalidurl.com/nonexisting-file";
+			const string inputFileUri = "https://invalidurl.com/nonexisting-file";
 
 			_requestHandler.When(inputFileUri)
 				.Respond(request =>

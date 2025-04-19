@@ -1,63 +1,38 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
-using RigCountDownloader.FileConverters;
+﻿using NSubstitute;
+using RigCountDownloader.Services.DataConverters;
 using RigCountDownloader.Services.Factories;
-using RigCountDownloader.StreamProcessors;
-using Serilog;
 using Xunit;
 
-namespace RigCountDownloader.Tests
+namespace RigCountDownloader.Tests.Services.Factories
 {
 	public class DataConverterFactoryTests : TestFixture
 	{
-		private readonly ILogger _logger;
-		private readonly IConfiguration _configuration;
-		private readonly IDataProcessorFactory _dataProcessorFactory;
-		private readonly DataConverterFactory _dataConverterFactory;
+		private readonly DataConverterFactory _dataConverterFactory = Substitute.For<DataConverterFactory>();
 
-		public DataConverterFactoryTests()
+		[Fact]
+		public void CreateDataConverter_ValidMediaType_ReturnsCorrectResult()
 		{
-			_logger = ServiceProvider.GetRequiredService<ILogger>();
-			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			_dataProcessorFactory = Substitute.For<IDataProcessorFactory>();
-			_dataConverterFactory = new(_dataProcessorFactory);
+			// Arrange
+			const string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+			// Act
+			var xlsxDataConverter = _dataConverterFactory.CreateDataConverter(mediaType);
+
+			// Assert
+			Assert.IsType<XlsxDataConverter>(xlsxDataConverter);
 		}
 
 		[Fact]
-		public void CreateStreamProcessor_VallidExtension_ReturnsCorrectStreamProcessor()
+		public void CreateStreamProcessor_InvalidMediaType_ThrowsArgumentException()
 		{
 			// Arrange
-			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-			string fileName = "Worldwide Rig Count.xlsx";
-			using MemoryStream memoryStream = new();
-
-			Data data = new(mediaType, fileName, memoryStream);
-
-			_dataProcessorFactory.CreateFileConverter(data).Returns(new RigCountDataProcessor(_logger, _configuration));
+			const string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
 
 			// Act
-			IDataConverter excelDataConverter = _dataConverterFactory.CreateDataConverter(data);
+			void Act() => _dataConverterFactory.CreateDataConverter(mediaType);
 
 			// Assert
-			Assert.IsType<XlsxDataConverter>(excelDataConverter);
-		}
-
-		[Fact]
-		public void CreateStreamProcessor_InvallidExtension_ThrowsArgumentException()
-		{
-			// Arrange
-			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
-			string fileName = "Worldwide Rig Count.xlsx";
-			using MemoryStream memoryStream = new();
-
-			Data data = new(mediaType, fileName, memoryStream);
-
-			// Act
-			void act() => _dataConverterFactory.CreateDataConverter(data);
-
-			// Assert
-			Assert.Throws<ArgumentException>(act);
+			Assert.Throws<ArgumentException>(Act);
 		}
 	}
 }

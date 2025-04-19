@@ -1,77 +1,71 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
-using RigCountDownloader.FileConverters;
+using OfficeOpenXml;
+using RigCountDownloader.Domain.Interfaces.Factories;
+using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Services.DataProcessors;
 using Xunit;
 
-namespace RigCountDownloader.Tests
+namespace RigCountDownloader.Tests.Services.Factories
 {
 	public class DataProcessorFactoryTests : TestFixture
 	{
-		private readonly IConfiguration _configuration;
 		private readonly IDataProcessorFactory _dataProcessorFactory;
 
 		public DataProcessorFactoryTests()
 		{
-			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
 			_dataProcessorFactory = ServiceProvider.GetRequiredService<IDataProcessorFactory>();
 		}
 
 		[Fact]
-		public void CreateFileConverter_VallidExtensions_ReturnsCorrectFileConverter()
+		public void CreateXlsxDataProcessor_ValidExtensions_ReturnsCorrectResult()
 		{
 			// Arrange
-			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-			string fileName = "Worldwide Rig Count.xlsx";
-			using MemoryStream memoryStream = new();
+			const string fileType = "xlsx";
+			const string fileName = "Worldwide Rig Count.xlsx";
+			using var memoryStream = new MemoryStream();
 
-			Data data = new(mediaType, fileName, memoryStream);
-
-			_configuration["OutputFileType"].Returns("csv");
+			var data = new XlsxData(fileType, fileName, new ExcelPackage(memoryStream));
 
 			// Act
-			IDataProcessor dataProcessor = _dataProcessorFactory.CreateFileConverter(data);
+			var dataProcessor = _dataProcessorFactory.CreateDataProcessor(data);
 
 			// Assert
 			Assert.IsType<RigCountDataProcessor>(dataProcessor);
 		}
 
 		[Fact]
-		public void CreateStreamProcessor_InvallidInputExtension_ThrowsArgumentException()
+		public void CreateDataProcessor_InvalidFileType_ThrowsArgumentException()
 		{
 			// Arrange
-			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
-			string fileName = "Worldwide Rig Count.xlsx";
-			using MemoryStream memoryStream = new();
+			const string fileType = "pdf";
+			const string fileName = "Worldwide Rig Count.xlsx";
+			using var memoryStream = new MemoryStream();
 
-			Data data = new(mediaType, fileName, memoryStream);
-
-			_configuration["OutputFileLocation"].Returns("Worldwide Rig Count Jul 2023.csv");
+			var data = new XlsxData(fileType, fileName, memoryStream);
 
 			// Act
-			void act() => _dataProcessorFactory.CreateFileConverter(data);
+			void Act() => _dataProcessorFactory.CreateDataProcessor(data);
 
 			// Assert
-			Assert.Throws<ArgumentException>(act);
+			Assert.Throws<ArgumentException>(Act);
 		}
 
 		[Fact]
-		public void CreateStreamProcessor_InvallidOutputExtension_ThrowsArgumentException()
+		public void CreateDataProcessor_InvalidFileName_ThrowsArgumentException()
 		{
 			// Arrange
-			string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.pdf";
-			string fileName = "Worldwide Rig Count.xlsx";
-			using MemoryStream memoryStream = new();
+			const string fileType = "xlsx";
+			const string fileName = "Worldwide Rig Rate.xlsx";
+			using var memoryStream = new MemoryStream();
 
-			Data data = new(mediaType, fileName, memoryStream);
-
-			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.docx");
+			var data = new XlsxData(fileType, fileName, memoryStream);
 
 			// Act
-			void act() => _dataProcessorFactory.CreateFileConverter(data);
+			void Act() => _dataProcessorFactory.CreateDataProcessor(data);
 
 			// Assert
-			Assert.Throws<ArgumentException>(act);
+			Assert.Throws<ArgumentException>(Act);
 		}
 	}
 }
