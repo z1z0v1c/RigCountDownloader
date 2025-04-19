@@ -8,13 +8,13 @@ namespace RigCountDownloader.Application
     public class Application(
         ILogger logger,
         IConfiguration configuration,
-        StreamDownloader streamDownloader,
+        HttpDataLoader httpDataLoader,
         StreamProcessorFactory fileServiceFactory
     )
     {
         private readonly ILogger _logger = logger;
         private readonly IConfiguration _configuration = configuration;
-        private readonly StreamDownloader _streamDownloader = streamDownloader;
+        private readonly HttpDataLoader _httpDataLoader = httpDataLoader;
         private readonly StreamProcessorFactory _streamProcessorFactory = fileServiceFactory;
 
         public async Task RunAsync()
@@ -31,7 +31,7 @@ namespace RigCountDownloader.Application
                     
                 _logger.Information($"Retrieving source file from {settings.SourceFileLocation}...");
 
-                var response = await _streamDownloader.DownloadFileAsStreamAsync(new(settings.SourceFileLocation));
+                var response = await _httpDataLoader.DownloadFileAsStreamAsync(new(settings.SourceFileLocation));
 
                 _logger.Information($"Download completed successfully. Received {response.MemoryStream.Length} bytes.");
 

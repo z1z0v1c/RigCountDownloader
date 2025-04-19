@@ -2,12 +2,12 @@
 
 namespace RigCountDownloader
 {
-	public class StreamDownloader
+	public class HttpDataLoader : IDataLoader
 	{
 		private readonly ILogger _logger;
 		private readonly HttpClient _httpClient;
 
-		public StreamDownloader(ILogger logger, HttpClient httpClient)
+		public HttpDataLoader(ILogger logger, HttpClient httpClient)
 		{
 			_logger = logger;
 			_httpClient = httpClient;
@@ -45,26 +45,18 @@ namespace RigCountDownloader
 			try
 			{
 				// Use ResponseHeadersRead to start processing as soon as headers are available
-				HttpResponseMessage response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+				HttpResponseMessage response = 
+					await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+
 				// Throw an exception if the call is not successful
 				response.EnsureSuccessStatusCode();
 
-				// Get media type
-				string? mediaType = response.Content.Headers.ContentType?.MediaType;
-
-				// Get file name
-				string? fileName = null;
-				if (response.Content.Headers.ContentDisposition?.FileNameStar != null)
-				{
-					fileName = response.Content.Headers.ContentDisposition.FileNameStar;
-				}
-				else if (response.Content.Headers.ContentDisposition?.FileName != null)
-				{
-					fileName = response.Content.Headers.ContentDisposition.FileName;
-				}
+				string? mediaType = GetMediaType(response);
+				string? fileName = GetFileName(response);
 
 				// Create a memory stream that can be returned while allowing the response to be disposed
 				var memoryStream = new MemoryStream();
+
 				await using (var contentStream = await response.Content.ReadAsStreamAsync())
 				{
 					await contentStream.CopyToAsync(memoryStream);
@@ -72,7 +64,6 @@ namespace RigCountDownloader
 
 				// Reset position to beginning so the caller can read from the start
 				memoryStream.Position = 0;
-				_logger.Information($"Download completed successfully. Received {memoryStream.Length} bytes.");
 
 				return new Response(mediaType, fileName, memoryStream);
 			}
@@ -95,6 +86,23 @@ namespace RigCountDownloader
 			{
 				_logger.Error(ex, $"Unexpected error when downloading from {uri}");
 				throw;
+			}
+		}
+
+		private static string? GetMediaType(HttpResponseMessage response)
+		{
+			return response.Content.Headers.ContentType?.MediaType;
+		}
+
+		private static string? GetFileName(HttpResponseMessage response)
+		{
+			if (response.Content.Headers.ContentDisposition?.FileNameStar != null)
+			{
+				return response.Content.Headers.ContentDisposition.FileNameStar;
+			}
+			else 
+			{
+				return response.Content.Headers.ContentDisposition?.FileName;
 			}
 		}
 	}

@@ -1,5 +1,4 @@
 using System.Net;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RichardSzalay.MockHttp;
@@ -8,18 +7,17 @@ using Xunit;
 
 namespace RigCountDownloader.Tests
 {
-	public class StreamDownloaderTests : TestFixture
+	public class HttpDataLoaderTests : TestFixture
 	{
 		private readonly ILogger _logger;
-		private readonly IConfiguration _configuration;
 		private readonly MockHttpMessageHandler _requestHandler;
-		private readonly StreamDownloader _streamDownloader;
+		private readonly HttpDataLoader _httpDataLoader;
 
-		public StreamDownloaderTests()
+		public HttpDataLoaderTests()
 		{
 			_logger = ServiceProvider.GetRequiredService<ILogger>();
 			_requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
-			_streamDownloader = new StreamDownloader(_logger, _requestHandler.ToHttpClient());
+			_httpDataLoader = new HttpDataLoader(_logger, _requestHandler.ToHttpClient());
 		}
 
 		[Fact]
@@ -44,7 +42,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Response file = await _streamDownloader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
+			Response file = await _httpDataLoader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
 
 			// Assert
 			Assert.Equal(memoryStreamBytes.Length, file.MemoryStream.Length);
@@ -66,7 +64,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
+			async Task act() => await _httpDataLoader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
 
             // Assert
             await Assert.ThrowsAsync<HttpRequestException>(act);
@@ -79,7 +77,7 @@ namespace RigCountDownloader.Tests
 			string? inputFileUri = null;
 
 			// Act
-			async Task act() => await _streamDownloader.DownloadFileAsStreamAsync(new Uri(inputFileUri!));
+			async Task act() => await _httpDataLoader.DownloadFileAsStreamAsync(new Uri(inputFileUri!));
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(act);

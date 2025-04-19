@@ -20,7 +20,7 @@ ServiceProvider serviceProvider = new ServiceCollection()
 	.AddHttpClient()
 	.AddSingleton<ILogger>(log)
 	.AddSingleton<IConfiguration>(configurationRoot)
-	.AddTransient<StreamDownloader>()
+	.AddTransient<HttpDataLoader>()
 	.AddTransient<StreamProcessorFactory>()
 	.AddTransient<IFileConverterFactory, FileConverterFactory>()
 	.BuildServiceProvider();
@@ -28,7 +28,7 @@ ServiceProvider serviceProvider = new ServiceCollection()
 // Resolve dependencies
 ILogger logger = serviceProvider.GetRequiredService<ILogger>();
 IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-StreamDownloader streamDownloader = serviceProvider.GetRequiredService<StreamDownloader>();
+HttpDataLoader httpDataLoader = serviceProvider.GetRequiredService<HttpDataLoader>();
 StreamProcessorFactory streamProcessorFactory = serviceProvider.GetRequiredService<StreamProcessorFactory>();
 
-await new Application(logger, configuration, streamDownloader, streamProcessorFactory).RunAsync();
+await new Application(logger, configuration, httpDataLoader, streamProcessorFactory).RunAsync();
