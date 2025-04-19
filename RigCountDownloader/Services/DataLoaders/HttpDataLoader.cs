@@ -40,7 +40,7 @@ namespace RigCountDownloader
 			_httpClient.Timeout = TimeSpan.FromMinutes(5);
 		}
 
-		public async Task<Response> DownloadFileAsStreamAsync(Uri uri)
+		public async Task<Response> LoadDataAsync(Uri uri)
 		{
 			try
 			{

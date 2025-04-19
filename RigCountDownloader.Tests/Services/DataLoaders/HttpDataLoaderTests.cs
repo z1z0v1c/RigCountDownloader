@@ -42,7 +42,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			Response file = await _httpDataLoader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
+			Response file = await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
 
 			// Assert
 			Assert.Equal(memoryStreamBytes.Length, file.MemoryStream.Length);
@@ -64,7 +64,7 @@ namespace RigCountDownloader.Tests
 				});
 
 			// Act
-			async Task act() => await _httpDataLoader.DownloadFileAsStreamAsync(new Uri(inputFileUri));
+			async Task act() => await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
 
             // Assert
             await Assert.ThrowsAsync<HttpRequestException>(act);
@@ -77,7 +77,7 @@ namespace RigCountDownloader.Tests
 			string? inputFileUri = null;
 
 			// Act
-			async Task act() => await _httpDataLoader.DownloadFileAsStreamAsync(new Uri(inputFileUri!));
+			async Task act() => await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri!));
 
             // Assert
             await Assert.ThrowsAsync<ArgumentNullException>(act);

@@ -2,25 +2,26 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using RigCountDownloader.FileConverters;
+using RigCountDownloader.Services.Factories;
 using RigCountDownloader.StreamProcessors;
 using Serilog;
 using Xunit;
 
 namespace RigCountDownloader.Tests
 {
-	public class StreamProcessorFactoryTests : TestFixture
+	public class DataConverterFactoryTests : TestFixture
 	{
 		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
-		private readonly IFileConverterFactory _fileConverterFactory;
-		private readonly StreamProcessorFactory _streamProcessorFactory;
+		private readonly IDataProcessorFactory _dataProcessorFactory;
+		private readonly DataConverterFactory _dataConverterFactory;
 
-		public StreamProcessorFactoryTests()
+		public DataConverterFactoryTests()
 		{
 			_logger = ServiceProvider.GetRequiredService<ILogger>();
 			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			_fileConverterFactory = Substitute.For<IFileConverterFactory>();
-			_streamProcessorFactory = new(_configuration, _fileConverterFactory);
+			_dataProcessorFactory = Substitute.For<IDataProcessorFactory>();
+			_dataConverterFactory = new(_dataProcessorFactory);
 		}
 
 		[Fact]
@@ -33,13 +34,13 @@ namespace RigCountDownloader.Tests
 
 			Response response = new(mediaType, fileName, memoryStream);
 
-			_fileConverterFactory.CreateFileConverter(response).Returns(new WWRCExcelToCsvConverter(_logger, _configuration));
+			_dataProcessorFactory.CreateFileConverter(response).Returns(new RigCountDataProcessor(_logger, _configuration));
 
 			// Act
-			IStreamProcessor excelStreamProcessor = _streamProcessorFactory.CreateStreamProcessor(response);
+			IDataConverter excelDataConverter = _dataConverterFactory.CreateDataConverter(response);
 
 			// Assert
-			Assert.IsType<ExcelStreamProcessor>(excelStreamProcessor);
+			Assert.IsType<XlsxDataConverter>(excelDataConverter);
 		}
 
 		[Fact]
@@ -53,7 +54,7 @@ namespace RigCountDownloader.Tests
 			Response response = new(mediaType, fileName, memoryStream);
 
 			// Act
-			void act() => _streamProcessorFactory.CreateStreamProcessor(response);
+			void act() => _dataConverterFactory.CreateDataConverter(response);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);

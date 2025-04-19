@@ -24,8 +24,8 @@ namespace RigCountDownloader.Tests
 				.AddSingleton(provider => Substitute.For<ILogger>())
 				.AddSingleton(provider => Substitute.For<IConfiguration>())
 				.AddSingleton<MockHttpMessageHandler>()
-				.AddTransient<IFileConverterFactory, FileConverterFactory>()
-				.AddTransient<WWRCExcelToCsvConverter>();
+				.AddTransient<IDataProcessorFactory, DataProcessorFactory>()
+				.AddTransient<RigCountDataProcessor>();
 
 			ServiceProvider = services.BuildServiceProvider();
 		}

@@ -2,11 +2,11 @@
 
 namespace RigCountDownloader.FileConverters
 {
-	public abstract class ExcelFileConverter : IFileConverter
+	public abstract class ExcelDataProcessor : IDataProcessor
 	{
 		// Nullable?
 		public ExcelPackage ExcelPackage { get; set; } = new ExcelPackage();
 
-		public abstract Task ConvertAndSaveAsync();
+		public abstract Task ProcessAndSaveAsync();
 	}
 }

@@ -6,15 +6,15 @@ using Xunit;
 
 namespace RigCountDownloader.Tests
 {
-	public class FileConverterFactoryTests : TestFixture
+	public class DataProcessorFactoryTests : TestFixture
 	{
 		private readonly IConfiguration _configuration;
-		private readonly IFileConverterFactory _fileConverterFactory;
+		private readonly IDataProcessorFactory _dataProcessorFactory;
 
-		public FileConverterFactoryTests()
+		public DataProcessorFactoryTests()
 		{
 			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			_fileConverterFactory = ServiceProvider.GetRequiredService<IFileConverterFactory>();
+			_dataProcessorFactory = ServiceProvider.GetRequiredService<IDataProcessorFactory>();
 		}
 
 		[Fact]
@@ -30,10 +30,10 @@ namespace RigCountDownloader.Tests
 			_configuration["OutputFileType"].Returns("csv");
 
 			// Act
-			IFileConverter fileConverter = _fileConverterFactory.CreateFileConverter(response);
+			IDataProcessor dataProcessor = _dataProcessorFactory.CreateFileConverter(response);
 
 			// Assert
-			Assert.IsType<WWRCExcelToCsvConverter>(fileConverter);
+			Assert.IsType<RigCountDataProcessor>(dataProcessor);
 		}
 
 		[Fact]
@@ -49,7 +49,7 @@ namespace RigCountDownloader.Tests
 			_configuration["OutputFileLocation"].Returns("Worldwide Rig Count Jul 2023.csv");
 
 			// Act
-			void act() => _fileConverterFactory.CreateFileConverter(response);
+			void act() => _dataProcessorFactory.CreateFileConverter(response);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);
@@ -68,7 +68,7 @@ namespace RigCountDownloader.Tests
 			_configuration["OutputFileName"].Returns("Worldwide Rig Count Jul 2023.docx");
 
 			// Act
-			void act() => _fileConverterFactory.CreateFileConverter(response);
+			void act() => _dataProcessorFactory.CreateFileConverter(response);
 
 			// Assert
 			Assert.Throws<ArgumentException>(act);

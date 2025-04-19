@@ -8,17 +8,17 @@ using Xunit;
 
 namespace RigCountDownloader.Tests.FileConverters
 {
-	public class WWRCExcelToCsvConverterTests : TestFixture
+	public class RigCountDataProcessorTests : TestFixture
 	{
 		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
-		private readonly WWRCExcelToCsvConverter _fileConverter;
+		private readonly RigCountDataProcessor _fileConverter;
 
-		public WWRCExcelToCsvConverterTests()
+		public RigCountDataProcessorTests()
 		{
 			_logger = ServiceProvider.GetRequiredService<ILogger>();
 			_configuration = ServiceProvider.GetRequiredService<IConfiguration>();
-			_fileConverter = ServiceProvider.GetRequiredService<WWRCExcelToCsvConverter>();
+			_fileConverter = ServiceProvider.GetRequiredService<RigCountDataProcessor>();
 		}
 
 		[Fact]

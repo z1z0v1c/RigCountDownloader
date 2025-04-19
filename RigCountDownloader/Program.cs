@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
 using RigCountDownloader.Application;
 using RigCountDownloader.FileConverters;
+using RigCountDownloader.Services.Factories;
 using RigCountDownloader.StreamProcessors;
 using Serilog;
 
@@ -21,14 +22,14 @@ ServiceProvider serviceProvider = new ServiceCollection()
 	.AddSingleton<ILogger>(log)
 	.AddSingleton<IConfiguration>(configurationRoot)
 	.AddTransient<HttpDataLoader>()
-	.AddTransient<StreamProcessorFactory>()
-	.AddTransient<IFileConverterFactory, FileConverterFactory>()
+	.AddTransient<DataConverterFactory>()
+	.AddTransient<IDataProcessorFactory, DataProcessorFactory>()
 	.BuildServiceProvider();
 
 // Resolve dependencies
 ILogger logger = serviceProvider.GetRequiredService<ILogger>();
 IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
 HttpDataLoader httpDataLoader = serviceProvider.GetRequiredService<HttpDataLoader>();
-StreamProcessorFactory streamProcessorFactory = serviceProvider.GetRequiredService<StreamProcessorFactory>();
+DataConverterFactory dataConverterFactory = serviceProvider.GetRequiredService<DataConverterFactory>();
 
-await new Application(logger, configuration, httpDataLoader, streamProcessorFactory).RunAsync();
+await new Application(logger, configuration, httpDataLoader, dataConverterFactory).RunAsync();

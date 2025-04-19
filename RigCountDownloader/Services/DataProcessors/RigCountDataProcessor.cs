@@ -4,21 +4,18 @@ using Serilog;
 
 namespace RigCountDownloader.FileConverters
 {
-	public class WWRCExcelToCsvConverter(ILogger logger, IConfiguration configuration) : ExcelFileConverter
+	public class RigCountDataProcessor(ILogger logger, IConfiguration configuration) : ExcelDataProcessor
 	{
-		private readonly ILogger _logger = logger;
-		private readonly IConfiguration _configuration = configuration;
-
-        public override async Task ConvertAndSaveAsync()
+		public override async Task ProcessAndSaveAsync()
 		{
 			await ConvertAndSaveAsync(ExcelPackage);
 		}
 
 		public async Task ConvertAndSaveAsync(ExcelPackage package)
 		{
-			_logger.Information("Converting the Excel file to a CSV file...");
+			logger.Information("Converting the Excel file to a CSV file...");
 
-			string outputFilePath = $"{Directory.GetCurrentDirectory()}\\{_configuration["OutputFileLocation"]}";
+			string outputFilePath = $"{Directory.GetCurrentDirectory()}\\{configuration["OutputFileLocation"]}";
 			using StreamWriter writer = new(outputFilePath);
 
 			// Apply for each worksheet?
@@ -40,7 +37,7 @@ namespace RigCountDownloader.FileConverters
 				await writer.WriteLineAsync(string.Join(",", cellValues));
 			}
 
-			_logger.Information($"The CSV file saved to {outputFilePath}.");
+			logger.Information($"The CSV file saved to {outputFilePath}.");
 		}
 
 		private static int FindRowIndex(ExcelWorksheet? worksheet, string searchValue, int startIndex = 1)
