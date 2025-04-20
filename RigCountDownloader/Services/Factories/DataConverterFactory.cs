@@ -1,6 +1,6 @@
-﻿using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.Services;
+﻿using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
+using RigCountDownloader.Domain.Models.Enums;
 using RigCountDownloader.Services.DataConverters;
 
 namespace RigCountDownloader.Services.Factories
@@ -9,7 +9,7 @@ namespace RigCountDownloader.Services.Factories
 	{
 		public IDataConverter CreateDataConverter(string mediaType)
 		{
-			if (mediaType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+			if (mediaType == MediaType.Spreadsheet)
 			{
 				return new XlsxDataConverter();
 			}

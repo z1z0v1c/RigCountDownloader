@@ -1,7 +1,7 @@
-﻿using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.Services;
+﻿using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
 using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Domain.Models.Enums;
 using RigCountDownloader.Services.DataLoaders;
 using Serilog;
 
@@ -11,7 +11,7 @@ public class DataLoaderFactory(ILogger logger, HttpClient httpClient) : IDataLoa
 {
     public IDataLoader CreateDataLoader(Settings settings, CancellationToken cancellationToken)
     {
-        if (settings.SourceType == "http")
+        if (settings.SourceType == SourceType.Http)
         {
             return new HttpDataLoader(logger, httpClient);
         }

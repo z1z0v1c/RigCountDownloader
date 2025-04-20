@@ -2,5 +2,5 @@
 
 public interface IFileWriterFactory
 {
-    IFileWriter CreateFileWriter(string fileType, string fileLocation);
+    IFileWriter CreateFileWriter(string fileFormat, string fileLocation);
 }

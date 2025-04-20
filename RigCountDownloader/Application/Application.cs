@@ -16,10 +16,10 @@ namespace RigCountDownloader.Application
             try
             {
                 Settings settings = new(
-                    configuration["SourceType"]!,
-                    configuration["SourceFileLocation"]!,
-                    configuration["OutputFileLocation"]!,
-                    configuration["OutputFileFormat"]!
+                    SourceType:         configuration["SourceType"]!,
+                    SourceFileLocation: configuration["SourceFileLocation"]!,
+                    OutputFileLocation: configuration["OutputFileLocation"]!,
+                    OutputFileFormat:   configuration["OutputFileFormat"]!
                 );
 
                 await pipeline.ExecuteAsync(settings, cancellationToken);

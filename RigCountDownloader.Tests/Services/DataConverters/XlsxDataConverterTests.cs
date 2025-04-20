@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Domain.Models.Enums;
 using RigCountDownloader.Services.DataConverters;
 using Xunit;
 
@@ -11,9 +12,9 @@ namespace RigCountDownloader.Tests.Services.DataConverters
         public void ConvertDataAsync_CorrectMemoryStream_ReturnsCorrectResult()
         {
             // Arrange
-            const string fileType = "xlsx";
+            const string fileFormat = FileFormat.Xlsx;
             const string fileName = "Worldwide Rig Count.xlsx";
-            const string mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            const string mediaType = MediaType.Spreadsheet;
 
             var memoryStreamBytes = new byte[]
             {
@@ -33,7 +34,7 @@ namespace RigCountDownloader.Tests.Services.DataConverters
 
             // Assert
             Assert.Equal(fileName, convertedData.FileName);
-            Assert.Equal(fileType, convertedData.FileType);
+            Assert.Equal(fileFormat, convertedData.FileType);
             Assert.Equal(expectedPackage.GetAsByteArray(), convertedPackage.GetAsByteArray());
 
             // _dataProcessorFactory.Received(1).CreateDataProcessor(data);

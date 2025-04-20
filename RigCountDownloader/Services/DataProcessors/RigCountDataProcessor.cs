@@ -1,5 +1,4 @@
 ﻿using OfficeOpenXml;
-using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Interfaces.Services;
 using Serilog;
 
@@ -12,13 +11,9 @@ namespace RigCountDownloader.Services.DataProcessors
         {
             Logger.Information("Converting the Excel file to a CSV file...");
 
-            // var outputFilePath = $"{Directory.GetCurrentDirectory()}\\{Configuration["OutputFileLocation"]}";
-            // await using StreamWriter writer = new(outputFilePath);
-
             var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
 
-            // Could be improved?
             var startRowIndex = FindRowIndex(worksheet, "Europe");
             var endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
 
