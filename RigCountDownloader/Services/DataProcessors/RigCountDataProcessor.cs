@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Services;
 using Serilog;
 
 namespace RigCountDownloader.Services.DataProcessors
@@ -36,7 +36,7 @@ namespace RigCountDownloader.Services.DataProcessors
 
             await FileWriter.DisposeAsync();
 
-            Logger.Information($"The CSV file saved to {FileWriter.FileLocation}.");
+            Logger.Information($"The CSV file saved to a file.");
         }
 
         private static int FindRowIndex(ExcelWorksheet? worksheet, string searchValue, int startIndex = 1)

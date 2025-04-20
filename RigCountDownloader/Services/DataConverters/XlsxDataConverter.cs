@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Domain.Models;
 
 namespace RigCountDownloader.Services.DataConverters

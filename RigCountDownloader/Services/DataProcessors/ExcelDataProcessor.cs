@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Services;
 using Serilog;
 
 namespace RigCountDownloader.Services.DataProcessors

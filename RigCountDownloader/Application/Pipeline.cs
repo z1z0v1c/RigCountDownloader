@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Serilog;
-using RigCountDownloader.Domain.Interfaces.Factories;
+using RigCountDownloader.Domain.Interfaces.Services.Factories;
 using RigCountDownloader.Domain.Models;
 
 namespace RigCountDownloader.Application;
@@ -20,12 +20,14 @@ public class Pipeline(
         try
         {
             var dataLoader = dataLoaderFactory.CreateDataLoader(settings, cancellationToken);
+            
             // Load data
             logger.Information($"Retrieving data from the source: {settings.SourceFileLocation}");
             using var data = await dataLoader.LoadDataAsync(new Uri(settings.SourceFileLocation!), cancellationToken);
             logger.Information($"Data retreived successfully. Received {data.MemoryStream.Length} bytes.");
             
             var dataConverter = dataConverterFactory.CreateDataConverter(data.MediaType!);
+            
             // Convert data
             logger.Information("Converting data...");
             var convertedData = dataConverter.ConvertData(data);
@@ -33,6 +35,7 @@ public class Pipeline(
 
             var fileWriter = fileWriterFactory.CreateFileWriter(settings.OutputFileFormat, settings.OutputFileLocation!);
             var processor = dataProcessorFactory.CreateDataProcessor(fileWriter, convertedData);
+            
             // Process and save data
             logger.Information("Processing data...");
             await processor.ProcessAndSaveAsync(cancellationToken);

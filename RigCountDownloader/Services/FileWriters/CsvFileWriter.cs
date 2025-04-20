@@ -1,22 +1,13 @@
 ﻿using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Services;
 
 namespace RigCountDownloader.Services.FileWriters;
 
-public class CsvFileWriter : IFileWriter
+public class CsvFileWriter(string fileLocation) : IFileWriter
 {
-    public CsvFileWriter()
-    {
-    }
+    public string FileLocation { get; } = fileLocation;
 
-    public CsvFileWriter(string fileLocation)
-    {
-        FileLocation = fileLocation;
-        StreamWriter = new StreamWriter(fileLocation);
-    }
-
-    public string FileLocation { get; set;  }
-    
-    public StreamWriter StreamWriter { get; }
+    private StreamWriter StreamWriter { get; } = new(fileLocation);
 
     public async Task WriteLineAsync(string line, CancellationToken cancellationToken)
     {

@@ -1,6 +1,6 @@
 ﻿using RigCountDownloader.Domain.Models;
 
-namespace RigCountDownloader.Domain.Interfaces.Factories;
+namespace RigCountDownloader.Domain.Interfaces.Services.Factories;
 
 public interface IDataLoaderFactory
 {

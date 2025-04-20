@@ -2,6 +2,7 @@
 using NSubstitute;
 using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Services.DataProcessors;
 using RigCountDownloader.Services.FileWriters;
 using Serilog;
@@ -37,7 +38,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             await DataProcessor.ProcessAndSaveAsync();
 
             // Assert
-            _logger.Received().Information($"The CSV file saved to {fileName}.");
+            _logger.Received().Information($"The CSV file saved to a file.");
         }
 
         [Fact]
