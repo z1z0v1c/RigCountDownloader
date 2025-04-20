@@ -1,18 +1,19 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
+using RigCountDownloader.Domain.Interfaces;
 using Serilog;
 
 namespace RigCountDownloader.Services.DataProcessors
 {
-    public class RigCountDataProcessor(ILogger logger, IConfiguration configuration, ExcelPackage excelPackage)
-        : ExcelDataProcessor(logger, configuration, excelPackage)
+    public class RigCountDataProcessor(ILogger logger, IFileWriter fileWriter, ExcelPackage excelPackage)
+        : ExcelDataProcessor(logger, fileWriter, excelPackage)
     {
         public override async Task ProcessAndSaveAsync(CancellationToken cancellationToken = default)
         {
             Logger.Information("Converting the Excel file to a CSV file...");
 
-            var outputFilePath = $"{Directory.GetCurrentDirectory()}\\{Configuration["OutputFileLocation"]}";
-            await using StreamWriter writer = new(outputFilePath);
+            // var outputFilePath = $"{Directory.GetCurrentDirectory()}\\{Configuration["OutputFileLocation"]}";
+            // await using StreamWriter writer = new(outputFilePath);
 
             var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
@@ -30,10 +31,12 @@ namespace RigCountDownloader.Services.DataProcessors
                     cellValues.Add(cellValue);
                 }
 
-                await writer.WriteLineAsync(string.Join(",", cellValues));
+                await FileWriter.WriteLineAsync(string.Join(",", cellValues), cancellationToken);
             }
 
-            Logger.Information($"The CSV file saved to {outputFilePath}.");
+            await FileWriter.DisposeAsync();
+
+            Logger.Information($"The CSV file saved to {FileWriter.FileLocation}.");
         }
 
         private static int FindRowIndex(ExcelWorksheet? worksheet, string searchValue, int startIndex = 1)

@@ -5,7 +5,7 @@ using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Services.Factories;
 using Serilog;
 
-await using var log = new LoggerConfiguration()
+await using var logger = new LoggerConfiguration()
 	.WriteTo.Console()
 	.WriteTo.File("./log.txt")
 	.CreateLogger();
@@ -15,14 +15,15 @@ var configurationRoot = new ConfigurationBuilder()
 	.Build();
 
 // Configure dependency injection
-ServiceProvider serviceProvider = new ServiceCollection()
+var serviceProvider = new ServiceCollection()
 	.AddHttpClient()
-	.AddSingleton<ILogger>(log)
+	.AddSingleton<ILogger>(logger)
 	.AddSingleton<IConfiguration>(configurationRoot)
 	// Register Factories
 	.AddSingleton<IDataLoaderFactory, DataLoaderFactory>()
 	.AddSingleton<IDataConverterFactory, DataConverterFactory>()
 	.AddSingleton<IDataProcessorFactory, DataProcessorFactory>()
+	.AddSingleton<IFileWriterFactory, FileWriterFactory>()
 	// Register Pipeline
 	.AddSingleton<Pipeline>()
 	// Register Application

@@ -9,6 +9,7 @@ public class Pipeline(
     IDataLoaderFactory dataLoaderFactory,
     IDataProcessorFactory dataProcessorFactory,
     IDataConverterFactory dataConverterFactory,
+    IFileWriterFactory fileWriterFactory,
     ILogger logger
 )
 {
@@ -30,7 +31,8 @@ public class Pipeline(
             var convertedData = dataConverter.ConvertData(data);
             logger.Information("Data converted successfully.");
 
-            var processor = dataProcessorFactory.CreateDataProcessor(convertedData);
+            var fileWriter = fileWriterFactory.CreateFileWriter(settings.OutputFileFormat, settings.OutputFileLocation!);
+            var processor = dataProcessorFactory.CreateDataProcessor(fileWriter, convertedData);
             // Process and save data
             logger.Information("Processing data...");
             await processor.ProcessAndSaveAsync(cancellationToken);
