@@ -2,9 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader;
 using RigCountDownloader.Application;
-using RigCountDownloader.Domain.Interfaces.DataConverters;
-using RigCountDownloader.Domain.Interfaces.DataLoaders;
-using RigCountDownloader.Domain.Interfaces.DataProcessors;
 using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Services.DataConverters;
 using RigCountDownloader.Services.DataLoaders;

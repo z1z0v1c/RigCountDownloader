@@ -1,6 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces.DataProcessors;
-
-namespace RigCountDownloader.Domain.Interfaces.Factories
+﻿namespace RigCountDownloader.Domain.Interfaces.Factories
 {
 	public interface IDataProcessorFactory
 	{

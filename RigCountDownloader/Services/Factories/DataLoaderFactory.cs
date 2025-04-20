@@ -1,4 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces.DataLoaders;
+﻿using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Models;
 using RigCountDownloader.Services.DataLoaders;
@@ -8,7 +8,7 @@ namespace RigCountDownloader.Services.Factories;
 
 public class DataLoaderFactory(ILogger logger, HttpClient httpClient) : IDataLoaderFactory
 {
-    public IDataLoader CreateDataLoader(Settings settings)
+    public IDataLoader CreateDataLoader(Settings settings, CancellationToken cancellationToken)
     {
         if (settings.SourceType == "http")
         {

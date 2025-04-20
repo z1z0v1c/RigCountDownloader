@@ -1,4 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces.DataConverters;
+﻿using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Services.DataConverters;
 

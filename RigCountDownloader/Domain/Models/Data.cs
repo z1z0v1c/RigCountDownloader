@@ -6,14 +6,8 @@ namespace RigCountDownloader.Domain.Models
         MemoryStream MemoryStream
     ) : IDisposable, IAsyncDisposable
     {
-        public void Dispose()
-        {
-            MemoryStream.Dispose();
-        }
+        public void Dispose() => MemoryStream.Dispose();
 
-        public async ValueTask DisposeAsync()
-        {
-            await MemoryStream.DisposeAsync();
-        }
+        public async ValueTask DisposeAsync() => await MemoryStream.DisposeAsync();
     }
 }

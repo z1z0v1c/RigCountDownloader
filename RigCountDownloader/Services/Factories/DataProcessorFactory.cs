@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.DataProcessors;
 using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Services.DataProcessors;
 using Serilog;

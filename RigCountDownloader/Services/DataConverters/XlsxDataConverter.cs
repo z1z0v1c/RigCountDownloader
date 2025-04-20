@@ -1,6 +1,5 @@
 ﻿using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.DataConverters;
 using RigCountDownloader.Domain.Models;
 
 namespace RigCountDownloader.Services.DataConverters
@@ -12,9 +11,9 @@ namespace RigCountDownloader.Services.DataConverters
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 		}
 
-		public async Task<IConvertedData> ConvertDataAsync(Data data)
-		{
-			return new XlsxData("xlsx", data.FileName!, new ExcelPackage(data.MemoryStream));
-		}
-	}
+        public IConvertedData ConvertData(Data data)
+        {
+            return new XlsxData("xlsx", data.FileName!, new ExcelPackage(data.MemoryStream));
+        }
+    }
 }

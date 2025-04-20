@@ -2,7 +2,6 @@
 using Serilog;
 using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Models;
-using RigCountDownloader.Services.Factories;
 
 namespace RigCountDownloader.Application;
 
@@ -13,32 +12,29 @@ public class Pipeline(
     ILogger logger
 )
 {
-    public async Task ExecuteAsync(Settings settings, CancellationToken cancellationToken = default)
+    public async Task ExecuteAsync(Settings settings, CancellationToken cancellationToken)
     {
-        logger.Information("Starting data processing pipeline with options: {Options}",
-            JsonSerializer.Serialize(settings));
+        logger.Information($"Starting data processing pipeline with options: {JsonSerializer.Serialize(settings)}");
 
         try
         {
+            var dataLoader = dataLoaderFactory.CreateDataLoader(settings, cancellationToken);
             // Load data
-            var dataLoader = dataLoaderFactory.CreateDataLoader(settings);
             logger.Information($"Retrieving data from the source: {settings.SourceFileLocation}");
-            logger.Information($"Retrieving source file from {settings.SourceFileLocation}...");
-            using var data = await dataLoader.LoadDataAsync(new Uri(settings.SourceFileLocation!));
-            logger.Information($"Download completed successfully. Received {data.MemoryStream.Length} bytes.");
+            using var data = await dataLoader.LoadDataAsync(new Uri(settings.SourceFileLocation!), cancellationToken);
+            logger.Information($"Data retreived successfully. Received {data.MemoryStream.Length} bytes.");
             
-            // Convert data
             var dataConverter = dataConverterFactory.CreateDataConverter(data.MediaType!);
+            // Convert data
             logger.Information("Converting data...");
-            var convertedData = await dataConverter.ConvertDataAsync(data);
+            var convertedData = dataConverter.ConvertData(data);
+            logger.Information("Data converted successfully.");
 
-            // Process and save data
             var processor = dataProcessorFactory.CreateDataProcessor(convertedData);
+            // Process and save data
             logger.Information("Processing data...");
-            // cancellationToken?
-             await processor.ProcessAndSaveAsync();
-
-            logger.Information("Data processing completed successfully");
+            await processor.ProcessAndSaveAsync(cancellationToken);
+            logger.Information("Data processed and saved successfully!");
         }
         catch (Exception ex)
         {

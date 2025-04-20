@@ -4,34 +4,29 @@ using Serilog;
 
 namespace RigCountDownloader.Services.DataProcessors
 {
-    public class RigCountDataProcessor : ExcelDataProcessor
+    public class RigCountDataProcessor(ILogger logger, IConfiguration configuration, ExcelPackage excelPackage)
+        : ExcelDataProcessor(logger, configuration, excelPackage)
     {
-        public RigCountDataProcessor(ILogger logger, IConfiguration configuration, ExcelPackage excelPackage)
-            : base(logger, configuration, excelPackage)
-        {
-        }
-
-        public override async Task ProcessAndSaveAsync()
+        public override async Task ProcessAndSaveAsync(CancellationToken cancellationToken = default)
         {
             Logger.Information("Converting the Excel file to a CSV file...");
 
-            string outputFilePath = $"{Directory.GetCurrentDirectory()}\\{Configuration["OutputFileLocation"]}";
-            using StreamWriter writer = new(outputFilePath);
+            var outputFilePath = $"{Directory.GetCurrentDirectory()}\\{Configuration["OutputFileLocation"]}";
+            await using StreamWriter writer = new(outputFilePath);
 
-            // Apply for each worksheet?
-            ExcelWorksheet? worksheet =
+            var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
 
             // Could be improved?
-            int startRowIndex = FindRowIndex(worksheet, "Europe");
-            int endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
+            var startRowIndex = FindRowIndex(worksheet, "Europe");
+            var endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
 
-            for (int row = startRowIndex; row <= endRowIndex; row++)
+            for (var row = startRowIndex; row <= endRowIndex; row++)
             {
                 var cellValues = new List<string>();
-                for (int col = 1; col <= worksheet?.Dimension?.Columns; col++)
+                for (var column = 1; column <= worksheet?.Dimension?.Columns; column++)
                 {
-                    var cellValue = worksheet.Cells[row, col].Text;
+                    var cellValue = worksheet.Cells[row, column].Text;
                     cellValues.Add(cellValue);
                 }
 
@@ -48,10 +43,10 @@ namespace RigCountDownloader.Services.DataProcessors
 
         private static int FindNthRowIndex(ExcelWorksheet? worksheet, string searchValue, int n, int startIndex = 1)
         {
-            int count = 0;
-            for (int row = startIndex; row <= worksheet?.Dimension?.End.Row; row++)
+            var count = 0;
+            for (var row = startIndex; row <= worksheet?.Dimension?.End.Row; row++)
             {
-                for (int col = 1; col <= worksheet.Dimension.End.Column; col++)
+                for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
                 {
                     if (string.Equals(worksheet.Cells[row, col].Text, searchValue, StringComparison.OrdinalIgnoreCase))
                     {

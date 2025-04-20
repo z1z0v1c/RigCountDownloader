@@ -1,4 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces.DataLoaders;
+﻿using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Models;
 using Serilog;
 
@@ -42,13 +42,13 @@ namespace RigCountDownloader.Services.DataLoaders
 			_httpClient.Timeout = TimeSpan.FromMinutes(5);
 		}
 
-		public async Task<Data> LoadDataAsync(Uri uri)
+		public async Task<Data> LoadDataAsync(Uri uri, CancellationToken cancellationToken = default)
 		{
 			try
 			{
 				// Use ResponseHeadersRead to start processing as soon as headers are available
 				HttpResponseMessage response = 
-					await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead);
+					await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
 				// Throw an exception if the call is not successful
 				response.EnsureSuccessStatusCode();
@@ -59,9 +59,9 @@ namespace RigCountDownloader.Services.DataLoaders
 				// Create a memory stream that can be returned while allowing the response to be disposed
 				var memoryStream = new MemoryStream();
 
-				await using (var contentStream = await response.Content.ReadAsStreamAsync())
+				await using (var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken))
 				{
-					await contentStream.CopyToAsync(memoryStream);
+					await contentStream.CopyToAsync(memoryStream, cancellationToken);
 				}
 
 				// Reset position to beginning so the caller can read from the start

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using RigCountDownloader.Domain.Interfaces.DataConverters;
 using RigCountDownloader.Domain.Models;
-using RigCountDownloader.Services.Factories;
 using Serilog;
 
 namespace RigCountDownloader.Application
@@ -16,8 +14,9 @@ namespace RigCountDownloader.Application
         private readonly IConfiguration _configuration = configuration;
         private readonly Pipeline _pipeline = pipeline;
 
-        public async Task RunAsync()
+        public async Task RunAsync(CancellationToken cancellationToken = default)
         {
+            // TODO Implement cancellaton logic
             try
             {
                 Settings settings = new(
@@ -27,9 +26,8 @@ namespace RigCountDownloader.Application
                     OutputFileLocation: _configuration["OutputFileLocation"]!,
                     OutputFileFormat: _configuration["OutputFileFormat"]!
                 );
-                    
 
-                await pipeline.ExecuteAsync(settings);
+                await pipeline.ExecuteAsync(settings, cancellationToken);
             }
             catch (Exception ex)
             {
