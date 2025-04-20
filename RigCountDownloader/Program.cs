@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RigCountDownloader;
 using RigCountDownloader.Application;
 using RigCountDownloader.Domain.Interfaces.Factories;
-using RigCountDownloader.Services.DataConverters;
-using RigCountDownloader.Services.DataLoaders;
-using RigCountDownloader.Services.DataProcessors;
 using RigCountDownloader.Services.Factories;
 using Serilog;
 
@@ -23,17 +19,15 @@ ServiceProvider serviceProvider = new ServiceCollection()
 	.AddHttpClient()
 	.AddSingleton<ILogger>(log)
 	.AddSingleton<IConfiguration>(configurationRoot)
-	// Register factories
-	.AddTransient<IDataLoaderFactory, DataLoaderFactory>()
-	.AddTransient<IDataConverterFactory, DataConverterFactory>()
-	.AddTransient<IDataProcessorFactory, DataProcessorFactory>()
-	// Register pipeline
-	.AddTransient<Pipeline>()
+	// Register Factories
+	.AddSingleton<IDataLoaderFactory, DataLoaderFactory>()
+	.AddSingleton<IDataConverterFactory, DataConverterFactory>()
+	.AddSingleton<IDataProcessorFactory, DataProcessorFactory>()
+	// Register Pipeline
+	.AddSingleton<Pipeline>()
+	// Register Application
+	.AddSingleton<Application>()
 	.BuildServiceProvider();
 
-// Resolve dependencies
-ILogger logger = serviceProvider.GetRequiredService<ILogger>();
-IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-Pipeline pipeline = serviceProvider.GetRequiredService<Pipeline>();
-
-await new Application(logger, configuration, pipeline).RunAsync();
+// Resolve and run Application
+await serviceProvider.GetRequiredService<Application>().RunAsync();

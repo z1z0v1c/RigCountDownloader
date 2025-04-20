@@ -16,7 +16,7 @@ namespace RigCountDownloader.Application
 
         public async Task RunAsync(CancellationToken cancellationToken = default)
         {
-            // TODO Implement cancellaton logic
+            // TODO Implement cancellation logic
             try
             {
                 Settings settings = new(
