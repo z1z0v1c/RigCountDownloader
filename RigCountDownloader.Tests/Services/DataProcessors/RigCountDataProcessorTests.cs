@@ -37,7 +37,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             await DataProcessor.ProcessAndSaveAsync();
 
             // Assert
-            _logger.Received().Information($"The CSV file saved to a file.");
+            _logger.Received().Information("The CSV file saved to a file.");
         }
 
         [Fact]
