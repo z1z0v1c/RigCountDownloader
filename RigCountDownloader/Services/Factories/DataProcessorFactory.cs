@@ -11,12 +11,12 @@ namespace RigCountDownloader.Services.Factories
     {
         public IDataProcessor CreateDataProcessor(
             IFileWriter fileWriter,
+            string context,
             string fileFormat,
-            string fileName,
             object data
         )
         {
-            if (fileFormat == FileFormat.Xlsx && fileName.Contains("Worldwide Rig Count"))
+            if (context == Context.RigCount && fileFormat == FileFormat.Xlsx)
             {
                 return new RigCountDataProcessor(logger, fileWriter, (ExcelPackage)data);
             }

@@ -36,7 +36,7 @@ public class Pipeline(
         IFileWriter fileWriter = fileWriterFactory.CreateFileWriter(
             settings.OutputFileFormat, settings.OutputFileLocation);
         IDataProcessor processor = dataProcessorFactory.CreateDataProcessor(
-            fileWriter, convertedData.FileFormat, convertedData.FileName, convertedData.Data);
+            fileWriter, settings.Context, convertedData.FileFormat, convertedData.Data);
 
         // Process and save data
         logger.Information("Processing data...");

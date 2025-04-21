@@ -16,6 +16,7 @@ namespace RigCountDownloader.Application
             try
             {
                 Settings settings = new(
+                    Context:            configuration["Context"]!,
                     SourceType:         configuration["SourceType"]!,
                     SourceFileLocation: configuration["SourceFileLocation"]!,
                     OutputFileLocation: configuration["OutputFileLocation"]!,
@@ -26,7 +27,7 @@ namespace RigCountDownloader.Application
             }
             catch (Exception ex)
             {
-                logger.Error($"An exception occurred: {ex.Message}");
+                logger.Error($"An exception has occurred: {ex.Message}");
                 logger.Error($"Stack Trace: {ex.StackTrace}");
             }
         }

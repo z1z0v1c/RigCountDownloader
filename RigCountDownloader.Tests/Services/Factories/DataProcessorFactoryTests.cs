@@ -19,19 +19,19 @@ namespace RigCountDownloader.Tests.Services.Factories
 		}
 		
 		[Fact]
-		public void CreateXlsxDataProcessor_ValidExtensions_ReturnsCorrectResult()
+		public void CreateXlsxDataProcessor_ValidSettings_ReturnsCorrectResult()
 		{
 			// Arrange
 			IFileWriter fileWriter = new CsvFileWriter("test1.csv");
 			
+			const string context = "Rig Count";
 			const string fileFormat = "xlsx";
-			const string fileName = "Worldwide Rig Count.xlsx";
 			using var memoryStream = new MemoryStream();
 
 			var data = new ExcelPackage(memoryStream);
 			
 			// Act
-			var dataProcessor = _dataProcessorFactory.CreateDataProcessor(fileWriter, fileFormat, fileName, data);
+			var dataProcessor = _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
 			// Assert
 			Assert.IsType<RigCountDataProcessor>(dataProcessor);
@@ -42,34 +42,34 @@ namespace RigCountDownloader.Tests.Services.Factories
 		{
 			// Arrange
 			IFileWriter fileWriter = new CsvFileWriter("test2.csv");
-			
+
+			const string context = "Rig Count";
 			const string fileFormat = "pdf";
-			const string fileName = "Worldwide Rig Count.xlsx";
 			using var memoryStream = new MemoryStream();
 
 			var data = new ExcelPackage(memoryStream);
 
 			// Act
-			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, fileFormat, fileName, data);
+			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(Act);
 		}
 
 		[Fact]
-		public void CreateDataProcessor_InvalidFileName_ThrowsArgumentException()
+		public void CreateDataProcessor_InvalidContext_ThrowsArgumentException()
 		{
 			// Arrange
 			IFileWriter fileWriter = new CsvFileWriter("test3.csv");
 			
+			const string context = "Rig Rate";
 			const string fileFormat = "xlsx";
-			const string fileName = "Worldwide Rig Rate.xlsx";
 			using var memoryStream = new MemoryStream();
 
 			var data = new ExcelPackage(memoryStream);
 
 			// Act
-			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, fileFormat, fileName, data);
+			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(Act);
