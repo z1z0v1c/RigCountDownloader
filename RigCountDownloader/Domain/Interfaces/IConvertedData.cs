@@ -2,7 +2,7 @@
 
 public interface IConvertedData
 {
-   string FileType { get; }
+   string FileFormat { get; }
    string FileName { get; }
    object Data { get; }
 }

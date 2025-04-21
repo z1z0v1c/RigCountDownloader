@@ -14,12 +14,9 @@ namespace RigCountDownloader.Tests
 	{
 		protected IServiceProvider ServiceProvider { get; private set; }
 
-		public TestFixture()
+		protected TestFixture()
 		{
 			ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-			var loggerSubstitute = Substitute.For<ILogger>();
-			var confSubstitute = Substitute.For<IConfiguration>();
 
 			// Configure dependencies
 			var services = new ServiceCollection()

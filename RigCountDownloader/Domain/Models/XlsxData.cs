@@ -2,4 +2,4 @@
 
 namespace RigCountDownloader.Domain.Models;
 
-public record XlsxData(string FileType, string FileName, object Data) : IConvertedData;
+public record XlsxData(string FileFormat, string FileName, object Data) : IConvertedData;

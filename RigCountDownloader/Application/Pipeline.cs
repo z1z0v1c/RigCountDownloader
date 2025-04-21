@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
-using Serilog;
+using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
 using RigCountDownloader.Domain.Models;
+using Serilog;
 
 namespace RigCountDownloader.Application;
 
@@ -15,36 +17,30 @@ public class Pipeline(
 {
     public async Task ExecuteAsync(Settings settings, CancellationToken cancellationToken)
     {
-        logger.Information($"Starting data processing pipeline with options: {JsonSerializer.Serialize(settings)}");
+        logger.Information($"Starting data processing with options: {JsonSerializer.Serialize(settings)}");
 
-        try
-        {
-            var dataLoader = dataLoaderFactory.CreateDataLoader(settings, cancellationToken);
-            
-            // Load data
-            logger.Information($"Retrieving data from the source: {settings.SourceFileLocation}");
-            using var data = await dataLoader.LoadDataAsync(new Uri(settings.SourceFileLocation!), cancellationToken);
-            logger.Information($"Data retreived successfully. Received {data.MemoryStream.Length} bytes.");
-            
-            var dataConverter = dataConverterFactory.CreateDataConverter(data.MediaType!);
-            
-            // Convert data
-            logger.Information("Converting data...");
-            var convertedData = dataConverter.ConvertData(data);
-            logger.Information("Data converted successfully.");
+        IDataLoader dataLoader = dataLoaderFactory.CreateDataLoader(settings.SourceType);
 
-            var fileWriter = fileWriterFactory.CreateFileWriter(settings.OutputFileFormat, settings.OutputFileLocation!);
-            var processor = dataProcessorFactory.CreateDataProcessor(fileWriter, convertedData);
-            
-            // Process and save data
-            logger.Information("Processing data...");
-            await processor.ProcessAndSaveAsync(cancellationToken);
-            logger.Information("Data processed and saved successfully!");
-        }
-        catch (Exception ex)
-        {
-            logger.Error(ex, "Error during data processing");
-            throw;
-        }
+        // Load data
+        logger.Information($"Retrieving data from the source: {settings.SourceFileLocation}");
+        await using Data data = await dataLoader.LoadDataAsync(settings.SourceFileLocation, cancellationToken);
+        logger.Information($"Data retrieved successfully. Received {data.MemoryStream.Length} bytes.");
+
+        IDataConverter dataConverter = dataConverterFactory.CreateDataConverter(data.MediaType);
+
+        // Convert data
+        logger.Information("Converting data...");
+        IConvertedData convertedData = dataConverter.ConvertData(data);
+        logger.Information("Data converted successfully.");
+
+        IFileWriter fileWriter = fileWriterFactory.CreateFileWriter(
+            settings.OutputFileFormat, settings.OutputFileLocation);
+        IDataProcessor processor = dataProcessorFactory.CreateDataProcessor(
+            fileWriter, convertedData.FileFormat, convertedData.FileName, convertedData.Data);
+
+        // Process and save data
+        logger.Information("Processing data...");
+        await processor.ProcessAndSaveAsync(cancellationToken);
+        logger.Information("Data processed and saved successfully!");
     }
 }

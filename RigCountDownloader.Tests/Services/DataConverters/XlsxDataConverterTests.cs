@@ -34,7 +34,7 @@ namespace RigCountDownloader.Tests.Services.DataConverters
 
             // Assert
             Assert.Equal(fileName, convertedData.FileName);
-            Assert.Equal(fileFormat, convertedData.FileType);
+            Assert.Equal(fileFormat, convertedData.FileFormat);
             Assert.Equal(expectedPackage.GetAsByteArray(), convertedPackage.GetAsByteArray());
 
             // _dataProcessorFactory.Received(1).CreateDataProcessor(data);

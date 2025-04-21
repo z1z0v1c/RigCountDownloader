@@ -2,6 +2,6 @@
 {
 	public interface IDataProcessorFactory
 	{
-		IDataProcessor CreateDataProcessor(IFileWriter fileWriter, IConvertedData data);
+		IDataProcessor CreateDataProcessor(IFileWriter fileWriter, string fileFormat, string fileName, object data);
 	}
 }

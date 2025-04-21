@@ -17,22 +17,21 @@ namespace RigCountDownloader.Tests.Services.Factories
 		{
 			_dataProcessorFactory = ServiceProvider.GetRequiredService<IDataProcessorFactory>();
 		}
-
-		private IFileWriter? FileWriter { get; set; }
 		
 		[Fact]
 		public void CreateXlsxDataProcessor_ValidExtensions_ReturnsCorrectResult()
 		{
 			// Arrange
-			const string fileType = "xlsx";
+			IFileWriter fileWriter = new CsvFileWriter("test1.csv");
+			
+			const string fileFormat = "xlsx";
 			const string fileName = "Worldwide Rig Count.xlsx";
-			FileWriter = new CsvFileWriter("test1.csv");
 			using var memoryStream = new MemoryStream();
 
-			var data = new XlsxData(fileType, fileName, new ExcelPackage(memoryStream));
-
+			var data = new ExcelPackage(memoryStream);
+			
 			// Act
-			var dataProcessor = _dataProcessorFactory.CreateDataProcessor(FileWriter, data);
+			var dataProcessor = _dataProcessorFactory.CreateDataProcessor(fileWriter, fileFormat, fileName, data);
 
 			// Assert
 			Assert.IsType<RigCountDataProcessor>(dataProcessor);
@@ -42,15 +41,16 @@ namespace RigCountDownloader.Tests.Services.Factories
 		public void CreateDataProcessor_InvalidFileType_ThrowsArgumentException()
 		{
 			// Arrange
-			const string fileType = "pdf";
+			IFileWriter fileWriter = new CsvFileWriter("test2.csv");
+			
+			const string fileFormat = "pdf";
 			const string fileName = "Worldwide Rig Count.xlsx";
-			FileWriter = new CsvFileWriter("test2.csv");
 			using var memoryStream = new MemoryStream();
 
-			var data = new XlsxData(fileType, fileName, memoryStream);
+			var data = new ExcelPackage(memoryStream);
 
 			// Act
-			void Act() => _dataProcessorFactory.CreateDataProcessor(FileWriter, data);
+			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, fileFormat, fileName, data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(Act);
@@ -60,15 +60,16 @@ namespace RigCountDownloader.Tests.Services.Factories
 		public void CreateDataProcessor_InvalidFileName_ThrowsArgumentException()
 		{
 			// Arrange
-			const string fileType = "xlsx";
+			IFileWriter fileWriter = new CsvFileWriter("test3.csv");
+			
+			const string fileFormat = "xlsx";
 			const string fileName = "Worldwide Rig Rate.xlsx";
-			FileWriter = new CsvFileWriter("test3.csv");
 			using var memoryStream = new MemoryStream();
 
-			var data = new XlsxData(fileType, fileName, memoryStream);
+			var data = new ExcelPackage(memoryStream);
 
 			// Act
-			void Act() => _dataProcessorFactory.CreateDataProcessor(FileWriter, data);
+			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, fileFormat, fileName, data);
 
 			// Assert
 			Assert.Throws<ArgumentException>(Act);

@@ -1,6 +1,5 @@
 ﻿using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
-using RigCountDownloader.Domain.Models;
 using RigCountDownloader.Domain.Models.Enums;
 using RigCountDownloader.Services.DataLoaders;
 using Serilog;
@@ -9,9 +8,9 @@ namespace RigCountDownloader.Services.Factories;
 
 public class DataLoaderFactory(ILogger logger, HttpClient httpClient) : IDataLoaderFactory
 {
-    public IDataLoader CreateDataLoader(Settings settings, CancellationToken cancellationToken)
+    public IDataLoader CreateDataLoader(string sourceType)
     {
-        if (settings.SourceType == SourceType.Http)
+        if (sourceType == SourceType.Http)
         {
             return new HttpDataLoader(logger, httpClient);
         }

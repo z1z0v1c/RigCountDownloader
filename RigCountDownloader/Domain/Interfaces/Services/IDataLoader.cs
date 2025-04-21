@@ -4,5 +4,5 @@ namespace RigCountDownloader.Domain.Interfaces.Services;
 
 public interface IDataLoader
 {
-    Task<Data> LoadDataAsync(Uri uri, CancellationToken cancellationToken);
+    Task<Data> LoadDataAsync(string fileLocation, CancellationToken cancellationToken);
 }

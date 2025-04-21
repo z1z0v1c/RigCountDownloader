@@ -24,25 +24,22 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 		public async Task LoadDataAsync_ValidUri_ReturnsCorrectData()
 		{
 			// Arrange
-			const string inputFileUri = "https://validurl.com/existing-file";
+			const string sourceFileLocation = "https://validurl.com/existing-file";
 
 			var memoryStreamBytes = new byte[]
 			{
 				0x50, 0x4B, 0x03, 0x04, 0x14, 0x00, 0x06, 0x00, 0x08, 0x00, 0x00, 0x00, 0x21, 0x00, 0x9C, 0x8E
 			};
 
-			_requestHandler.When(inputFileUri)
-				.Respond(request =>
+			_requestHandler.When(sourceFileLocation)
+				.Respond(request => Task.FromResult(new HttpResponseMessage
 				{
-					return Task.FromResult(new HttpResponseMessage
-					{
-						StatusCode = HttpStatusCode.OK,
-						Content = new StreamContent(new MemoryStream(memoryStreamBytes))
-					});
-				});
+					StatusCode = HttpStatusCode.OK,
+					Content = new StreamContent(new MemoryStream(memoryStreamBytes))
+				}));
 
 			// Act
-			Data data = await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
+			Data data = await _httpDataLoader.LoadDataAsync(sourceFileLocation);
 
 			// Assert
 			Assert.Equal(memoryStreamBytes.Length, data.MemoryStream.Length);
@@ -52,35 +49,32 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 		public async Task DownloadFileAsStreamAsync_InvalidUri_ThrowsHttpRequestException()
 		{
 			// Arrange
-			const string inputFileUri = "https://invalidurl.com/nonexisting-file";
+			const string sourceFileLocation = "https://invalidurl.com/nonexisting-file";
 
-			_requestHandler.When(inputFileUri)
-				.Respond(request =>
+			_requestHandler.When(sourceFileLocation)
+				.Respond(request => Task.FromResult(new HttpResponseMessage
 				{
-					return Task.FromResult(new HttpResponseMessage
-					{
-						StatusCode = HttpStatusCode.NotFound,
-					});
-				});
+					StatusCode = HttpStatusCode.NotFound,
+				}));
 
 			// Act
-			async Task act() => await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri));
+			async Task Act() => await _httpDataLoader.LoadDataAsync(sourceFileLocation);
 
             // Assert
-            await Assert.ThrowsAsync<HttpRequestException>(act);
+            await Assert.ThrowsAsync<HttpRequestException>(Act);
 		}
 
 		[Fact]
 		public async Task DownloadFileAsStreamAsync_NoUriProvided_ThrowsUriFormatException()
 		{
 			// Arrange
-			string? inputFileUri = null;
+			string? sourceFileLocation = null;
 
 			// Act
-			async Task act() => await _httpDataLoader.LoadDataAsync(new Uri(inputFileUri!));
+			async Task Act() => await _httpDataLoader.LoadDataAsync(sourceFileLocation!);
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(act);
+            await Assert.ThrowsAsync<ArgumentNullException>(Act);
 		}
 	}
 }

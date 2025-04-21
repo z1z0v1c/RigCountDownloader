@@ -1,8 +1,8 @@
 namespace RigCountDownloader.Domain.Models
 {
     public record Data(
-        string? MediaType,
-        string? FileName,
+        string MediaType,
+        string FileName,
         MemoryStream MemoryStream
     ) : IDisposable, IAsyncDisposable
     {
