@@ -6,14 +6,13 @@ using Xunit;
 
 namespace RigCountDownloader.Tests.Services.DataConverters
 {
-	public class XlsxDataConverterTests
+	public class XlsxDataFormaterTests
 	{
         [Fact]
-        public void ConvertDataAsync_CorrectMemoryStream_ReturnsCorrectResult()
+        public void FormatDataAsync_CorrectMemoryStream_ReturnsCorrectResult()
         {
             // Arrange
             const string fileFormat = FileFormat.Xlsx;
-            const string fileName = "Worldwide Rig Count.xlsx";
             const string mediaType = MediaType.Spreadsheet;
 
             var memoryStreamBytes = new byte[]
@@ -23,17 +22,16 @@ namespace RigCountDownloader.Tests.Services.DataConverters
 
             using var memoryStream = new MemoryStream(memoryStreamBytes);
 
-            var data = new Data(mediaType, fileName, memoryStream);
+            var data = new DataStream(mediaType, memoryStream);
             var expectedPackage = new ExcelPackage(memoryStream);
 
-            var xlsxDataConverter = new XlsxDataConverter();
+            var xlsxDataConverter = new XlsxDataFormater();
 
             // Act
-            var convertedData = (XlsxData)xlsxDataConverter.ConvertData(data);
+            var convertedData = (FormatedData)xlsxDataConverter.FormatData(data);
             var convertedPackage = (ExcelPackage)convertedData.Data;
 
             // Assert
-            Assert.Equal(fileName, convertedData.FileName);
             Assert.Equal(fileFormat, convertedData.FileFormat);
             Assert.Equal(expectedPackage.GetAsByteArray(), convertedPackage.GetAsByteArray());
 

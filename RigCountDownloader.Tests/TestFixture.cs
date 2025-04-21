@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using OfficeOpenXml;
 using RichardSzalay.MockHttp;
-using RigCountDownloader.Domain.Interfaces.Services.Factories;
+using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Services.DataProcessors;
 using RigCountDownloader.Services.Factories;
 using Serilog;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader.Application;
+using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
 using RigCountDownloader.Services.Factories;
 using Serilog;
@@ -21,7 +22,7 @@ var serviceProvider = new ServiceCollection()
 	.AddSingleton<IConfiguration>(configurationRoot)
 	// Register Factories
 	.AddSingleton<IDataLoaderFactory, DataLoaderFactory>()
-	.AddSingleton<IDataConverterFactory, DataConverterFactory>()
+	.AddSingleton<IDataFormaterFactory, DataFormaterFactory>()
 	.AddSingleton<IDataProcessorFactory, DataProcessorFactory>()
 	.AddSingleton<IFileWriterFactory, FileWriterFactory>()
 	// Register Pipeline

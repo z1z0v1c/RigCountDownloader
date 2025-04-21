@@ -1,17 +1,17 @@
-﻿using RigCountDownloader.Domain.Interfaces.Services;
-using RigCountDownloader.Domain.Interfaces.Services.Factories;
+﻿using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Models.Enums;
 using RigCountDownloader.Services.DataConverters;
 
 namespace RigCountDownloader.Services.Factories
 {
-	public class DataConverterFactory() : IDataConverterFactory
+	public class DataFormaterFactory() : IDataFormaterFactory
 	{
-		public IDataConverter CreateDataConverter(string mediaType)
+		public IDataFormater CreateDataFormater(string mediaType)
 		{
 			if (mediaType == MediaType.Spreadsheet)
 			{
-				return new XlsxDataConverter();
+				return new XlsxDataFormater();
 			}
 
 			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");

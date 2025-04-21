@@ -39,10 +39,10 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 				}));
 
 			// Act
-			Data data = await _httpDataLoader.LoadDataAsync(sourceFileLocation);
+			DataStream dataStream = await _httpDataLoader.LoadDataAsync(sourceFileLocation);
 
 			// Assert
-			Assert.Equal(memoryStreamBytes.Length, data.MemoryStream.Length);
+			Assert.Equal(memoryStreamBytes.Length, dataStream.MemoryStream.Length);
 		}
 
 		[Fact]

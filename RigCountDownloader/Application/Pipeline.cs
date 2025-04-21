@@ -1,5 +1,5 @@
 ﻿using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.Services;
+using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
 using RigCountDownloader.Domain.Models;
 using Serilog;
@@ -9,7 +9,7 @@ namespace RigCountDownloader.Application;
 public class Pipeline(
     IDataLoaderFactory dataLoaderFactory,
     IDataProcessorFactory dataProcessorFactory,
-    IDataConverterFactory dataConverterFactory,
+    IDataFormaterFactory dataFormaterFactory,
     IFileWriterFactory fileWriterFactory,
     ILogger logger
 )
@@ -23,19 +23,19 @@ public class Pipeline(
             settings.SourceType, settings.SourceFileLocation);
 
         // Load data
-        await using Data data = await dataLoader.LoadDataAsync(settings.SourceFileLocation, cancellationToken);
+        await using DataStream dataStream = await dataLoader.LoadDataAsync(settings.SourceFileLocation, cancellationToken);
 
-        logger.Information("Data retrieved successfully. Received {MemoryStreamLength} bytes.", data.MemoryStream.Length);
+        logger.Information("Data retrieved successfully. Received {MemoryStreamLength} bytes.", dataStream.MemoryStream.Length);
 
         // Create data converter
-        IDataConverter dataConverter = dataConverterFactory.CreateDataConverter(data.MediaType);
+        IDataFormater dataFormater = dataFormaterFactory.CreateDataFormater(dataStream.MediaType);
 
-        logger.Information("Converting {MediaType} data stream into formated data...", data.MediaType);
+        logger.Information("Formating {MediaType} data stream...", dataStream.MediaType);
 
-        // Convert data
-        IConvertedData convertedData = dataConverter.ConvertData(data);
+        // Format data
+        FormatedData convertedData = dataFormater.FormatData(dataStream);
 
-        logger.Information("Data converted successfully into {SourceFileFormat} format.", convertedData.FileFormat);
+        logger.Information("Data formated successfully into {SourceFileFormat} format.", convertedData.FileFormat);
 
         // Create data processor and file writer
         IFileWriter fileWriter = fileWriterFactory.CreateFileWriter(

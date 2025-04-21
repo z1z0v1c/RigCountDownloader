@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using OfficeOpenXml;
-using RigCountDownloader.Domain.Interfaces.Services;
+using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Services.DataProcessors;
 using RigCountDownloader.Services.FileWriters;
 using Serilog;

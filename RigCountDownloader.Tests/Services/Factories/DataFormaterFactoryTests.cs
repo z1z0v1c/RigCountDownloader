@@ -6,9 +6,9 @@ using Xunit;
 
 namespace RigCountDownloader.Tests.Services.Factories
 {
-	public class DataConverterFactoryTests : TestFixture
+	public class DataFormaterFactoryTests : TestFixture
 	{
-		private readonly DataConverterFactory _dataConverterFactory = Substitute.For<DataConverterFactory>();
+		private readonly DataFormaterFactory _dataFormaterFactory = Substitute.For<DataFormaterFactory>();
 
 		[Fact]
 		public void CreateDataConverter_ValidMediaType_ReturnsCorrectResult()
@@ -17,10 +17,10 @@ namespace RigCountDownloader.Tests.Services.Factories
 			const string mediaType = MediaType.Spreadsheet;
 
 			// Act
-			var xlsxDataConverter = _dataConverterFactory.CreateDataConverter(mediaType);
+			var xlsxDataConverter = _dataFormaterFactory.CreateDataFormater(mediaType);
 
 			// Assert
-			Assert.IsType<XlsxDataConverter>(xlsxDataConverter);
+			Assert.IsType<XlsxDataFormater>(xlsxDataConverter);
 		}
 
 		[Fact]
@@ -30,7 +30,7 @@ namespace RigCountDownloader.Tests.Services.Factories
 			const string mediaType = "wrong-media.type";
 
 			// Act
-			void Act() => _dataConverterFactory.CreateDataConverter(mediaType);
+			void Act() => _dataFormaterFactory.CreateDataFormater(mediaType);
 
 			// Assert
 			Assert.Throws<ArgumentException>(Act);

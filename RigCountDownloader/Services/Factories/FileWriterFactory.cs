@@ -1,5 +1,5 @@
-﻿using RigCountDownloader.Domain.Interfaces.Services;
-using RigCountDownloader.Domain.Interfaces.Services.Factories;
+﻿using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Models.Enums;
 using RigCountDownloader.Services.FileWriters;
 

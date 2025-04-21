@@ -35,7 +35,7 @@ namespace RigCountDownloader.Application
             }
             catch (Exception ex)
             {
-                logger.Error("An exception has occurred: {Message}", ex.Message);
+                logger.Error("An exception occurred: {Message}", ex.Message);
                 logger.Error("Stack Trace: {StackTrace}", ex.StackTrace);
             }
         }
