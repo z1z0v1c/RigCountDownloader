@@ -9,8 +9,6 @@ namespace RigCountDownloader.Services.DataProcessors
     {
         public override async Task ProcessAndSaveAsync(CancellationToken cancellationToken = default)
         {
-            Logger.Information("Converting the Excel file to a CSV file...");
-
             var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
 
@@ -30,8 +28,6 @@ namespace RigCountDownloader.Services.DataProcessors
             }
 
             await FileWriter.DisposeAsync();
-
-            Logger.Information($"The CSV file saved to a file.");
         }
 
         private static int FindRowIndex(ExcelWorksheet? worksheet, string searchValue, int startIndex = 1)

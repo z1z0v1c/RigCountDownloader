@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using RigCountDownloader.Domain.Models;
 using Serilog;
 
@@ -12,7 +13,9 @@ namespace RigCountDownloader.Application
     {
         public async Task RunAsync(CancellationToken cancellationToken = default)
         {
+            logger.Information("Starting application...");
             // TODO Implement cancellation logic
+            logger.Information("Reading settings from the appsettings.json file...");
             try
             {
                 Settings settings = new(
@@ -23,12 +26,17 @@ namespace RigCountDownloader.Application
                     OutputFileFormat:   configuration["OutputFileFormat"]!
                 );
 
+                logger.Information("Starting data processing pipeline with settings: {Settings}", 
+                    JsonSerializer.Serialize(settings));
+                
                 await pipeline.ExecuteAsync(settings, cancellationToken);
+                
+                logger.Information("Closing application...");
             }
             catch (Exception ex)
             {
-                logger.Error($"An exception has occurred: {ex.Message}");
-                logger.Error($"Stack Trace: {ex.StackTrace}");
+                logger.Error("An exception has occurred: {Message}", ex.Message);
+                logger.Error("Stack Trace: {StackTrace}", ex.StackTrace);
             }
         }
     }

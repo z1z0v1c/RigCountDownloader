@@ -2,7 +2,6 @@
 using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces.Services;
 using RigCountDownloader.Domain.Interfaces.Services.Factories;
-using RigCountDownloader.Domain.Models;
 using RigCountDownloader.Services.DataProcessors;
 using RigCountDownloader.Services.FileWriters;
 using Xunit;
