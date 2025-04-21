@@ -1,4 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces.Services;
+﻿using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Models;
 using Serilog;
 
@@ -44,7 +44,7 @@ namespace RigCountDownloader.Services.DataLoaders
             _httpClient.Timeout = TimeSpan.FromMinutes(5);
         }
 
-        public async Task<Data> LoadDataAsync(string fileLocation, CancellationToken cancellationToken = default)
+        public async Task<DataStream> LoadDataAsync(string fileLocation, CancellationToken cancellationToken = default)
         {
             var uri = new Uri(fileLocation);
 
@@ -58,7 +58,6 @@ namespace RigCountDownloader.Services.DataLoaders
                 response.EnsureSuccessStatusCode();
 
                 string mediaType = GetMediaType(response);
-                string fileName = GetFileName(response);
 
                 // Create a memory stream that can be returned while allowing the response to be disposed
                 var memoryStream = new MemoryStream();
@@ -71,7 +70,7 @@ namespace RigCountDownloader.Services.DataLoaders
                 // Reset position to beginning so the caller can read from the start
                 memoryStream.Position = 0;
 
-                return new Data(mediaType, fileName, memoryStream);
+                return new DataStream(mediaType, memoryStream);
             }
             catch (HttpRequestException ex)
             {
@@ -98,13 +97,6 @@ namespace RigCountDownloader.Services.DataLoaders
         {
             // In case of an empty string, an exception will be thrown in the factory class
             return response.Content.Headers.ContentType?.MediaType ?? "";
-        }
-
-        private static string GetFileName(HttpResponseMessage response)
-        {
-            // Same as for media type
-            return response.Content.Headers.ContentDisposition?.FileNameStar ??
-                   response.Content.Headers.ContentDisposition?.FileName ?? "";
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces.Services;
+﻿using RigCountDownloader.Domain.Interfaces;
 
 namespace RigCountDownloader.Services.FileWriters;
 

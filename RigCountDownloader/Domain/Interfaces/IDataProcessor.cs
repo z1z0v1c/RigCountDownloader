@@ -1,4 +1,4 @@
-﻿namespace RigCountDownloader.Domain.Interfaces.Services
+﻿namespace RigCountDownloader.Domain.Interfaces
 {
 	public interface IDataProcessor
 	{

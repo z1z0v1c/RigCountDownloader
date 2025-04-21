@@ -1,4 +1,4 @@
-﻿namespace RigCountDownloader.Domain.Interfaces.Services.Factories;
+﻿namespace RigCountDownloader.Domain.Interfaces.Factories;
 
 public interface IFileWriterFactory
 {
