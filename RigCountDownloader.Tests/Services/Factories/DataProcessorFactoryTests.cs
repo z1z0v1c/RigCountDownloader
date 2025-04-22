@@ -1,4 +1,6 @@
-﻿namespace RigCountDownloader.Tests.Services.Factories
+﻿using RigCountDownloader.Tests.Mocks;
+
+namespace RigCountDownloader.Tests.Services.Factories
 {
     public class DataProcessorFactoryTests : TestFixture
     {
@@ -13,16 +15,13 @@
         public void CreateXlsxDataProcessor_ValidSettings_ReturnsCorrectResult()
         {
             // Arrange
-            IFileWriter fileWriter = new CsvFileWriter("test1.csv");
-
-            const string context = "Rig Count";
-            const string fileFormat = "xlsx";
             using var memoryStream = new MemoryStream();
-
+            using var fileWriter = new MockFileWriter(memoryStream);
             var data = new ExcelPackage(memoryStream);
 
             // Act
-            var dataProcessor = _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+            var dataProcessor =
+                _dataProcessorFactory.CreateDataProcessor(fileWriter, Context.RigCount, FileFormat.Xlsx, data);
 
             // Assert
             Assert.IsType<RigCountDataProcessor>(dataProcessor);
@@ -32,16 +31,12 @@
         public void CreateDataProcessor_InvalidFileFormat_ThrowsIncorrectSettingsException()
         {
             // Arrange
-            IFileWriter fileWriter = new CsvFileWriter("test2.csv");
-
-            const string context = "Rig Count";
-            const string fileFormat = "pdf";
             using var memoryStream = new MemoryStream();
-
+            using var fileWriter = new MockFileWriter(memoryStream);
             var data = new ExcelPackage(memoryStream);
 
             // Act
-            void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+            void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, Context.RigCount, "pdb", data);
 
             // Assert
             Assert.Throws<IncorrectSettingsException>(Act);
@@ -51,16 +46,12 @@
         public void CreateDataProcessor_InvalidContext_ThrowsIncorrectSettingsException()
         {
             // Arrange
-            IFileWriter fileWriter = new CsvFileWriter("test3.csv");
-
-            const string context = "Rig Rate";
-            const string fileFormat = "xlsx";
             using var memoryStream = new MemoryStream();
-
+            using var fileWriter = new MockFileWriter(memoryStream);
             var data = new ExcelPackage(memoryStream);
 
             // Act
-            void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+            void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, "Rig Rate", FileFormat.Xlsx, data);
 
             // Assert
             Assert.Throws<IncorrectSettingsException>(Act);

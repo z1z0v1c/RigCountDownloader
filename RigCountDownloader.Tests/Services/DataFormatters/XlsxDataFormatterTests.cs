@@ -25,9 +25,6 @@
             // Assert
             Assert.Equal(FileFormat.Xlsx, formattedData.Format);
             Assert.Equal(expectedPackage.GetAsByteArray(), actualPackage.GetAsByteArray());
-
-            // _dataProcessorFactory.Received(1).CreateDataProcessor(data);
-            // await _dataProcessor.Received(1).ProcessAndSaveAsync();
         }
 
         [Fact]
