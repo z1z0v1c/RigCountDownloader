@@ -81,23 +81,15 @@ namespace RigCountDownloader.Services.DataLoaders
             }
             catch (HttpRequestException ex)
             {
-                _logger.Error(ex, $"HTTP request error when downloading from {uri}");
-                if (ex.InnerException != null)
-                {
-                    _logger.Error($"Inner exception: {ex.InnerException.Message}");
-                }
-
-                throw;
+                throw new HttpDataLoadException($"HTTP request error when downloading from {uri}", ex);
             }
             catch (TaskCanceledException ex)
             {
-                _logger.Error(ex, $"Request timed out when downloading from {uri}");
-                throw;
+                throw new HttpDataLoadException("Request timed out when downloading from {uri}", ex);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Unexpected error when downloading from {uri}");
-                throw;
+                throw new HttpDataLoadException("Unexpected error when downloading from {uri}", ex);
             }
         }
 

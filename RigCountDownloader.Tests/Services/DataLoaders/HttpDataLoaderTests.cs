@@ -47,7 +47,7 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 		}
 
 		[Fact]
-		public async Task LoadDataAsync_InvalidSourceFileLocation_ThrowsHttpRequestException()
+		public async Task LoadDataAsync_InvalidSourceFileLocation_ThrowsHttpDataLoadException()
 		{
 			// Arrange
 			const string sourceFileLocation = "https://invalidurl.com/nonexisting-file";
@@ -62,7 +62,7 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 			async Task Act() => await _httpDataLoader.LoadDataAsync(sourceFileLocation);
 
             // Assert
-            await Assert.ThrowsAsync<HttpRequestException>(Act);
+            await Assert.ThrowsAsync<HttpDataLoadException>(Act);
 		}
 
 		[Fact]

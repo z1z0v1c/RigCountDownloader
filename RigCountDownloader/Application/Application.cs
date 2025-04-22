@@ -34,15 +34,10 @@ namespace RigCountDownloader.Application
 
                 logger.Information("Closing application...");
             }
-            catch (IncorrectSettingsException ex)
+            catch (Exception exception)
             {
-                logger.Error("Incorrect settings: {Message}", ex.Message);
-                logger.Error("Stack Trace: {StackTrace}", ex.StackTrace); 
-            }
-            catch (Exception ex)
-            {
-                logger.Error("An exception occurred: {Message}", ex.Message);
-                logger.Error("Stack Trace: {StackTrace}", ex.StackTrace);
+                logger.Error("An exception has occured: {Exception}", exception);
+                Environment.Exit(1);
             }
         }
     }
