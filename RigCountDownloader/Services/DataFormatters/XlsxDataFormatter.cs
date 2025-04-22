@@ -11,7 +11,7 @@ namespace RigCountDownloader.Services.DataFormatters
 
         public FormattedData FormatData(DataStream dataStream)
         {
-            return new FormattedData("xlsx", new ExcelPackage(dataStream.MemoryStream));
+            return new FormattedData(FileFormat.Xlsx, new ExcelPackage(dataStream.MemoryStream));
         }
     }
 }

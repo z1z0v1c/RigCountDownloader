@@ -1,6 +1,4 @@
-﻿// Global using directives
-
-global using Microsoft.Extensions.DependencyInjection;
+﻿global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
 global using OfficeOpenXml;
 global using RichardSzalay.MockHttp;

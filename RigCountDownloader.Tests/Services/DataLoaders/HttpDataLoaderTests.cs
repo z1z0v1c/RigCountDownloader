@@ -4,8 +4,8 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 {
     public class HttpDataLoaderTests : TestFixture
     {
-        private readonly MockHttpMessageHandler _requestHandler;
         private readonly HttpDataLoader _httpDataLoader;
+        private readonly MockHttpMessageHandler _requestHandler;
 
         public HttpDataLoaderTests()
         {

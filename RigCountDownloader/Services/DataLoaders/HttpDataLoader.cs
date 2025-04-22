@@ -64,6 +64,11 @@
 
                 await using (Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken))
                 {
+                    if (contentStream.Length == 0)
+                    {
+                        throw new HttpDataLoadException("Invalid data, memory stream is empty");
+                    }
+                    
                     await contentStream.CopyToAsync(memoryStream, cancellationToken);
                 }
 

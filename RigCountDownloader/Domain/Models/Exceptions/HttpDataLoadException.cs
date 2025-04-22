@@ -1,3 +1,12 @@
 ﻿namespace RigCountDownloader.Domain.Models.Exceptions;
 
-public class HttpDataLoadException(string message, Exception innerException) : Exception(message, innerException);
+public class HttpDataLoadException : Exception
+{
+    public HttpDataLoadException(string message) : base(message)
+    {
+    }
+
+    public HttpDataLoadException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
+}
