@@ -1,51 +1,55 @@
-﻿namespace RigCountDownloader.Tests.Services.DataProcessors
+﻿using RigCountDownloader.Tests.Mocks;
+
+namespace RigCountDownloader.Tests.Services.DataProcessors
 {
     public class RigCountDataProcessorTests : TestFixture
     {
-        private readonly ILogger _logger;
-        private IFileWriter? FileWriter { get; set; }
-        private RigCountDataProcessor? DataProcessor { get; set; }
-
-        public RigCountDataProcessorTests()
-        {
-            _logger = ServiceProvider.GetRequiredService<ILogger>();
-        }
+        private IFileWriter? _fileWriter;
+        private RigCountDataProcessor? _dataProcessor;
 
         [Fact]
         public async Task ProcessAndSaveAsync_ValidData_WritesToCsvFile()
         {
             // Arrange
-            const string fileName = "Worldwide Rig Count Jul 2013.csv";
-            FileWriter = new CsvFileWriter(fileName);
-            DataProcessor = new RigCountDataProcessor(_logger, FileWriter, new ExcelPackage());
+            using var data = new MemoryStream();
+            await using (var fileStream = File.OpenRead("../../../TestData/Valid_Rig_Count_Data.xlsx"))
+            {
+                await fileStream.CopyToAsync(data);
+            }
 
-            var worksheet = DataProcessor.ExcelPackage.Workbook.Worksheets.Add("Sheet");
-            worksheet.Cells[1, 1].Value = "Europe";
-            worksheet.Cells[2, 1].Value = "Avg.";
-            worksheet.Cells[3, 1].Value = "Avg.";
+            using var actual = new MemoryStream();
+            _fileWriter = new MockFileWriter(actual);
+
+            _dataProcessor = new RigCountDataProcessor(_fileWriter, new ExcelPackage(data));
+
+            using var expected = new MemoryStream();
+            await using (var fileStream = File.OpenRead("../../../TestData/Rig_Count_Case_1.csv"))
+            {
+                await fileStream.CopyToAsync(expected);
+            }
 
             // Act
-            await DataProcessor.ProcessAndSaveDataAsync();
+            await _dataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
-            _logger.Received().Information("The CSV file saved to a file.");
+            Assert.Equal(expected.ToArray(), (actual.ToArray()));
         }
 
         [Fact]
         public async Task ProcessAndSaveAsync_InvalidData_ThrowsInvalidDataException()
         {
             // Arrange
-            const string fileName = "Worldwide Rig Count Jul 2014.csv";
-            FileWriter = new CsvFileWriter(fileName);
-            DataProcessor = new RigCountDataProcessor(_logger, FileWriter, new ExcelPackage());
+            using var data = new MemoryStream();
+            await using (var fileStream = File.OpenRead("../../../TestData/Invalid_Rig_Count_Data.xlsx"))
+            {
+                await fileStream.CopyToAsync(data);
+            }
 
-            var worksheet = DataProcessor.ExcelPackage.Workbook.Worksheets.Add("Sheet");
-            worksheet.Cells[1, 1].Value = "Europe";
-            worksheet.Cells[2, 1].Value = "Europe";
-            worksheet.Cells[3, 1].Value = "Avg.";
+            _fileWriter = new MockFileWriter( new MemoryStream());
+            _dataProcessor = new RigCountDataProcessor(_fileWriter, new ExcelPackage(data));
 
             // Act
-            async Task Act() => await DataProcessor.ProcessAndSaveDataAsync();
+            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
@@ -55,14 +59,13 @@
         public async Task ProcessAndSaveAsync_EmptyWorksheet_ThrowsInvalidDataException()
         {
             // Arrange
-            const string fileName = "Worldwide Rig Count Jul 2015.csv";
-            FileWriter = new CsvFileWriter(fileName);
-            DataProcessor = new RigCountDataProcessor(_logger, FileWriter, new ExcelPackage());
+            _fileWriter = new MockFileWriter(new MemoryStream());
+            _dataProcessor = new RigCountDataProcessor(_fileWriter, new ExcelPackage());
 
-            DataProcessor.ExcelPackage.Workbook.Worksheets.Add("EmptyWorksheet");
+            _dataProcessor.ExcelPackage.Workbook.Worksheets.Add("EmptySheet");
 
             // Act
-            async Task Act() => await DataProcessor.ProcessAndSaveDataAsync();
+            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
@@ -72,17 +75,16 @@
         public async Task ProcessAndSaveAsync_NoData_ThrowsInvalidDataException()
         {
             // Arrange
-            const string fileName = "Worldwide Rig Count Jul 2016.csv";
-            FileWriter = new CsvFileWriter(fileName);
-            DataProcessor = new RigCountDataProcessor(_logger, FileWriter, new ExcelPackage());
+            _fileWriter = new MockFileWriter(new MemoryStream());
+            _dataProcessor = new RigCountDataProcessor(_fileWriter, new ExcelPackage());
 
             using var memoryStream = new MemoryStream();
             using var package = new ExcelPackage();
 
-            DataProcessor.ExcelPackage = package;
+            _dataProcessor.ExcelPackage = package;
 
             // Act
-            async Task Act() => await DataProcessor.ProcessAndSaveDataAsync();
+            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);

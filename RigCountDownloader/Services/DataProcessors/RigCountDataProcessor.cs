@@ -2,15 +2,15 @@
 
 namespace RigCountDownloader.Services.DataProcessors
 {
-    public class RigCountDataProcessor(ILogger logger, IFileWriter fileWriter, ExcelPackage excelPackage)
-        : ExcelDataProcessor(logger, fileWriter, excelPackage)
+    public class RigCountDataProcessor(IFileWriter fileWriter, ExcelPackage excelPackage)
+        : ExcelDataProcessor(fileWriter, excelPackage)
     {
         public override async Task ProcessAndSaveDataAsync(CancellationToken cancellationToken = default)
         {
             var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
 
-            var startRowIndex = FindRowIndex(worksheet, "Europe");
+            var startRowIndex = FindRowIndex(worksheet, "2023");
             var endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
 
             for (var row = startRowIndex; row <= endRowIndex; row++)
@@ -25,8 +25,6 @@ namespace RigCountDownloader.Services.DataProcessors
                 // Keep performance on mind
                 await FileWriter.WriteLineAsync(string.Join(",", cellValues), cancellationToken);
             }
-
-            Logger.Information("The CSV file saved to a file.");
 
             await FileWriter.DisposeAsync();
         }

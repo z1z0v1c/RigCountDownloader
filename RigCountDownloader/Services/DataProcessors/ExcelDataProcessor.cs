@@ -2,10 +2,9 @@
 
 namespace RigCountDownloader.Services.DataProcessors
 {
-    public abstract class ExcelDataProcessor(ILogger logger, IFileWriter fileWriter, ExcelPackage excelPackage)
+    public abstract class ExcelDataProcessor(IFileWriter fileWriter, ExcelPackage excelPackage)
         : IDataProcessor
     {
-        protected ILogger Logger { get; } = logger;
         protected IFileWriter FileWriter { get; } = fileWriter;
 
         public ExcelPackage ExcelPackage { get; set; } = excelPackage;

@@ -3,7 +3,7 @@ using RigCountDownloader.Services.DataProcessors;
 
 namespace RigCountDownloader.Services.Factories
 {
-    public class DataProcessorFactory(ILogger logger) : IDataProcessorFactory
+    public class DataProcessorFactory() : IDataProcessorFactory
     {
         public IDataProcessor CreateDataProcessor(
             IFileWriter fileWriter,
@@ -14,7 +14,7 @@ namespace RigCountDownloader.Services.Factories
         {
             if (context == Context.RigCount && fileFormat == FileFormat.Xlsx)
             {
-                return new RigCountDataProcessor(logger, fileWriter, (ExcelPackage)data);
+                return new RigCountDataProcessor(fileWriter, (ExcelPackage)data);
             }
 
             throw new IncorrectSettingsException(

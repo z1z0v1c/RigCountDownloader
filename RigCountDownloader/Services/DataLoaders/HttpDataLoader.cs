@@ -2,12 +2,10 @@
 {
     public class HttpDataLoader : IDataLoader
     {
-        private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
 
-        public HttpDataLoader(ILogger logger, HttpClient httpClient)
+        public HttpDataLoader(HttpClient httpClient)
         {
-            _logger = logger;
             _httpClient = httpClient;
 
             ConfigureHttpClient();
@@ -64,12 +62,12 @@
 
                 await using (Stream contentStream = await response.Content.ReadAsStreamAsync(cancellationToken))
                 {
-                    if (contentStream.Length == 0)
-                    {
-                        throw new HttpDataLoadException("Invalid data, memory stream is empty");
-                    }
-                    
                     await contentStream.CopyToAsync(memoryStream, cancellationToken);
+                }
+                
+                if (memoryStream.Length == 0)
+                {
+                    throw new HttpDataLoadException("Invalid data, memory stream is empty");
                 }
 
                 // Reset position to beginning so the caller can read from the start

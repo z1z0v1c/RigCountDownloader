@@ -9,9 +9,8 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 
         public HttpDataLoaderTests()
         {
-            var logger = ServiceProvider.GetRequiredService<ILogger>();
             _requestHandler = ServiceProvider.GetRequiredService<MockHttpMessageHandler>();
-            _httpDataLoader = new HttpDataLoader(logger, _requestHandler.ToHttpClient());
+            _httpDataLoader = new HttpDataLoader(_requestHandler.ToHttpClient());
         }
 
         [Fact]
