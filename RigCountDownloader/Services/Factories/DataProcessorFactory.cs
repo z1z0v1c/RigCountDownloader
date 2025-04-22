@@ -2,6 +2,7 @@
 using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Interfaces.Factories;
 using RigCountDownloader.Domain.Models.Enums;
+using RigCountDownloader.Domain.Models.Exceptions;
 using RigCountDownloader.Services.DataProcessors;
 using Serilog;
 
@@ -21,7 +22,8 @@ namespace RigCountDownloader.Services.Factories
                 return new RigCountDataProcessor(logger, fileWriter, (ExcelPackage)data);
             }
 
-            throw new ArgumentException("Wrong input file type. Check appsettings.json file.");
+            throw new IncorrectSettingsException(
+                "Wrong or missing Context and/or SourceFileFormat settings. Check appsettings.json file.");
         }
     }
 }

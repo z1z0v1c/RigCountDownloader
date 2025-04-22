@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using RichardSzalay.MockHttp;
 using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Domain.Models.Exceptions;
 using RigCountDownloader.Services.DataLoaders;
 using Serilog;
 using Xunit;
@@ -21,7 +22,7 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 		}
 
 		[Fact]
-		public async Task LoadDataAsync_ValidUri_ReturnsCorrectData()
+		public async Task LoadDataAsync_ValidSourceFileLocation_ReturnsCorrectData()
 		{
 			// Arrange
 			const string sourceFileLocation = "https://validurl.com/existing-file";
@@ -46,7 +47,7 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 		}
 
 		[Fact]
-		public async Task DownloadFileAsStreamAsync_InvalidUri_ThrowsHttpRequestException()
+		public async Task LoadDataAsync_InvalidSourceFileLocation_ThrowsHttpRequestException()
 		{
 			// Arrange
 			const string sourceFileLocation = "https://invalidurl.com/nonexisting-file";
@@ -65,7 +66,7 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 		}
 
 		[Fact]
-		public async Task DownloadFileAsStreamAsync_NoUriProvided_ThrowsUriFormatException()
+		public async Task LoadDataAsync_NullSourceFileLocation_ThrowsIncorrectSettingsException()
 		{
 			// Arrange
 			string? sourceFileLocation = null;
@@ -74,7 +75,7 @@ namespace RigCountDownloader.Tests.Services.DataLoaders
 			async Task Act() => await _httpDataLoader.LoadDataAsync(sourceFileLocation!);
 
             // Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(Act);
+            await Assert.ThrowsAsync<IncorrectSettingsException>(Act);
 		}
 	}
 }

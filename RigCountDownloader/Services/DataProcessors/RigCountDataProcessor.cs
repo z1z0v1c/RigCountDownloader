@@ -24,10 +24,11 @@ namespace RigCountDownloader.Services.DataProcessors
                     cellValues.Add(cellValue);
                 }
 
+                // Keep performance on mind
                 await FileWriter.WriteLineAsync(string.Join(",", cellValues), cancellationToken);
             }
             
-            logger.Information("The CSV file saved to a file.");
+            Logger.Information("The CSV file saved to a file.");
 
             await FileWriter.DisposeAsync();
         }

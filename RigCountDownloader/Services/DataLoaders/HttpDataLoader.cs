@@ -1,5 +1,6 @@
 ﻿using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Domain.Models.Exceptions;
 using Serilog;
 
 namespace RigCountDownloader.Services.DataLoaders
@@ -46,6 +47,12 @@ namespace RigCountDownloader.Services.DataLoaders
 
         public async Task<DataStream> LoadDataAsync(string fileLocation, CancellationToken cancellationToken = default)
         {
+            if (fileLocation == null)
+            {
+                throw new IncorrectSettingsException(
+                    "Missing SourceFileLocation setting. Check appsettings.json file.");
+            }
+
             var uri = new Uri(fileLocation);
 
             try
@@ -79,6 +86,7 @@ namespace RigCountDownloader.Services.DataLoaders
                 {
                     _logger.Error($"Inner exception: {ex.InnerException.Message}");
                 }
+
                 throw;
             }
             catch (TaskCanceledException ex)

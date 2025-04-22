@@ -1,4 +1,5 @@
 ﻿using RigCountDownloader.Domain.Interfaces;
+using RigCountDownloader.Domain.Models.Exceptions;
 
 namespace RigCountDownloader.Services.FileWriters;
 

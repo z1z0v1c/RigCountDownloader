@@ -14,7 +14,7 @@ namespace RigCountDownloader.Services.Factories
 				return new XlsxDataFormater();
 			}
 
-			throw new ArgumentException("Wrong input file type. Check appsettings.json file.");
+			throw new ArgumentException("The file media type is missing or not supported.");
 		}
 	}
 }

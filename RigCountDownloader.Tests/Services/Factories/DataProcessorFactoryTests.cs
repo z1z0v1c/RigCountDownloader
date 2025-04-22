@@ -2,6 +2,7 @@
 using OfficeOpenXml;
 using RigCountDownloader.Domain.Interfaces;
 using RigCountDownloader.Domain.Interfaces.Factories;
+using RigCountDownloader.Domain.Models.Exceptions;
 using RigCountDownloader.Services.DataProcessors;
 using RigCountDownloader.Services.FileWriters;
 using Xunit;
@@ -37,7 +38,7 @@ namespace RigCountDownloader.Tests.Services.Factories
 		}
 
 		[Fact]
-		public void CreateDataProcessor_InvalidFileType_ThrowsArgumentException()
+		public void CreateDataProcessor_InvalidFileFormat_ThrowsIncorrectSettingsException()
 		{
 			// Arrange
 			IFileWriter fileWriter = new CsvFileWriter("test2.csv");
@@ -52,11 +53,11 @@ namespace RigCountDownloader.Tests.Services.Factories
 			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
 			// Assert
-			Assert.Throws<ArgumentException>(Act);
+			Assert.Throws<IncorrectSettingsException>(Act);
 		}
 
 		[Fact]
-		public void CreateDataProcessor_InvalidContext_ThrowsArgumentException()
+		public void CreateDataProcessor_InvalidContext_ThrowsIncorrectSettingsException()
 		{
 			// Arrange
 			IFileWriter fileWriter = new CsvFileWriter("test3.csv");
@@ -71,7 +72,7 @@ namespace RigCountDownloader.Tests.Services.Factories
 			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
 			// Assert
-			Assert.Throws<ArgumentException>(Act);
+			Assert.Throws<IncorrectSettingsException>(Act);
 		}
 	}
 }

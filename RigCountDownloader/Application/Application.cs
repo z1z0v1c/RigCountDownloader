@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using RigCountDownloader.Domain.Models;
+using RigCountDownloader.Domain.Models.Exceptions;
 using Serilog;
 
 namespace RigCountDownloader.Application
@@ -19,19 +20,24 @@ namespace RigCountDownloader.Application
             try
             {
                 Settings settings = new(
-                    Context:            configuration["Context"]!,
-                    SourceType:         configuration["SourceType"]!,
+                    Context: configuration["Context"]!,
+                    SourceType: configuration["SourceType"]!,
                     SourceFileLocation: configuration["SourceFileLocation"]!,
                     OutputFileLocation: configuration["OutputFileLocation"]!,
-                    OutputFileFormat:   configuration["OutputFileFormat"]!
+                    OutputFileFormat: configuration["OutputFileFormat"]!
                 );
 
-                logger.Information("Starting data processing pipeline with settings: {Settings}", 
+                logger.Information("Starting data processing pipeline with settings: {Settings}",
                     JsonSerializer.Serialize(settings));
-                
+
                 await pipeline.ExecuteAsync(settings, cancellationToken);
-                
+
                 logger.Information("Closing application...");
+            }
+            catch (IncorrectSettingsException ex)
+            {
+                logger.Error("Incorrect settings: {Message}", ex.Message);
+                logger.Error("Stack Trace: {StackTrace}", ex.StackTrace); 
             }
             catch (Exception ex)
             {

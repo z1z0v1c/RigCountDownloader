@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using RigCountDownloader.Application;
 using RigCountDownloader.Domain.Interfaces.Factories;
-using RigCountDownloader.Domain.Interfaces.Services.Factories;
 using RigCountDownloader.Services.Factories;
 using Serilog;
 
