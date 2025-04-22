@@ -1,6 +1,4 @@
-﻿using RigCountDownloader.Domain.Models;
-
-namespace RigCountDownloader.Domain.Interfaces;
+﻿namespace RigCountDownloader.Domain.Interfaces;
 
 public interface IDataLoader
 {

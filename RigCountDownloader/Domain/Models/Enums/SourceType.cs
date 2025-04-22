@@ -2,6 +2,6 @@
 
 public static class SourceType
 {
-   public const string Http = "http";
-   public const string Local = "local";
+    public const string Http = "http";
+    public const string Local = "local";
 }

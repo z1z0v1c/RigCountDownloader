@@ -1,8 +1,5 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using RigCountDownloader.Domain.Models;
-using RigCountDownloader.Domain.Models.Exceptions;
-using Serilog;
 
 namespace RigCountDownloader.Application
 {

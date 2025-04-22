@@ -11,7 +11,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
 {
     public class RigCountDataProcessorTests : TestFixture
     {
-        private readonly ILogger _logger; 
+        private readonly ILogger _logger;
         private IFileWriter? FileWriter { get; set; }
         private RigCountDataProcessor? DataProcessor { get; set; }
 
@@ -27,7 +27,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             const string fileName = "Worldwide Rig Count Jul 2013.csv";
             FileWriter = new CsvFileWriter(fileName);
             DataProcessor = new RigCountDataProcessor(_logger, FileWriter, new ExcelPackage());
-			
+
             var worksheet = DataProcessor.ExcelPackage.Workbook.Worksheets.Add("Sheet");
             worksheet.Cells[1, 1].Value = "Europe";
             worksheet.Cells[2, 1].Value = "Avg.";
@@ -69,7 +69,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             DataProcessor = new RigCountDataProcessor(_logger, FileWriter, new ExcelPackage());
 
             DataProcessor.ExcelPackage.Workbook.Worksheets.Add("EmptyWorksheet");
-			
+
             // Act
             async Task Act() => await DataProcessor.ProcessAndSaveAsync();
 
@@ -78,7 +78,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
         }
 
         [Fact]
-        public async Task  ProcessAndSaveAsync_NoData_ThrowsInvalidDataException()
+        public async Task ProcessAndSaveAsync_NoData_ThrowsInvalidDataException()
         {
             // Arrange
             const string fileName = "Worldwide Rig Count Jul 2016.csv";
@@ -89,7 +89,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             using var package = new ExcelPackage();
 
             DataProcessor.ExcelPackage = package;
-			
+
             // Act
             async Task Act() => await DataProcessor.ProcessAndSaveAsync();
 

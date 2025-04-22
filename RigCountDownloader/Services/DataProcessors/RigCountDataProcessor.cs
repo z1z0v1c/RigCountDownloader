@@ -1,6 +1,4 @@
 ﻿using OfficeOpenXml;
-using RigCountDownloader.Domain.Interfaces;
-using Serilog;
 
 namespace RigCountDownloader.Services.DataProcessors
 {
@@ -27,7 +25,7 @@ namespace RigCountDownloader.Services.DataProcessors
                 // Keep performance on mind
                 await FileWriter.WriteLineAsync(string.Join(",", cellValues), cancellationToken);
             }
-            
+
             Logger.Information("The CSV file saved to a file.");
 
             await FileWriter.DisposeAsync();

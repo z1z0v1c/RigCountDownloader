@@ -9,70 +9,70 @@ using Xunit;
 
 namespace RigCountDownloader.Tests.Services.Factories
 {
-	public class DataProcessorFactoryTests : TestFixture
-	{
-		private readonly IDataProcessorFactory _dataProcessorFactory;
+    public class DataProcessorFactoryTests : TestFixture
+    {
+        private readonly IDataProcessorFactory _dataProcessorFactory;
 
-		public DataProcessorFactoryTests()
-		{
-			_dataProcessorFactory = ServiceProvider.GetRequiredService<IDataProcessorFactory>();
-		}
-		
-		[Fact]
-		public void CreateXlsxDataProcessor_ValidSettings_ReturnsCorrectResult()
-		{
-			// Arrange
-			IFileWriter fileWriter = new CsvFileWriter("test1.csv");
-			
-			const string context = "Rig Count";
-			const string fileFormat = "xlsx";
-			using var memoryStream = new MemoryStream();
+        public DataProcessorFactoryTests()
+        {
+            _dataProcessorFactory = ServiceProvider.GetRequiredService<IDataProcessorFactory>();
+        }
 
-			var data = new ExcelPackage(memoryStream);
-			
-			// Act
-			var dataProcessor = _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+        [Fact]
+        public void CreateXlsxDataProcessor_ValidSettings_ReturnsCorrectResult()
+        {
+            // Arrange
+            IFileWriter fileWriter = new CsvFileWriter("test1.csv");
 
-			// Assert
-			Assert.IsType<RigCountDataProcessor>(dataProcessor);
-		}
+            const string context = "Rig Count";
+            const string fileFormat = "xlsx";
+            using var memoryStream = new MemoryStream();
 
-		[Fact]
-		public void CreateDataProcessor_InvalidFileFormat_ThrowsIncorrectSettingsException()
-		{
-			// Arrange
-			IFileWriter fileWriter = new CsvFileWriter("test2.csv");
+            var data = new ExcelPackage(memoryStream);
 
-			const string context = "Rig Count";
-			const string fileFormat = "pdf";
-			using var memoryStream = new MemoryStream();
+            // Act
+            var dataProcessor = _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
-			var data = new ExcelPackage(memoryStream);
+            // Assert
+            Assert.IsType<RigCountDataProcessor>(dataProcessor);
+        }
 
-			// Act
-			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+        [Fact]
+        public void CreateDataProcessor_InvalidFileFormat_ThrowsIncorrectSettingsException()
+        {
+            // Arrange
+            IFileWriter fileWriter = new CsvFileWriter("test2.csv");
 
-			// Assert
-			Assert.Throws<IncorrectSettingsException>(Act);
-		}
+            const string context = "Rig Count";
+            const string fileFormat = "pdf";
+            using var memoryStream = new MemoryStream();
 
-		[Fact]
-		public void CreateDataProcessor_InvalidContext_ThrowsIncorrectSettingsException()
-		{
-			// Arrange
-			IFileWriter fileWriter = new CsvFileWriter("test3.csv");
-			
-			const string context = "Rig Rate";
-			const string fileFormat = "xlsx";
-			using var memoryStream = new MemoryStream();
+            var data = new ExcelPackage(memoryStream);
 
-			var data = new ExcelPackage(memoryStream);
+            // Act
+            void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
 
-			// Act
-			void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+            // Assert
+            Assert.Throws<IncorrectSettingsException>(Act);
+        }
 
-			// Assert
-			Assert.Throws<IncorrectSettingsException>(Act);
-		}
-	}
+        [Fact]
+        public void CreateDataProcessor_InvalidContext_ThrowsIncorrectSettingsException()
+        {
+            // Arrange
+            IFileWriter fileWriter = new CsvFileWriter("test3.csv");
+
+            const string context = "Rig Rate";
+            const string fileFormat = "xlsx";
+            using var memoryStream = new MemoryStream();
+
+            var data = new ExcelPackage(memoryStream);
+
+            // Act
+            void Act() => _dataProcessorFactory.CreateDataProcessor(fileWriter, context, fileFormat, data);
+
+            // Assert
+            Assert.Throws<IncorrectSettingsException>(Act);
+        }
+    }
 }

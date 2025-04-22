@@ -1,9 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.Factories;
-using RigCountDownloader.Domain.Models.Enums;
-using RigCountDownloader.Domain.Models.Exceptions;
-using RigCountDownloader.Services.DataLoaders;
-using Serilog;
+﻿using RigCountDownloader.Services.DataLoaders;
 
 namespace RigCountDownloader.Services.Factories;
 
@@ -17,5 +12,5 @@ public class DataLoaderFactory(ILogger logger, HttpClient httpClient) : IDataLoa
         }
 
         throw new IncorrectSettingsException("Wrong or missing SourceType setting. Check appsettings.json file.");
-    } 
+    }
 }

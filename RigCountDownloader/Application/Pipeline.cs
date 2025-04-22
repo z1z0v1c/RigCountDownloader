@@ -1,9 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.Factories;
-using RigCountDownloader.Domain.Models;
-using Serilog;
-
-namespace RigCountDownloader.Application;
+﻿namespace RigCountDownloader.Application;
 
 public class Pipeline(
     IDataLoaderFactory dataLoaderFactory,
@@ -22,27 +17,29 @@ public class Pipeline(
             settings.SourceType, settings.SourceFileLocation);
 
         // Load data
-        await using DataStream dataStream = await dataLoader.LoadDataAsync(settings.SourceFileLocation, cancellationToken);
+        await using DataStream dataStream =
+            await dataLoader.LoadDataAsync(settings.SourceFileLocation, cancellationToken);
 
-        logger.Information("Data retrieved successfully. Received {MemoryStreamLength} bytes.", dataStream.MemoryStream.Length);
+        logger.Information("Data retrieved successfully. Received {MemoryStreamLength} bytes.",
+            dataStream.MemoryStream.Length);
 
         // Create data converter
-        IDataFormater dataFormater = dataFormaterFactory.CreateDataFormater(dataStream.MediaType);
+        IDataFormatter dataFormatter = dataFormaterFactory.CreateDataFormatter(dataStream.MediaType);
 
         logger.Information("Formating {MediaType} data stream...", dataStream.MediaType);
 
         // Format data
-        FormatedData convertedData = dataFormater.FormatData(dataStream);
+        FormattedData formattedData = dataFormatter.FormatData(dataStream);
 
-        logger.Information("Data formated successfully into {SourceFileFormat} format.", convertedData.FileFormat);
+        logger.Information("Data formatted successfully into {SourceFileFormat} format.", formattedData.Format);
 
         // Create data processor and file writer
         IFileWriter fileWriter = fileWriterFactory.CreateFileWriter(
             settings.OutputFileFormat, settings.OutputFileLocation);
         IDataProcessor processor = dataProcessorFactory.CreateDataProcessor(
-            fileWriter, settings.Context, convertedData.FileFormat, convertedData.Data);
+            fileWriter, settings.Context, formattedData.Format, formattedData.Data);
 
-        logger.Information("Starting {SourceFileFormat} data processing...", convertedData.FileFormat);
+        logger.Information("Starting {SourceFileFormat} data processing...", formattedData.Format);
 
         // Process and save data
         await processor.ProcessAndSaveAsync(cancellationToken);

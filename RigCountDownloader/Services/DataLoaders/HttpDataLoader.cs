@@ -1,9 +1,4 @@
-﻿using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Models;
-using RigCountDownloader.Domain.Models.Exceptions;
-using Serilog;
-
-namespace RigCountDownloader.Services.DataLoaders
+﻿namespace RigCountDownloader.Services.DataLoaders
 {
     public class HttpDataLoader : IDataLoader
     {
@@ -24,13 +19,11 @@ namespace RigCountDownloader.Services.DataLoaders
             _httpClient.DefaultRequestHeaders.Clear();
 
             _httpClient.DefaultRequestHeaders.Add(
-                name: "User-Agent",
-                value:
+                "User-Agent",
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             );
             _httpClient.DefaultRequestHeaders.Add(
-                name: "Accept",
-                value:
+                "Accept",
                 "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
             );
             _httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");

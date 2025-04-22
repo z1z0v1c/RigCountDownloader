@@ -2,5 +2,5 @@
 
 public interface IDataFormaterFactory
 {
-    IDataFormater CreateDataFormater(string mediaType);
+    IDataFormatter CreateDataFormatter(string mediaType);
 }

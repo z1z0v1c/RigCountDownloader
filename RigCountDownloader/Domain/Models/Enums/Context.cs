@@ -2,5 +2,5 @@
 
 public static class Context
 {
-   public const string RigCount = "Rig Count";
+    public const string RigCount = "Rig Count";
 }

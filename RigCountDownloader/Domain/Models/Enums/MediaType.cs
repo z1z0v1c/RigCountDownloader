@@ -2,5 +2,5 @@
 
 public static class MediaType
 {
-   public const string Spreadsheet = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public const string Spreadsheet = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 }
