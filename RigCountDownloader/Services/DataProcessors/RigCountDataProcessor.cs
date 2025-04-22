@@ -5,7 +5,7 @@ namespace RigCountDownloader.Services.DataProcessors
     public class RigCountDataProcessor(ILogger logger, IFileWriter fileWriter, ExcelPackage excelPackage)
         : ExcelDataProcessor(logger, fileWriter, excelPackage)
     {
-        public override async Task ProcessAndSaveAsync(CancellationToken cancellationToken = default)
+        public override async Task ProcessAndSaveDataAsync(CancellationToken cancellationToken = default)
         {
             var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;

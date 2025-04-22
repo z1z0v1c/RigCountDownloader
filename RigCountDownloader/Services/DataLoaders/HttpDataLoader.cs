@@ -35,7 +35,7 @@
             _httpClient.DefaultRequestHeaders.Add("Upgrade-Insecure-Requests", "1");
             _httpClient.DefaultRequestHeaders.Add("Cache-Control", "max-age=0");
 
-            _httpClient.Timeout = TimeSpan.FromMinutes(5);
+            _httpClient.Timeout = TimeSpan.FromMinutes(2);
         }
 
         public async Task<DataStream> LoadDataAsync(string fileLocation, CancellationToken cancellationToken = default)

@@ -1,10 +1,4 @@
-﻿using OfficeOpenXml;
-using RigCountDownloader.Domain.Models;
-using RigCountDownloader.Domain.Models.Enums;
-using RigCountDownloader.Services.DataFormatters;
-using Xunit;
-
-namespace RigCountDownloader.Tests.Services.DataFormatters
+﻿namespace RigCountDownloader.Tests.Services.DataFormatters
 {
     public class XlsxDataFormatterTests
     {
@@ -22,13 +16,13 @@ namespace RigCountDownloader.Tests.Services.DataFormatters
 
             using var memoryStream = new MemoryStream(memoryStreamBytes);
 
-            var data = new DataStream(mediaType, memoryStream);
+            var dataStream = new DataStream(mediaType, memoryStream);
             var expectedPackage = new ExcelPackage(memoryStream);
 
             var xlsxDataConverter = new XlsxDataFormatter();
 
             // Act
-            var convertedData = (FormattedData)xlsxDataConverter.FormatData(data);
+            var convertedData = (FormattedData)xlsxDataConverter.FormatData(dataStream);
             var convertedPackage = (ExcelPackage)convertedData.Data;
 
             // Assert

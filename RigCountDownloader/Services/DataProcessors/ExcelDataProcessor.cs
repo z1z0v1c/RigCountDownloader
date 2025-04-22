@@ -10,6 +10,6 @@ namespace RigCountDownloader.Services.DataProcessors
 
         public ExcelPackage ExcelPackage { get; set; } = excelPackage;
 
-        public abstract Task ProcessAndSaveAsync(CancellationToken cancellationToken = default);
+        public abstract Task ProcessAndSaveDataAsync(CancellationToken cancellationToken = default);
     }
 }

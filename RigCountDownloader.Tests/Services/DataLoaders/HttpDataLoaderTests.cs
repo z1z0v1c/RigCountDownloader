@@ -1,11 +1,4 @@
 using System.Net;
-using Microsoft.Extensions.DependencyInjection;
-using RichardSzalay.MockHttp;
-using RigCountDownloader.Domain.Models;
-using RigCountDownloader.Domain.Models.Exceptions;
-using RigCountDownloader.Services.DataLoaders;
-using Serilog;
-using Xunit;
 
 namespace RigCountDownloader.Tests.Services.DataLoaders
 {

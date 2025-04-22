@@ -16,6 +16,7 @@ namespace RigCountDownloader.Application
             logger.Information("Reading settings from the appsettings.json file...");
             try
             {
+                // Import settings
                 Settings settings = new(
                     Context: configuration["Context"]!,
                     SourceType: configuration["SourceType"]!,
@@ -27,6 +28,7 @@ namespace RigCountDownloader.Application
                 logger.Information("Starting data processing pipeline with settings: {Settings}",
                     JsonSerializer.Serialize(settings));
 
+                // Execute data processing pipeline
                 await pipeline.ExecuteAsync(settings, cancellationToken);
 
                 logger.Information("Closing application...");

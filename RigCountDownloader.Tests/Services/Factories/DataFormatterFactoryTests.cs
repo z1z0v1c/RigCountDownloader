@@ -1,10 +1,4 @@
-﻿using NSubstitute;
-using RigCountDownloader.Domain.Models.Enums;
-using RigCountDownloader.Services.DataFormatters;
-using RigCountDownloader.Services.Factories;
-using Xunit;
-
-namespace RigCountDownloader.Tests.Services.Factories
+﻿namespace RigCountDownloader.Tests.Services.Factories
 {
     public class DataFormatterFactoryTests : TestFixture
     {

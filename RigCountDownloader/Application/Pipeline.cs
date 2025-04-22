@@ -42,7 +42,7 @@ public class Pipeline(
         logger.Information("Starting {SourceFileFormat} data processing...", formattedData.Format);
 
         // Process and save data
-        await processor.ProcessAndSaveAsync(cancellationToken);
+        await processor.ProcessAndSaveDataAsync(cancellationToken);
 
         logger.Information("Data processed and saved to a {OutputFileFormat} successfully!", settings.OutputFileFormat);
     }

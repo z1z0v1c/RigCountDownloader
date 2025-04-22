@@ -1,13 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OfficeOpenXml;
-using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Domain.Interfaces.Factories;
-using RigCountDownloader.Domain.Models.Exceptions;
-using RigCountDownloader.Services.DataProcessors;
-using RigCountDownloader.Services.FileWriters;
-using Xunit;
-
-namespace RigCountDownloader.Tests.Services.Factories
+﻿namespace RigCountDownloader.Tests.Services.Factories
 {
     public class DataProcessorFactoryTests : TestFixture
     {

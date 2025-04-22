@@ -1,13 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NSubstitute;
-using OfficeOpenXml;
-using RigCountDownloader.Domain.Interfaces;
-using RigCountDownloader.Services.DataProcessors;
-using RigCountDownloader.Services.FileWriters;
-using Serilog;
-using Xunit;
-
-namespace RigCountDownloader.Tests.Services.DataProcessors
+﻿namespace RigCountDownloader.Tests.Services.DataProcessors
 {
     public class RigCountDataProcessorTests : TestFixture
     {
@@ -34,7 +25,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             worksheet.Cells[3, 1].Value = "Avg.";
 
             // Act
-            await DataProcessor.ProcessAndSaveAsync();
+            await DataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             _logger.Received().Information("The CSV file saved to a file.");
@@ -54,7 +45,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             worksheet.Cells[3, 1].Value = "Avg.";
 
             // Act
-            async Task Act() => await DataProcessor.ProcessAndSaveAsync();
+            async Task Act() => await DataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
@@ -71,7 +62,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             DataProcessor.ExcelPackage.Workbook.Worksheets.Add("EmptyWorksheet");
 
             // Act
-            async Task Act() => await DataProcessor.ProcessAndSaveAsync();
+            async Task Act() => await DataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
@@ -91,7 +82,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             DataProcessor.ExcelPackage = package;
 
             // Act
-            async Task Act() => await DataProcessor.ProcessAndSaveAsync();
+            async Task Act() => await DataProcessor.ProcessAndSaveDataAsync();
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
