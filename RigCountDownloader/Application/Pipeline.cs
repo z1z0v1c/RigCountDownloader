@@ -8,7 +8,7 @@ public class Pipeline(
     ILogger logger
 )
 {
-    public async Task ExecuteAsync(Settings settings, CancellationToken cancellationToken)
+    public async Task ExecuteAsync(Settings settings, Options options, CancellationToken cancellationToken)
     {
         // Create data loader
         IDataLoader dataLoader = dataLoaderFactory.CreateDataLoader(settings.SourceType);
@@ -42,7 +42,7 @@ public class Pipeline(
         logger.Information("Starting {SourceFileFormat} data processing...", formattedData.Format);
 
         // Process and save data
-        await processor.ProcessAndSaveDataAsync(cancellationToken);
+        await processor.ProcessAndSaveDataAsync(options, cancellationToken);
 
         logger.Information("Data processed and saved to a {OutputFileFormat} successfully!", settings.OutputFileFormat);
     }

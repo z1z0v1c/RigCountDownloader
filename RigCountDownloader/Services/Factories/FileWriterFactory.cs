@@ -6,6 +6,7 @@ public class FileWriterFactory : IFileWriterFactory
 {
     public IFileWriter CreateFileWriter(string fileFormat, string fileLocation)
     {
+        // TODO replace with ThrowIfNullOrEmpty
         if (string.IsNullOrEmpty(fileLocation))
         {
             throw new IncorrectSettingsException("Missing OutputFileLocation setting. Check appsettings.json file.");

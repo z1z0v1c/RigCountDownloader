@@ -2,6 +2,6 @@
 {
     public interface IDataProcessor
     {
-        Task ProcessAndSaveDataAsync(CancellationToken cancellationToken);
+        Task ProcessAndSaveDataAsync(Options options, CancellationToken cancellationToken);
     }
 }

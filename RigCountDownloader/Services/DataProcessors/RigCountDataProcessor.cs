@@ -5,13 +5,13 @@ namespace RigCountDownloader.Services.DataProcessors
     public class RigCountDataProcessor(IFileWriter fileWriter, ExcelPackage excelPackage)
         : ExcelDataProcessor(fileWriter, excelPackage)
     {
-        public override async Task ProcessAndSaveDataAsync(CancellationToken cancellationToken = default)
+        public override async Task ProcessAndSaveDataAsync(Options options, CancellationToken cancellationToken = default)
         {
             var worksheet =
                 ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
 
-            var startRowIndex = FindRowIndex(worksheet, "2023");
-            var endRowIndex = FindNthRowIndex(worksheet, "Avg.", 2, startRowIndex);
+            var startRowIndex = FindRowIndex(worksheet, options.StartYear.ToString());
+            var endRowIndex = FindNthRowIndex(worksheet, "Avg.", options.YearCount, startRowIndex);
 
             for (var row = startRowIndex; row <= endRowIndex; row++)
             {

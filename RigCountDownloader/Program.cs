@@ -29,4 +29,4 @@ var serviceProvider = new ServiceCollection()
     .BuildServiceProvider();
 
 // Resolve and run Application
-await serviceProvider.GetRequiredService<Application>().RunAsync();
+await serviceProvider.GetRequiredService<Application>().RunAsync(args);

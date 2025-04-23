@@ -11,6 +11,8 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
         public async Task ProcessAndSaveAsync_ValidData_WritesToCsvFile()
         {
             // Arrange
+            var options = new Options(2023, 2);
+            
             using var data = new MemoryStream();
             await using (var fileStream = File.OpenRead("../../../TestData/Valid_Rig_Count_Data.xlsx"))
             {
@@ -29,7 +31,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             }
 
             // Act
-            await _dataProcessor.ProcessAndSaveDataAsync();
+            await _dataProcessor.ProcessAndSaveDataAsync(options);
 
             // Assert
             Assert.Equal(expected.ToArray(), (actual.ToArray()));
@@ -39,6 +41,8 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
         public async Task ProcessAndSaveAsync_InvalidData_ThrowsInvalidDataException()
         {
             // Arrange
+            var options = new Options(2023, 2);
+            
             using var data = new MemoryStream();
             await using (var fileStream = File.OpenRead("../../../TestData/Invalid_Rig_Count_Data.xlsx"))
             {
@@ -49,7 +53,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             _dataProcessor = new RigCountDataProcessor(_fileWriter, new ExcelPackage(data));
 
             // Act
-            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync();
+            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync(options);
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
@@ -65,7 +69,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             _dataProcessor.ExcelPackage.Workbook.Worksheets.Add("EmptySheet");
 
             // Act
-            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync();
+            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync(new Options());
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
@@ -84,7 +88,7 @@ namespace RigCountDownloader.Tests.Services.DataProcessors
             _dataProcessor.ExcelPackage = package;
 
             // Act
-            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync();
+            async Task Act() => await _dataProcessor.ProcessAndSaveDataAsync(new Options());
 
             // Assert
             await Assert.ThrowsAsync<InvalidDataException>(Act);
