@@ -16,6 +16,7 @@ namespace RigCountDownloader.Tests
                 .AddSingleton(provider => Substitute.For<IConfiguration>())
                 .AddSingleton<MockHttpMessageHandler>()
                 .AddSingleton<IDataProcessorFactory, DataProcessorFactory>()
+                .AddSingleton<IFileWriterFactory, FileWriterFactory>()
                 .AddSingleton<RigCountDataProcessor>();
 
             ServiceProvider = services.BuildServiceProvider();
