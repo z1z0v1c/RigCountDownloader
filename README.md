@@ -1,9 +1,9 @@
 # RigCountProcessor
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/z1z0v1c/RigCountDownloader/dotnet.yml?branch=master)
-![GitHub last commit](https://img.shields.io/github/last-commit/z1z0v1c/RigCountDownloader)
-![GitHub issues](https://img.shields.io/github/issues/z1z0v1c/RigCountDownloader)
-![GitHub](https://img.shields.io/github/license/z1z0v1c/RigCountDownloader)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/z1z0v1c/RigCountProcessor/dotnet.yml?branch=master)
+![GitHub last commit](https://img.shields.io/github/last-commit/z1z0v1c/RigCountProcessor)
+![GitHub issues](https://img.shields.io/github/issues/z1z0v1c/RigCountProcessor)
+![GitHub](https://img.shields.io/github/license/z1z0v1c/RigCountProcessor)
 
 A C# console application that downloads an Excel file from a specified website and converts it into a CSV file on your local drive.
 
