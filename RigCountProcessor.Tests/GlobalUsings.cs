@@ -1,0 +1,16 @@
+﻿global using Microsoft.Extensions.DependencyInjection;
+global using NSubstitute;
+global using OfficeOpenXml;
+global using RichardSzalay.MockHttp;
+global using RigCountProcessor.Domain.Interfaces;
+global using RigCountProcessor.Domain.Interfaces.Factories;
+global using RigCountProcessor.Domain.Models;
+global using RigCountProcessor.Domain.Models.Enums;
+global using RigCountProcessor.Domain.Models.Exceptions;
+global using RigCountProcessor.Services.DataFormatters;
+global using RigCountProcessor.Services.DataLoaders;
+global using RigCountProcessor.Services.DataProcessors;
+global using RigCountProcessor.Services.Factories;
+global using RigCountProcessor.Services.FileWriters;
+global using Serilog;
+global using Xunit;
