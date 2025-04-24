@@ -16,8 +16,8 @@
 *.txt
 
 # Include test data
-!RigCountDownloader.Tests/TestData/*.xlsx
-!RigCountDownloader.Tests/TestData/*.csv
+!RigCountProcessor.Tests/TestData/*.xlsx
+!RigCountProcessor.Tests/TestData/*.csv
 
 # Rider files
 .idea/

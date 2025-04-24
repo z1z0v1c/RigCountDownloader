@@ -64,7 +64,7 @@ public class RigCountDataProcessorTests : TestFixture
         await _dataProcessor.ProcessAndSaveDataAsync(options);
 
         // Assert
-        Assert.Equal(expected.ToArray(), (actual.ToArray()));
+        Assert.Equal(expected.ToArray(), actual.ToArray());
     }
 
     [Fact]
