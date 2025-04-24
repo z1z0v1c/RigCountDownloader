@@ -13,18 +13,17 @@ namespace RigCountDownloader.Application
         public async Task RunAsync(string[] args, CancellationToken cancellationToken = default)
         {
             logger.Information("Starting application...");
-            
+
             // TODO Implement cancellation logic
-            
             try
             {
                 logger.Information("Parsing command line arguments...");
-                
+
                 // Parse cmd args as Options
                 var options = Parser.Default.ParseArguments<Options>(args).Value;
-                
+
                 logger.Information("Reading settings from the appsettings.json file...");
-                
+
                 // Import settings
                 Settings settings = new(
                     Context: configuration["Context"]!,
@@ -34,7 +33,8 @@ namespace RigCountDownloader.Application
                     OutputFileFormat: configuration["OutputFileFormat"]!
                 );
 
-                logger.Information("Starting data processing pipeline with settings {Settings} and {Options}.",
+                logger.Information(
+                    "Starting data processing pipeline with settings: {Settings} and options: {Options}.",
                     JsonSerializer.Serialize(settings), JsonSerializer.Serialize(options));
 
                 // Execute data processing pipeline

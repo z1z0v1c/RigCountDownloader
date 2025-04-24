@@ -5,49 +5,67 @@ namespace RigCountDownloader.Services.DataProcessors
     public class RigCountDataProcessor(IFileWriter fileWriter, ExcelPackage excelPackage)
         : ExcelDataProcessor(fileWriter, excelPackage)
     {
-        public override async Task ProcessAndSaveDataAsync(Options options, CancellationToken cancellationToken = default)
+        public override async Task ProcessAndSaveDataAsync(Options options,
+            CancellationToken cancellationToken = default)
         {
-            var worksheet =
-                ExcelPackage.Workbook.Worksheets.Count > 0 ? ExcelPackage.Workbook.Worksheets[0] : null;
+            ExcelWorksheet worksheet = ExcelPackage?.Workbook?.Worksheets?.Count > 0
+                ? ExcelPackage.Workbook.Worksheets[0]
+                : throw new InvalidDataException("ExcelWorksheet not found");
 
-            var startRowIndex = FindRowIndex(worksheet, options.StartYear.ToString());
-            var endRowIndex = FindNthRowIndex(worksheet, "Avg.", options.YearCount, startRowIndex);
-
-            for (var row = startRowIndex; row <= endRowIndex; row++)
+            if (worksheet.Dimension == null)
             {
-                var cellValues = new List<string>();
-                for (var column = 1; column <= worksheet?.Dimension?.Columns; column++)
+                throw new InvalidDataException("ExcelWorksheet dimension not found");
+            }
+
+            string startCellValue = options.StartYear.ToString();
+            string endCellValue = "Avg.";
+
+            int startRowIndex = FindRowIndex(worksheet, startCellValue);
+            int endRowIndex = FindNthRowIndex(worksheet, endCellValue, options.YearCount, startRowIndex);
+
+            for (int row = startRowIndex; row <= endRowIndex; row++)
+            {
+                List<string> cellValues = [];
+                for (int column = 1; column <= worksheet.Dimension.Columns; column++)
                 {
                     var cellValue = worksheet.Cells[row, column].Text;
                     cellValues.Add(cellValue);
                 }
 
+                // Remove trailing commas only
+                var line = string.Join(",", cellValues);
+                line = line[..^1];
+                
                 // Keep performance on mind
-                await FileWriter.WriteLineAsync(string.Join(",", cellValues), cancellationToken);
+                await FileWriter.WriteLineAsync(line, cancellationToken);
             }
 
             await FileWriter.DisposeAsync();
         }
 
-        private static int FindRowIndex(ExcelWorksheet? worksheet, string searchValue, int startIndex = 1)
+        private static int FindRowIndex(ExcelWorksheet worksheet, string searchValue, int startIndex = 1)
         {
             return FindNthRowIndex(worksheet, searchValue, 1, startIndex);
         }
 
-        private static int FindNthRowIndex(ExcelWorksheet? worksheet, string searchValue, int n, int startIndex = 1)
+        private static int FindNthRowIndex(ExcelWorksheet worksheet, string searchValue, int n, int startIndex = 1)
         {
-            var count = 0;
-            for (var row = startIndex; row <= worksheet?.Dimension?.End.Row; row++)
+            int count = 0;
+            ExcelCellAddress bottomRightCell = worksheet.Dimension.End;
+
+            for (int row = startIndex; row <= bottomRightCell.Row; row++)
             {
-                for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
+                for (int col = 1; col <= bottomRightCell.Column; col++)
                 {
-                    if (string.Equals(worksheet.Cells[row, col].Text, searchValue, StringComparison.OrdinalIgnoreCase))
+                    if (searchValue != worksheet.Cells[row, col].Text)
                     {
-                        count++;
-                        if (count == n)
-                        {
-                            return row;
-                        }
+                        continue;
+                    }
+
+                    count++;
+                    if (count == n)
+                    {
+                        return row;
                     }
                 }
             }
