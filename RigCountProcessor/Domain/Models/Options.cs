@@ -14,7 +14,7 @@ public class Options
         YearCount = yearCount;
     }
 
-    [Option('s', "start-year", Default = 2023, HelpText = "Data processing starting year.")]
+    [Option('s', "start-year", Default = 2023, HelpText = "Starting year of data processing.")]
     public int StartYear { get; set; }
     
     [Option('y', "year-count", Default = 2, HelpText = "Data processing year count.")]

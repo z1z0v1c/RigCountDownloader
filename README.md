@@ -5,15 +5,20 @@
 ![GitHub issues](https://img.shields.io/github/issues/z1z0v1c/RigCountProcessor)
 ![GitHub](https://img.shields.io/github/license/z1z0v1c/RigCountProcessor)
 
-A C# console application that downloads an Excel file from a specified website and converts it into a CSV file on your local drive.
+A .NET Core console application that retrieves a file from the web, processes the data using a given algorithm, and
+writes it to a specified output format.
+
+Currently supports processing Xlsx data using a simple Rig Count algorithm and writing to a Csv file. More options will
+be available soon.
 
 ---
 
 ## 📦 Features
 
-- Automated download of Excel files from a predefined URL.
-- Conversion of Excel data to CSV format.
+- Automated file download from a predefined URL.
+- Conversion and processing of Xlsx data to Csv format.
 - Command-line interface for ease of use.
+- Customizable behavior through command-line arguments and a config file
 - Modular code structure for maintainability.
 - Unit tests to ensure reliability.
 
@@ -60,7 +65,17 @@ A C# console application that downloads an Excel file from a specified website a
    dotnet run --project RigCountProcessor
    ```
 
-The application will download the Excel file from the specified URL and convert it into a CSV file saved on your local drive.
+The application will download the Excel file from the specified URL and convert it into a CSV file saved on the local
+drive.
+
+---
+
+### Command Line Options
+
+```
+--start-year, -s    Starting year of data processing. 
+--year-count, -y    Data processing year count.
+```
 
 ---
 
@@ -76,15 +91,29 @@ This will execute all tests in the `RigCountProcessor.Tests` project.
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure (simplified)
 
 ```text
-RigCountDownloader/
-├── RigCountProcessor/           # Main application source code
-├── RigCountProcessor.Tests/     # Unit tests
-├── .github/workflows/           # GitHub Actions workflows
-├── RigCountProcessor.sln        # Solution file
-├── Task.pdf                     # Project task description
+RigCountProcessor/
+├── .github/                     # GitHub configuration
+│   └── workflows/               # CI/CD pipeline
+│              
+├── RigCountProcessor/           # Main project 
+│   ├── Application/             # Data processing pipeline
+│   ├── Domain/                  # Domain models and interfaces 
+│   │   ├── Interfaces/          
+│   │   └── Models/              
+│   ├── Services/                # Core services for data processing
+│   │
+│   └── Program.cs               # Application entry point
+│   
+├── RigCountProcessor.Tests/     # Unit testing project
+│   ├── Mocks/                   # Mock classes
+│   ├── Services/                # Tests for each service class 
+│   └── TestData/                # Data used by unit tests
+│
+├── appsettings.json             # Configuration file
+├── LICENSE                      # License file
 └── README.md                    # Project documentation
 ```
 
@@ -92,11 +121,15 @@ RigCountDownloader/
 
 ## 📄 License
 
-This project is licensed under the MIT License.  
-See the [LICENSE](https://github.com/z1z0v1c/RigCountDownloader/blob/master/LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/z1z0v1c/RigCountDownloader/blob/master/LICENSE) file for details.
 
 ---
 
 ## 🙌 Acknowledgments
 
+- [xUnit](https://github.com/xunit/xunit) for unit testing
+- [NSubstitute](https://github.com/nsubstitute/NSubstitute) for mock substitutes
+- [MockHttp](https://github.com/richardszalay/mockhttp) for HttpClient mocking
+- [Serilog](https://github.com/serilog/serilog) for structured logging
+- [EPPlus](https://github.com/EPPlusSoftware/EPPlus) for Xlsx data processing
 - [CommandLineParser](https://github.com/commandlineparser/commandline) for parsing command line arguments
